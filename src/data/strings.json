@@ -1,0 +1,28 @@
+{
+    "header": {
+        "names_funny": [
+            "Jiaming",
+            "Jack",
+            "exoad"
+        ]
+    },
+    "pages": {
+        "home": {
+            "subtitles": [
+                "Hobbyist Programmer",
+                "Full-time University Student",
+                "FOSS Advocate",
+                "Part-time Upsolver",
+                "Systems Tinkerer",
+                "Design Minimalist",
+                "Graphics Programming Enthusiast",
+                "Object-Oriented Gremlin",
+                "Tea Connoisseur",
+                "Avid Movie Watcher"
+            ],
+            "about": {
+                "content": "I am Jiaming Meng, a self-taught programmer and full-time university student with a passion for low-level systems programming. My interests extend to mobile and web development, and I'm currently engaged in university research on AL & ML, while exploring compiler design as a personal passion project. Beyond programming, I find inspiration through hiking, photography, and reading fiction."
+            }
+        }
+    }
+}

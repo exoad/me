@@ -1,0 +1,28 @@
+@font-face {
+    font-family: "Playfair Display";
+    src: local("Playfair Display"),
+        url("./playfairdisplay/PlayfairDisplay-VariableFont_wght.ttf")
+            format("truetype-variations");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Playfair Display";
+    src: local("Playfair Display"),
+        url("./playfairdisplay/PlayfairDisplay-Italic-VariableFont_wght.ttf")
+            format("truetype-variations");
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Montserrat";
+    src: local("Montserrat"),
+        url(./monsterrat/Montserrat-VariableFont_wght.ttf) format("truetype-variations");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
