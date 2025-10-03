@@ -1,11 +1,31 @@
 {
     "header": {
         "names_funny": [
-            "Jiaming",
-            "Jack",
-            "exoad"
+            [
+                "Jiaming",
+                "#ffffffb2"
+            ],
+            [
+                "Jack",
+                "#fcb438b2"
+            ],
+            [
+                "exoad",
+                "#11fa95b2"
+            ]
         ]
     },
+    "links": {
+        "github": "https://github.com/exoad",
+        "linkedin": "https://www.linkedin.com/in/jack-meng/"
+    },
+    "navigation": {
+        "home": "HOME",
+        "projects": "PROJECTS",
+        "socials": "SOCIALS"
+    },
+    "name": "Jiaming Meng",
+    "footer": "(C) 2025 Jiaming Meng",
     "pages": {
         "home": {
             "subtitles": [
@@ -21,7 +41,21 @@
                 "Avid Movie Watcher"
             ],
             "about": {
-                "content": "I am Jiaming Meng, a self-taught programmer and full-time university student with a passion for low-level systems programming. My interests extend to mobile and web development, and I'm currently engaged in university research on AL & ML, while exploring compiler design as a personal passion project. Beyond programming, I find inspiration through hiking, photography, and reading fiction."
+                "title": "About Me",
+                "content": "I am Jiaming Meng, a self-taught programmer and full-time university student with a passion for low-level systems programming. My interests extend to mobile and web development, and I'm currently engaged in university research on AL & ML, while exploring compiler design as a personal passion project. Beyond programming, I find inspiration through hiking, photography, and reading fiction.",
+                "toolkit_title": "My Toolkit",
+                "technologies": [
+                    "C",
+                    "C++",
+                    "Dart",
+                    "Flutter",
+                    "Kotlin",
+                    "Java",
+                    "LLVM",
+                    "MySQL",
+                    "Jetpack Compose",
+                    "Python"
+                ]
             },
             "projects": [
                 {
@@ -56,7 +90,9 @@
                         "OpenGL"
                     ]
                 }
-            ]
+            ],
+            "projects_title": "Featured Projects",
+            "view_project_button": "View Project"
         }
     }
 }
