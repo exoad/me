@@ -6,7 +6,18 @@ export default {
     content: [
         "./src/**/*.{js,jsx,ts,tsx}",
     ],
-    theme: {},
+    theme: {
+        extend: {
+            colors: {
+                brandone: '#fcb438',
+                brandtwo: '#11fa95'
+            },
+            fontFamily: {
+                montserrat: ['Montserrat', 'sans-serif'],
+                playfair: ['Playfair Display', 'serif'],
+            },
+        },
+    },
     plugins: [],
 }
 

@@ -28,6 +28,9 @@
     "footer": "(C) 2025 Jiaming Meng",
     "pages": {
         "home": {
+            "tagline": "Building elegant systems with a passion for performance and simplicity",
+            "scroll_text": "Explore More",
+            "currently_working": "Currently working on: Systems programming & compiler optimization",
             "subtitles": [
                 "Hobbyist Programmer",
                 "Full-time University Student",

@@ -16,3 +16,11 @@ body {
     background: #000;
     color: #fff;
 }
+
+.font-montserrat {
+    font-family: "Montserrat", sans-serif !important;
+}
+
+.font-playfair {
+    font-family: "Playfair Display", serif !important;
+}
