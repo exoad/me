@@ -1,18 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
-import strings from "../config/strings.json";
-import { SiC, SiCplusplus, SiDart, SiFlutter, SiKotlin, SiOpenjdk, SiMysql, SiAndroid, SiLlvm, SiPython, SiGithub, SiLinkedin } from 'react-icons/si';
+import strings from "../config/strings.ts";
+
 import { FiChevronDown } from 'react-icons/fi';
 import { SpinningSquareDivider } from '../components/SpinningSquareDivider';
 import { StarryBackground } from '../components/StarryBackground';
 import { hexToRgba } from '../utils/css.ts';
 import theme from '../config/theme.json';
+import { SiGithub, SiLinkedin } from 'react-icons/si';
 export function HomePage() {
     const [nameIndex, setNameIndex] = useState(0);
     const heroRef = useRef<HTMLDivElement>(null);
     const aboutRef = useRef<HTMLDivElement>(null);
     const projectsRef = useRef<HTMLDivElement>(null);
     const [heroVisible, setHeroVisible] = useState(false);
-    const [aboutVisible, setAboutVisible] = useState(false);
+    const [kindaVisible, setkindaVisible] = useState(false);
     const [projectsVisible, setProjectsVisible] = useState(false);
     const [scrollY, setScrollY] = useState(0);
     useEffect(() => {
@@ -22,7 +23,7 @@ export function HomePage() {
                     if (entry.target === heroRef.current) {
                         setHeroVisible(entry.isIntersecting);
                     } else if (entry.target === aboutRef.current) {
-                        setAboutVisible(prev => prev || entry.isIntersecting);
+                        setkindaVisible(prev => prev || entry.isIntersecting);
                     } else if (entry.target === projectsRef.current) {
                         setProjectsVisible(prev => prev || entry.isIntersecting);
                     }
@@ -174,7 +175,7 @@ export function HomePage() {
                 </div>
             </div>
             <SpinningSquareDivider />
-            <div className={`min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8 transition-opacity duration-1500 ${aboutVisible ? 'opacity-100' : 'opacity-0'}`} ref={aboutRef}>
+            <div className={`min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8 transition-opacity duration-1500 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`} ref={aboutRef}>
                 <div className=" flex flex-col md:flex-row items-center md:gap-16 gap-8 w-full max-w-6xl">
                     <img
                         src="/profile.jpg"
@@ -189,24 +190,19 @@ export function HomePage() {
                         >
                             {strings.pages.home.about.title}
                         </h1>
-                        <p className={`text-white text-base md:text-lg leading-relaxed font-montserrat transition-opacity duration-1500 ${aboutVisible ? 'opacity-100' : 'opacity-0'}`}>
+                        <p className={`text-white text-base md:text-lg leading-relaxed font-montserrat transition-opacity duration-1500 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`}>
                             {strings.pages.home.about.content}
                         </p>
                         <div className="mt-8 flex flex-col gap-4">
                             <h2 className="text-white text-2xl font-bold font-playfair">{strings.pages.home.about.toolkit_title}</h2>
                             <div className="flex flex-wrap gap-4 justify-start">
-                                {(() => {
-                                    const icons = [SiC, SiCplusplus, SiDart, SiFlutter, SiKotlin, SiOpenjdk, SiLlvm, SiMysql, SiAndroid, SiPython];
-                                    return strings.pages.home.about.technologies.map((item, index) => {
-                                        const Icon = icons[index];
-                                        return (
-                                            <div key={item} className={`flex items-center gap-2 transition-all duration-1000 ${aboutVisible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 500}ms` }}>
-                                                <Icon className="text-white text-xs" />
-                                                <span className="text-white text-sm font-montserrat">{item}</span>
-                                            </div>
-                                        );
-                                    });
-                                })()}
+                                {strings.pages.home.about.technologies.map((item, index) =>
+
+                                    <div key={item.name} className={`flex items-center gap-2 transition-all duration-1000 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 500}ms` }}>
+                                        <item.icon className="text-white text-xs" />
+                                        <span className="text-white text-sm font-montserrat">{item.name}</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
