@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { SpinningSquareDivider } from '../components/SpinningSquareDivider';
+import SpinningSquareDivider from '../components/SpinningSquareDivider';
 
-export function NotFound() {
+export default function NotFound() {
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {

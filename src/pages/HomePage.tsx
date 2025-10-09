@@ -1,13 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import strings from "../config/strings.ts";
-
 import { FiChevronDown } from 'react-icons/fi';
-import { SpinningSquareDivider } from '../components/SpinningSquareDivider';
-import { StarryBackground } from '../components/StarryBackground';
+import SpinningSquareDivider from '../components/SpinningSquareDivider';
+import StarryBackground from '../components/StarryBackground';
 import { hexToRgba } from '../utils/css.ts';
 import theme from '../config/theme.json';
 import { SiGithub, SiLinkedin } from 'react-icons/si';
-export function HomePage() {
+export default function HomePage() {
     const [nameIndex, setNameIndex] = useState(0);
     const heroRef = useRef<HTMLDivElement>(null);
     const aboutRef = useRef<HTMLDivElement>(null);
@@ -93,26 +92,21 @@ export function HomePage() {
                     </h1>
 
                     <p
-                        className={`text-white/90 text-lg md:text-xl text-center max-w-2xl mx-auto font-montserrat transition-all duration-1000 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
-                        style={{ transitionDelay: '200ms' }}
+                        className={`text-white/90 text-lg md:text-xl text-center max-w-2xl mx-auto font-montserrat transition-all duration-1000 delay-200 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                     >
                         {strings.pages.home.tagline}
                     </p>
-
-                    <div className="w-[8rem] h-px bg-white"></div>
-
-                    <div className="overflow-hidden" style={{ height: '2rem' }}>
+                    <div className="w-[8rem] h-px bg-white" />
+                    <div className="overflow-hidden h-[2rem]">
                         <div
                             className="flex flex-col font-montserrat"
-                            style={{
-                                animation: 'subtitlesRollAnim 17s ease-in-out infinite'
-                            }}
+                            style={{ animation: 'subtitlesRollAnim 17s ease-in-out infinite' }}
                         >
                             {[...strings.pages.home.subtitles, strings.pages.home.subtitles[0]].map((item, index) => (
                                 <div
                                     key={`${item}-${index}`}
-                                    className="text-white text-xl text-center"
-                                    style={{ height: '2rem', lineHeight: '2rem', color: index % 2 == 0 ? "#fff" : theme.brand }}
+                                    className="text-white text-xl text-center h-[2rem] leading-[2rem]"
+                                    style={{ color: index % 2 == 0 ? "#fff" : theme.brand }}
                                 >
                                     {item}
                                 </div>
@@ -141,15 +135,14 @@ export function HomePage() {
             }
           `}</style>
 
-                    <div className="mt-2 py-2 px-4 bg-black/30 backdrop-blur-sm transition-all duration-700">
+                    {/* <div className="mt-2 py-2 px-4 bg-black/30 backdrop-blur-sm transition-all duration-700">
                         <p
                             className={`text-white/80 text-sm font-montserrat transition-all duration-1000 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                             style={{ transitionDelay: '400ms' }}
                         >
                             {strings.pages.home.currently_working}
                         </p>
-                    </div>
-
+                    </div> */}
                     <div className="flex gap-6 mt-2">
                         <a href={strings.links.github} target="_blank" rel="noopener noreferrer" className="text-white transition-all duration-300 inline-block hover:scale-110">
                             <SiGithub size={28} />
@@ -185,9 +178,7 @@ export function HomePage() {
                     />
                     <div className="w-px h-16 md:h-24 bg-white"></div>
                     <div className="flex flex-col md:items-start md:text-left text-center items-center max-w-4xl w-full gap-6">
-                        <h1
-                            className="text-white text-4xl md:text-7xl lg:text-7xl font-bold font-playfair"
-                        >
+                        <h1 className="text-white text-4xl md:text-7xl lg:text-7xl font-bold font-playfair">
                             {strings.pages.home.about.title}
                         </h1>
                         <p className={`text-white text-base md:text-lg leading-relaxed font-montserrat transition-opacity duration-1500 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`}>
@@ -197,7 +188,6 @@ export function HomePage() {
                             <h2 className="text-white text-2xl font-bold font-playfair">{strings.pages.home.about.toolkit_title}</h2>
                             <div className="flex flex-wrap gap-4 justify-start">
                                 {strings.pages.home.about.technologies.map((item, index) =>
-
                                     <div key={item.name} className={`flex items-center gap-2 transition-all duration-1000 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 500}ms` }}>
                                         <item.icon className="text-white text-xs" />
                                         <span className="text-white text-sm font-montserrat">{item.name}</span>
@@ -211,20 +201,19 @@ export function HomePage() {
             <SpinningSquareDivider reverse={true} />
             <div className={`min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8 transition-opacity duration-1500 ${projectsVisible ? 'opacity-100' : 'opacity-0'}`} ref={projectsRef}>
                 <div className="flex flex-col items-center justify-center gap-12 w-full max-w-6xl">
-                    <h1
-                        className="text-white text-3xl md:text-5xl lg:text-7xl font-bold font-playfair"
-                    >
+                    <h1 className="text-white text-3xl md:text-5xl lg:text-7xl font-bold font-playfair">
                         {strings.pages.home.projects_title}
                     </h1>
                     <div className="w-[8rem] h-px bg-white"></div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-                        {strings.pages.home.projects.map((project, _) => (
+                        {strings.pages.home.projects.map((project, _) =>
                             <div key={project.title} className={`w-80 h-64 bg-transparent transition-all duration-1000 ease-out flex flex-col items-center justify-between p-8 ${projectsVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
                                 <div className="flex flex-col items-center gap-4">
                                     <h2 className="text-white text-[2rem] font-bold text-center font-playfair"
-                                        style={{
-                                            textShadow: `2px 2px ${hexToRgba(project.glow_color, 0.7)}`
-                                        }}>{project.title}</h2>
+                                        style={{ textShadow: `2px 2px ${hexToRgba(project.glow_color, 0.7)}` }}
+                                    >
+                                        {project.title}
+                                    </h2>
                                     <p className="text-white text-sm text-center font-montserrat">{project.description}</p>
                                 </div>
                                 <p className="text-white text-xs text-center font-montserrat">{project.technologies.join(', ')} </p>
@@ -236,13 +225,25 @@ export function HomePage() {
                                     <span className="block w-0 h-px bg-white transition-all duration-300 group-hover:w-full"></span>
                                 </button>
                             </div>
-                        ))}
+                        )}
                     </div>
+                    <div className="h-8" />
+                    <p className="text-white text-lg text-center max-w-md font-playfair">
+                        {strings.pages.home.and_more}
+                    </p>
+                    <button
+                        aria-label="Explore all projects"
+                        onClick={() => window.location.href = '/projects'}
+                        className="relative inline-flex items-center justify-center text-white font-montserrat px-6 py-3"
+                    >
+                        <span className="relative z-10">{strings.pages.home.view_all_projects_button}</span>
+                    </button>
                 </div>
             </div>
             <footer className="bg-black text-white text-center font-montserrat">
                 {strings.footer}
             </footer>
         </div>
+
     );
 }

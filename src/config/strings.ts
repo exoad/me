@@ -23,7 +23,7 @@ export const strings = {
         home: {
             tagline: "Building elegant systems with a passion for performance and simplicity",
             scroll_text: "More to see below",
-            currently_working: "Currently working on: Systems programming & compiler optimization",
+            // currently_working: "Currently working on: Systems programming & compiler optimization",
             subtitles: [
                 "Hobbyist Programmer",
                 "Full-time University Student",
@@ -77,7 +77,9 @@ export const strings = {
                 }
             ],
             projects_title: "Featured Projects",
-            view_project_button: "View Project"
+            view_project_button: "View Project",
+            view_all_projects_button: "View All Projects",
+            and_more: "And more..."
         }
     }
 };

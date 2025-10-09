@@ -1,10 +1,4 @@
-import React from 'react';
-
-interface StarryBackgroundProps {
-  scrollY: number;
-}
-
-export const StarryBackground: React.FC<StarryBackgroundProps> = ({ scrollY }) => {
+export default function StarryBackground({ scrollY }: Readonly<{ scrollY: number; }>) {
   return (
     <div className="starry-background" style={{ opacity: Math.max(0, 1 - scrollY / 500) }}>
       <div className="shooting-star-norm"></div>

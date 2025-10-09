@@ -1,4 +1,4 @@
-export function SpinningSquareDivider({ reverse = false }: Readonly<{ reverse?: boolean; }>) {
+export default function SpinningSquareDivider({ reverse = false }: Readonly<{ reverse?: boolean; }>) {
   return (
     <div className="h-32 flex items-center justify-center bg-black relative">
       <div className="w-[60%] h-px bg-white absolute top-1/2"></div>
