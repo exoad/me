@@ -52,11 +52,14 @@ export default function HomePage() {
 
     return (
         <div className="relative select-none">
-            <header className="w-full fixed top-0 z-50 backdrop-blur-xs bg-black/48">
-                <div className="flex justify-between items-center" style={{ padding: '0.5rem 4rem' }}>
+            <header className="w-full fixed top-0 z-50 backdrop-blur-sm bg-black/48 border-b-1 border-b-white/20">
+                <div className="flex justify-between items-center" style={{ padding: '0.25rem 4rem' }}>
                     <button
                         className="text-white text-lg md:text-xl font-bold font-playfair cursor-pointer hover:scale-105 transition-transform duration-300 bg-transparent border-none"
-                        style={{ textShadow: `2px 2px ${strings.header.names_funny[nameIndex][1]}` }}
+                        style={{
+                            textShadow: `2px 2px ${strings.header.names_funny[nameIndex][1]}`,
+                            paddingBottom: '0.25rem'
+                        }}
                         onClick={() => setNameIndex((nameIndex + 1) % strings.header.names_funny.length)}
                         onKeyDown={e => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -84,19 +87,35 @@ export default function HomePage() {
             </header>
             <div className={`min-h-screen flex flex-col items-center justify-center bg-black px-4 sm:px-8 md:px-16 transition-opacity duration-1500 ${heroVisible ? 'opacity-100' : 'opacity-0'} relative`} ref={heroRef}>
                 <StarryBackground scrollY={scrollY} />
-                <div className="flex flex-col items-center justify-center gap-8 z-10">
+                <div className="flex flex-col items-center justify-center gap-6 z-10 max-w-3xl mx-auto">
+                    <div className="relative mb-1">
+                        <div className={`relative ${heroVisible ? 'animate-logo-reveal' : ''}`} style={{ transformOrigin: 'center' }}>
+                            <img
+                                src="/upwards.png"
+                                alt="Logo"
+                                className="w-22 h-22 md:w-28 md:h-28 object-contain hover:scale-105 transition-transform duration-300"
+                                draggable={false}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black pointer-events-none"
+                                style={{
+                                    maskImage: "linear-gradient(to bottom, transparent 70%, black 100%)",
+                                    WebkitMaskImage: "linear-gradient(to bottom, transparent 70%, black 100%)"
+                                }}
+                            />
+                        </div>
+                    </div>
                     <h1
-                        className={`text-white text-6xl font-bold font-playfair transition-all duration-1000 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+                        className={`text-white text-5xl md:text-6xl font-bold font-playfair transition-all duration-1000 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'} tracking-wide`}
                     >
                         {strings.name}
                     </h1>
 
                     <p
-                        className={`text-white/90 text-lg md:text-xl text-center max-w-2xl mx-auto font-montserrat transition-all duration-1000 delay-200 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+                        className={`text-white/90 text-base md:text-lg text-center max-w-lg mx-auto font-montserrat transition-all duration-1000 delay-200 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                     >
                         {strings.pages.home.tagline}
                     </p>
-                    <div className="w-[8rem] h-px bg-white" />
+                    <div className="w-20 h-px bg-white/70 my-1" />
                     <div className="overflow-hidden h-[2rem]">
                         <div
                             className="flex flex-col font-montserrat"
@@ -130,39 +149,38 @@ export default function HomePage() {
                         })()}
             }
             @keyframes pulse {
-              0%, 100% { opacity: 0.6; transform: translateY(0px); }
-              50% { opacity: 1; transform: translateY(-5px); }
+              0%, 100% { opacity: 0.4; transform: translateY(0px); }
+              50% { opacity: 0.8; transform: translateY(-3px); }
+            }
+            @keyframes logoRevealIn {
+              0% { transform: rotate(86deg) scale(0.86) translateY(5rem); }
+              100% { transform: rotate(0deg) scale(1) translate(0); }
+            }
+            .animate-logo-reveal {
+              animation: logoRevealIn 1.34s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
             }
           `}</style>
 
-                    {/* <div className="mt-2 py-2 px-4 bg-black/30 backdrop-blur-sm transition-all duration-700">
-                        <p
-                            className={`text-white/80 text-sm font-montserrat transition-all duration-1000 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
-                            style={{ transitionDelay: '400ms' }}
-                        >
-                            {strings.pages.home.currently_working}
-                        </p>
-                    </div> */}
-                    <div className="flex gap-6 mt-2">
-                        <a href={strings.links.github} target="_blank" rel="noopener noreferrer" className="text-white transition-all duration-300 inline-block hover:scale-110">
-                            <SiGithub size={28} />
+                    <div className="flex gap-5 mt-3">
+                        <a href={strings.links.github} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all duration-300 inline-block hover:scale-110">
+                            <SiGithub size={24} />
                         </a>
-                        <a href={strings.links.linkedin} target="_blank" rel="noopener noreferrer" className="text-white transition-all duration-300 inline-block hover:scale-110">
-                            <SiLinkedin size={28} />
+                        <a href={strings.links.linkedin} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all duration-300 inline-block hover:scale-110">
+                            <SiLinkedin size={24} />
                         </a>
                     </div>
 
                     <div
-                        className="absolute bottom-8 flex flex-col items-center gap-2 animate-pulse"
-                        style={{ animation: 'pulse 2s infinite ease-in-out' }}
+                        className="absolute bottom-8 flex flex-col items-center gap-1"
+                        style={{ animation: 'pulse 3s infinite ease-in-out' }}
                     >
                         <p
-                            className="text-white text-sm font-montserrat"
+                            className="text-white/60 text-xs font-montserrat"
                         >
                             {strings.pages.home.scroll_text}
                         </p>
-                        <div className="h-8 w-5 flex justify-center">
-                            <FiChevronDown className="absolute text-white" size={20} />
+                        <div className="h-6 w-5 flex justify-center">
+                            <FiChevronDown className="absolute text-white/60" size={16} />
                         </div>
                     </div>
                 </div>
