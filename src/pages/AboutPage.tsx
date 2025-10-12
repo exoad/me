@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import strings from "../config/strings.ts";
 import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import Footer from '../components/Footer.tsx';
 
@@ -90,7 +89,7 @@ export default function AboutPage() {
                     </h1>
 
                     <div className="relative">
-                        <div className="absolute left-1/2 transform -translate-x-1/2 w-px bg-white/30 h-full"></div>
+                        <div className="absolute left-1/2 transform -translate-x-1/2 w-px bg-gradient-to-b from-white/30 via-white/50 to-white/30 h-full animate-pulse"></div>
                         <div className="space-y-12">
                             {fakeTimelineData.map((item, index) => (
                                 <div
@@ -99,8 +98,12 @@ export default function AboutPage() {
                                     className={`relative flex items-center ${item.side === 'left' ? 'justify-start' : 'justify-end'
                                         } transition-all duration-1000 ${visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                                         }`}
+                                    style={{ transitionDelay: visibleItems.has(index) ? `${index * 200}ms` : '0ms' }}
                                 >
-                                    <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white rounded-full border-2 border-black z-10"></div>
+                                    <div
+                                        className={`absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white rounded-full border-2 border-black z-10 transition-all duration-500 ${visibleItems.has(index) ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
+                                        style={{ transitionDelay: visibleItems.has(index) ? `${(index * 200) + 400}ms` : '0ms' }}
+                                    ></div>
                                     <div className={`w-full max-w-md ${item.side === 'left' ? 'pr-8' : 'pl-8'}`}>
                                         <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:bg-white/10 transition-colors duration-300">
                                             <div className="text-white/60 text-sm font-montserrat mb-2">{item.date}</div>

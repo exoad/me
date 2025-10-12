@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import MenuBar from '../components/MenuBar';
-import strings from '../config/strings.ts';
+import { strings } from '../config/shared.ts';
 
 export default function NotFound() {
     const [visible, setVisible] = useState(false);

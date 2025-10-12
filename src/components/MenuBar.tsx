@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import strings from "../config/strings.ts";
+import { strings } from "../config/shared.ts";
 import NameToggle from './NameToggle';
 import Navigation from './Navigation';
 
