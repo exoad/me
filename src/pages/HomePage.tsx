@@ -6,8 +6,11 @@ import StarryBackground from '../components/StarryBackground';
 import { hexToRgba } from '../utils/css.ts';
 import theme from '../config/theme.json';
 import { SiGithub, SiLinkedin } from 'react-icons/si';
+import MenuBar from '../components/MenuBar';
+import HoverShowLine from '../components/HoverShowLine.tsx';
+import "../styles/HomePage.css";
+import Footer from '../components/Footer.tsx';
 export default function HomePage() {
-    const [nameIndex, setNameIndex] = useState(0);
     const heroRef = useRef<HTMLDivElement>(null);
     const aboutRef = useRef<HTMLDivElement>(null);
     const projectsRef = useRef<HTMLDivElement>(null);
@@ -52,61 +55,23 @@ export default function HomePage() {
 
     return (
         <div className="relative select-none">
-            <header className="w-full fixed top-0 z-50 backdrop-blur-sm bg-black/48 border-b-1 border-b-white/20">
-                <div className="flex justify-between items-center" style={{ padding: '0.25rem 4rem' }}>
-                    <button
-                        className="text-white text-lg md:text-xl font-bold font-playfair cursor-pointer hover:scale-105 transition-transform duration-300 bg-transparent border-none"
-                        style={{
-                            textShadow: `2px 2px ${strings.header.names_funny[nameIndex][1]}`,
-                            paddingBottom: '0.25rem'
-                        }}
-                        onClick={() => setNameIndex((nameIndex + 1) % strings.header.names_funny.length)}
-                        onKeyDown={e => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                setNameIndex((nameIndex + 1) % strings.header.names_funny.length);
-                            }
-                        }}
-                    >
-                        {strings.header.names_funny[nameIndex][0]}
-                    </button>
-                    <nav className="flex gap-6 md:gap-12">
-                        <button className="bg-transparent border-none text-white text-sm md:text-base font-light font-montserrat py-2 px-3 md:px-6 cursor-pointer transition-colors duration-300 group">
-                            {strings.navigation.home}
-                            <span className="block w-0 h-px bg-white transition-all duration-300 group-hover:w-full"></span>
-                        </button>
-                        <button className="bg-transparent border-none text-white text-sm md:text-base font-light font-montserrat py-2 px-3 md:px-6 cursor-pointer transition-colors duration-300 group">
-                            {strings.navigation.projects}
-                            <span className="block w-0 h-px bg-white transition-all duration-300 group-hover:w-full"></span>
-                        </button>
-                        <button className="bg-transparent border-none text-white text-sm md:text-base font-light font-montserrat py-2 px-3 md:px-6 cursor-pointer transition-colors duration-300 group">
-                            {strings.navigation.socials}
-                            <span className="block w-0 h-px bg-white transition-all duration-300 group-hover:w-full"></span>
-                        </button>
-                    </nav>
-                </div>
-            </header>
-            <div className={`min-h-screen flex flex-col items-center justify-center bg-black px-4 sm:px-8 md:px-16 transition-opacity duration-1500 ${heroVisible ? 'opacity-100' : 'opacity-0'} relative`} ref={heroRef}>
+            <MenuBar />
+            <div className={`min-h-screen flex flex-col items-center justify-center bg-black px-4 sm:px-8 md:px-16 relative`} ref={heroRef}>
                 <StarryBackground scrollY={scrollY} />
                 <div className="flex flex-col items-center justify-center gap-6 z-10 max-w-3xl mx-auto">
                     <div className="relative mb-1">
-                        <div className={`relative ${heroVisible ? 'animate-logo-reveal' : ''}`} style={{ transformOrigin: 'center' }}>
+                        <div className={`relative origin-center ${heroVisible ? 'animate-logo-reveal' : ''}`}>
                             <img
                                 src="/upwards.png"
                                 alt="Logo"
-                                className="w-22 h-22 md:w-28 md:h-28 object-contain hover:scale-105 transition-transform duration-300"
+                                className="w-42 h-42 md:w-36 md:h-36 object-contain"
                                 draggable={false}
                             />
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black pointer-events-none"
-                                style={{
-                                    maskImage: "linear-gradient(to bottom, transparent 70%, black 100%)",
-                                    WebkitMaskImage: "linear-gradient(to bottom, transparent 70%, black 100%)"
-                                }}
+                            <div className="logo-overlay-fade-out absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black pointer-events-none"
                             />
                         </div>
                     </div>
-                    <h1
-                        className={`text-white text-5xl md:text-6xl font-bold font-playfair transition-all duration-1000 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'} tracking-wide`}
-                    >
+                    <h1 className={`text-white text-5xl md:text-7xl font-bold font-playfair transition-all duration-1000 ${heroVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'} tracking-wide`}>
                         {strings.name}
                     </h1>
 
@@ -117,10 +82,7 @@ export default function HomePage() {
                     </p>
                     <div className="w-20 h-px bg-white/70 my-1" />
                     <div className="overflow-hidden h-[2rem]">
-                        <div
-                            className="flex flex-col font-montserrat"
-                            style={{ animation: 'subtitlesRollAnim 17s ease-in-out infinite' }}
-                        >
+                        <div className="subtitle-roller-anim flex flex-col font-montserrat">
                             {[...strings.pages.home.subtitles, strings.pages.home.subtitles[0]].map((item, index) => (
                                 <div
                                     key={`${item}-${index}`}
@@ -148,35 +110,19 @@ export default function HomePage() {
                             return keyframes;
                         })()}
             }
-            @keyframes pulse {
-              0%, 100% { opacity: 0.4; transform: translateY(0px); }
-              50% { opacity: 0.8; transform: translateY(-3px); }
-            }
-            @keyframes logoRevealIn {
-              0% { transform: rotate(86deg) scale(0.86) translateY(5rem); }
-              100% { transform: rotate(0deg) scale(1) translate(0); }
-            }
-            .animate-logo-reveal {
-              animation: logoRevealIn 1.34s cubic-bezier(0.0, 0.0, 0.2, 1) forwards;
-            }
           `}</style>
 
                     <div className="flex gap-5 mt-3">
-                        <a href={strings.links.github} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all duration-300 inline-block hover:scale-110">
+                        <a href={strings.links.github} target="_blank" rel="noopener noreferrer" className="text-white hover:text-white transition-all duration-300 inline-block hover:scale-110">
                             <SiGithub size={24} />
                         </a>
-                        <a href={strings.links.linkedin} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all duration-300 inline-block hover:scale-110">
+                        <a href={strings.links.linkedin} target="_blank" rel="noopener noreferrer" className="text-white hover:text-white transition-all duration-300 inline-block hover:scale-110">
                             <SiLinkedin size={24} />
                         </a>
                     </div>
 
-                    <div
-                        className="absolute bottom-8 flex flex-col items-center gap-1"
-                        style={{ animation: 'pulse 3s infinite ease-in-out' }}
-                    >
-                        <p
-                            className="text-white/60 text-xs font-montserrat"
-                        >
+                    <div className="landing-more-below-pulser absolute bottom-8 flex flex-col items-center gap-1">
+                        <p className="text-white/60 text-xs font-montserrat">
                             {strings.pages.home.scroll_text}
                         </p>
                         <div className="h-6 w-5 flex justify-center">
@@ -186,7 +132,7 @@ export default function HomePage() {
                 </div>
             </div>
             <SpinningSquareDivider />
-            <div className={`min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8 transition-opacity duration-1500 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`} ref={aboutRef}>
+            <div className={`min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8 `} ref={aboutRef}>
                 <div className=" flex flex-col md:flex-row items-center md:gap-16 gap-8 w-full max-w-6xl">
                     <img
                         src="/profile.jpg"
@@ -199,14 +145,14 @@ export default function HomePage() {
                         <h1 className="text-white text-4xl md:text-7xl lg:text-7xl font-bold font-playfair">
                             {strings.pages.home.about.title}
                         </h1>
-                        <p className={`text-white text-base md:text-lg leading-relaxed font-montserrat transition-opacity duration-1500 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`}>
+                        <p className={`text-white text-base md:text-lg leading-relaxed font-montserrat `}>
                             {strings.pages.home.about.content}
                         </p>
                         <div className="mt-8 flex flex-col gap-4">
                             <h2 className="text-white text-2xl font-bold font-playfair">{strings.pages.home.about.toolkit_title}</h2>
                             <div className="flex flex-wrap gap-4 justify-start">
                                 {strings.pages.home.about.technologies.map((item, index) =>
-                                    <div key={item.name} className={`flex items-center gap-2 transition-all duration-1000 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 500}ms` }}>
+                                    <div key={item.name} className={`flex items-center gap-2 transition-all duration-1000 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: `${index * 250}ms` }}>
                                         <item.icon className="text-white text-xs" />
                                         <span className="text-white text-sm font-montserrat">{item.name}</span>
                                     </div>
@@ -217,51 +163,72 @@ export default function HomePage() {
                 </div>
             </div>
             <SpinningSquareDivider reverse={true} />
-            <div className={`min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8 transition-opacity duration-1500 ${projectsVisible ? 'opacity-100' : 'opacity-0'}`} ref={projectsRef}>
+            <div className={`min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8`} ref={projectsRef}>
                 <div className="flex flex-col items-center justify-center gap-12 w-full max-w-6xl">
-                    <h1 className="text-white text-3xl md:text-5xl lg:text-7xl font-bold font-playfair">
+                    <h1
+                        className={`text-white text-3xl md:text-5xl lg:text-7xl font-bold font-playfair transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                        style={{ transitionDelay: projectsVisible ? '100ms' : '0ms' }}
+                    >
                         {strings.pages.home.projects_title}
                     </h1>
-                    <div className="w-[8rem] h-px bg-white"></div>
+                    <div
+                        className={`w-[8rem] h-px bg-white transition-all duration-1000 ${projectsVisible ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`}
+                        style={{ transitionDelay: projectsVisible ? '200ms' : '0ms' }}
+                    ></div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-                        {strings.pages.home.projects.map((project, _) =>
-                            <div key={project.title} className={`w-80 h-64 bg-transparent transition-all duration-1000 ease-out flex flex-col items-center justify-between p-8 ${projectsVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-                                <div className="flex flex-col items-center gap-4">
-                                    <h2 className="text-white text-[2rem] font-bold text-center font-playfair"
+                        {strings.pages.home.projects.map((project, index) =>
+                            <div
+                                key={project.title}
+                                className={`w-80 bg-transparent transition-all duration-1000 ease-out p-8 grid grid-rows-[auto_1fr_auto] min-h-[22rem] ${projectsVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+                                style={{ transitionDelay: projectsVisible ? `${300 + (index * 200)}ms` : '0ms' }}
+                            >
+                                <div className="flex flex-col items-center gap-3">
+                                    {project.logo && (
+                                        <img
+                                            src={project.logo}
+                                            alt={`${project.title} logo`}
+                                            className="w-12 h-12 object-contain"
+                                        />
+                                    )}
+                                    <h2
+                                        className="text-white text-[2rem] font-bold text-center font-playfair"
                                         style={{ textShadow: `2px 2px ${hexToRgba(project.glow_color, 0.7)}` }}
                                     >
                                         {project.title}
                                     </h2>
-                                    <p className="text-white text-sm text-center font-montserrat">{project.description}</p>
+                                    <p className="mt-1 text-white/90 text-sm text-center font-montserrat">{project.description}</p>
                                 </div>
-                                <p className="text-white text-xs text-center font-montserrat">{project.technologies.join(', ')} </p>
-                                <button
-                                    className="bg-transparent border-none text-white text-sm font-light font-montserrat py-2 px-6 cursor-pointer duration-300 group"
-                                    onClick={() => window.open(project.link, '_blank')}
-                                >
-                                    {strings.pages.home.view_project_button}
-                                    <span className="block w-0 h-px bg-white transition-all duration-300 group-hover:w-full"></span>
-                                </button>
+                                <div className="flex flex-col items-center gap-3 row-start-3 mt-4">
+                                    <p className="text-white/80 text-xs text-center font-montserrat">{project.technologies.join(', ')} </p>
+                                    <span className="block w-12 h-px bg-white/60" />
+                                    <button
+                                        className="bg-transparent border-none text-white text-sm font-light font-montserrat py-2 px-6 cursor-pointer duration-300 group"
+                                        onClick={() => window.open(project.link, '_blank')}
+                                    >
+                                        {strings.pages.home.view_project_button}
+                                        <HoverShowLine />
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>
                     <div className="h-8" />
-                    <p className="text-white text-lg text-center max-w-md font-playfair">
-                        {strings.pages.home.and_more}
-                    </p>
                     <button
                         aria-label="Explore all projects"
                         onClick={() => window.location.href = '/projects'}
-                        className="relative inline-flex items-center justify-center text-white font-montserrat px-6 py-3"
+                        className={`relative flex flex-col items-center justify-center text-white font-montserrat px-6 py-3 transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                        style={{ transitionDelay: projectsVisible ? `${300 + (strings.pages.home.projects.length * 200) + 300}ms` : '0ms' }}
                     >
-                        <span className="relative z-10">{strings.pages.home.view_all_projects_button}</span>
+                        <span className="relative z-10">
+                            {strings.pages.home.view_all_projects_button}
+                        </span>
+                        <span className="block w-full h-px bg-white" />
                     </button>
                 </div>
             </div>
-            <footer className="bg-black text-white text-center font-montserrat">
-                {strings.footer}
-            </footer>
-        </div>
+            <SpinningSquareDivider includeLine={false} />
+            <Footer />
+        </div >
 
     );
 }

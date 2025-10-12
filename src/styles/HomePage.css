@@ -1,0 +1,52 @@
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translateY(0px);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translateY(-3px);
+    }
+}
+@keyframes bounce-chevron {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+@keyframes logoRevealIn {
+    0% {
+        opacity: 0;
+        transform: rotate(86deg) scale(0.86) translateY(5rem);
+    }
+    100% {
+        opacity: 1;
+        transform: rotate(0deg) scale(1) translate(0);
+    }
+}
+
+.subtitle-roller-anim {
+    animation: subtitleRoller 17s ease-in-out infinite;
+}
+
+.animate-logo-reveal {
+    opacity: 0;
+    animation: logoRevealIn 1.42s cubic-bezier(0, 0, 0.2, 1) 600ms forwards;
+}
+
+.landing-more-below-pulser {
+    animation: pulse 3s infinite ease-in-out;
+}
+
+.logo-overlay-fade-out {
+    mask-image: linear-gradient(to bottom, transparent 70%, black 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 70%, black 100%);
+}
+
+.advertise-more-projects-button-glower-line {
+    box-shadow: 0 0 12px white, 0 0 24px white, 0 0 36px white;
+}
