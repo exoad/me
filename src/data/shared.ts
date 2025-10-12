@@ -1,5 +1,5 @@
 import { SiC, SiCplusplus, SiDart, SiFlutter, SiKotlin, SiOpenjdk, SiMysql, SiAndroid, SiLlvm, SiPython, SiOpengl, SiJavascript, SiTypescript, SiHtml5, SiGit, SiReact, SiCss3, SiNodedotjs } from 'react-icons/si';
-import { TProject, TTimelineEntry, TTechnology } from '../types';
+import type { TProject, TTimelineEntry, TTechnology } from '../types.d.ts';
 
 export const technologies: Record<string, TTechnology> = {
     c: { name: "C", icon: SiC, color: "#a8b9cc" },
@@ -128,6 +128,7 @@ export const strings = {
         home: "HOME",
         about: "ABOUT",
         projects: "PROJECTS",
+        photos: "PHOTOS",
         socials: "SOCIALS"
     },
     name: "Jiaming Meng",

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { TTechnology } from '../../types.ts';
+import type { TTechnology } from '../../types.d.ts';
 
 import profilePic from '../../assets/images/profile.webp';
 

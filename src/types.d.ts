@@ -1,10 +1,10 @@
-interface TTechnology {
+export interface TTechnology {
     name: string;
     icon: React.ComponentType<{ className?: string; }>;
     color: string;
 }
 
-interface TProject {
+export interface TProject {
     title: string;
     description: string;
     color: string;
@@ -14,11 +14,19 @@ interface TProject {
     technologies: TTechnology[];
 }
 
-interface TTimelineEntry {
+export interface TTimelineEntry {
     displayDate: string;
     isoDate: string;
     title: string;
     description: string;
     link?: string;
     technologies?: TTechnology[];
+}
+
+export interface TShowcasePhoto {
+    src: string;
+    alt: string;
+    caption?: string;
+    location: string;
+    date: string;
 }

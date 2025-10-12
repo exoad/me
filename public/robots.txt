@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://exoad.net/sitemap.xml
+Sitemap: https://your-website-url.com/sitemap.xml

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { TProject } from '../../types.ts';
+import type { TProject } from '../../types.d.ts';
 import { hexToRgba } from '../../utils/css';
 import HoverShowLine from '../HoverShowLine';
 

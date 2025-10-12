@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { strings, timeline } from "../data/shared.ts";
 import Scaffold from '../components/Scaffold.tsx';
+import type { TTechnology } from '../types.d.ts';
 
 export default function AboutPage() {
     const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
@@ -62,7 +63,7 @@ export default function AboutPage() {
                                             <p className="text-white/80 text-sm font-montserrat leading-relaxed">{item.description}</p>
                                             {item.technologies && item.technologies.length > 0 && (
                                                 <div className="flex flex-wrap gap-2 mt-3">
-                                                    {item.technologies.map(tech => (
+                                                    {item.technologies.map((tech: TTechnology) => (
                                                         <div
                                                             key={tech.name}
                                                             className="flex items-center gap-1 px-2 py-1 rounded-md bg-black/30 border border-white/10"
