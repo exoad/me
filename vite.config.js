@@ -8,14 +8,34 @@ export default defineConfig({
     outDir: 'dist',
     assetsInlineLimit: 2048,
     emptyOutDir: true,
+    sourcemap: false,
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: false,
+        drop_console: true,
         drop_debugger: true,
+        unsafe: true,
+        passes: 3,
+        inline: true,
+        keep_fargs: false,
+        pure_getters: true,
+        unsafe_comps: true,
+        unsafe_math: true,
+        unsafe_proto: true,
+        unsafe_regexp: true,
+        toplevel: true,
+        booleans_as_integers: true,
+        conditionals: true,
+        dead_code: true,
+        evaluate: true,
+        unused: true,
+        join_vars: true,
+        collapse_vars: true,
       },
-      output: {
-        comments: true,
+      format: {
+        indent_level: 0,
+        comments: false,
+        ascii_only: true,
       }
     },
     rollupOptions: {
