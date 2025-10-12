@@ -23,13 +23,60 @@ export const technologies: Record<string, TTechnology> = {
     java_swing: { name: "Java Swing", icon: SiOpenjdk, color: "#ED8B00" }
 };
 
-const _timeline: TTimelineEntry[] = [
-
+export const timeline: TTimelineEntry[] = [
+    {
+        displayDate: "2018",
+        isoDate: "2018-09-01",
+        title: "Started Programming Journey",
+        description: "Began learning C and C++ through self-study, fascinated by low-level systems programming.",
+        technologies: [technologies.c, technologies.cpp]
+    },
+    {
+        displayDate: "2019",
+        isoDate: "2019-03-15",
+        title: "First Open Source Contribution",
+        description: "Contributed to LLVM project, marking the beginning of my involvement in open source development.",
+        technologies: [technologies.llvm, technologies.cpp]
+    },
+    {
+        displayDate: "2020",
+        isoDate: "2020-08-25",
+        title: "University Admission",
+        description: "Enrolled in university to pursue Computer Science, balancing academics with personal projects.",
+    },
+    {
+        displayDate: "2021",
+        isoDate: "2021-05-10",
+        title: "Mobile Development Exploration",
+        description: "Discovered Flutter and Dart, building cross-platform applications and expanding my toolkit.",
+        technologies: [technologies.flutter, technologies.dart]
+    },
+    {
+        displayDate: "2022",
+        isoDate: "2022-01-20",
+        title: "AI/ML Research",
+        description: "Started university research in Artificial Intelligence and Machine Learning, focusing on practical applications.",
+        technologies: [technologies.python]
+    },
+    {
+        displayDate: "2023",
+        isoDate: "2023-06-15",
+        title: "Compiler Design Passion",
+        description: "Began exploring compiler design as a personal passion project, leading to the creation of Kira language.",
+        technologies: [technologies.kotlin, technologies.c]
+    },
+    {
+        displayDate: "2024",
+        isoDate: "2024-02-28",
+        title: "Portfolio Launch",
+        description: "Launched this portfolio website, showcasing projects and sharing the journey of continuous learning.",
+        technologies: [technologies.typescript, technologies.react, technologies.html, technologies.css]
+    }
 ];
 
-import halcyonProjectLogo from '../assets/images/projects_logos/halcyon.png';
-import kiraProjectLogo from '../assets/images/projects_logos/kira.png';
-import ontheflyProjectLogo from '../assets/images/projects_logos/onthefly.png';
+import halcyonProjectLogo from '../assets/images/projects_logos/halcyon.webp';
+import kiraProjectLogo from '../assets/images/projects_logos/kira.webp';
+import ontheflyProjectLogo from '../assets/images/projects_logos/onthefly.webp';
 
 export const projects: TProject[] = [
     {
@@ -73,11 +120,13 @@ export const strings = {
     },
     links: {
         github: "https://github.com/exoad",
-        linkedin: "https://www.linkedin.com/in/jack-meng/"
+        github_aria: "My GitHub Profile",
+        linkedin: "https://www.linkedin.com/in/jack-meng/",
+        linkedin_aria: "My LinkedIn Profile"
     },
     navigation: {
         home: "HOME",
-        journey: "JOURNEY",
+        about: "ABOUT",
         projects: "PROJECTS",
         socials: "SOCIALS"
     },
@@ -92,7 +141,7 @@ export const strings = {
         },
         thank_you: "Thank you for visiting :)"
     },
-    timeline: _timeline,
+    timeline: timeline,
     pages: {
         home: {
             tagline: "Building software with a passion for simplicity and performance.",
@@ -122,15 +171,16 @@ export const strings = {
                     technologies.java,
                     technologies.jetpack_compose,
                     technologies.python,
-                ]
+                ],
+                more: "See My Complete Story"
             },
             projects_title: "Featured Projects",
             view_project_button: "View Project",
             view_all_projects_button: "View All Projects",
             // and_more: "And more..."
         },
-        journey: {
-            title: "My Journey",
+        about: {
+            title: "I am Jiaming,",
             description: "A chronological timeline of my personal and professional milestones.\n💖",
         },
         not_found: {

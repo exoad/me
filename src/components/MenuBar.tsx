@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { strings } from "../config/shared.ts";
+import { strings } from "../data/shared.ts";
 import NameToggle from './NameToggle';
 import Navigation from './Navigation';
 
@@ -11,7 +11,7 @@ export default function MenuBar() {
                 <NameToggle names={strings.header.names_funny} />
                 <Navigation items={[
                     { path: '/', label: strings.navigation.home },
-                    { path: '/journey', label: strings.navigation.journey },
+                    { path: '/about', label: strings.navigation.about },
                     { path: '/projects', label: strings.navigation.projects },
                     { path: '/socials', label: strings.navigation.socials }
                 ]} onNavigate={(path: string) => {

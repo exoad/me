@@ -1,4 +1,4 @@
-import { strings } from "../config/shared.ts";
+import { strings } from "../data/shared.ts";
 import "../styles/Footer.css";
 
 export default function Footer() {

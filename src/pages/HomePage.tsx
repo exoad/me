@@ -1,18 +1,16 @@
-import { strings, featuredProjects } from "../config/shared.ts";
+import { strings, featuredProjects } from "../data/shared.ts";
 import SpinningSquareDivider from '../components/SpinningSquareDivider';
-import MenuBar from '../components/MenuBar';
-import Footer from '../components/Footer.tsx';
 import Hero from '../components/HomePage/Hero';
 import About from '../components/HomePage/About';
 import Projects from '../components/HomePage/Projects';
+import Scaffold from '../components/Scaffold.tsx';
 
 export default function HomePage() {
     const handleHeroVisibility = () => { };
     const handleAboutVisibility = () => { };
     const handleProjectsVisibility = () => { };
     return (
-        <div className="relative select-none">
-            <MenuBar />
+        <Scaffold>
             <Hero
                 name={strings.name}
                 tagline={strings.pages.home.tagline}
@@ -38,8 +36,6 @@ export default function HomePage() {
                 viewAllProjectsButtonText={strings.pages.home.view_all_projects_button}
                 onIntersect={handleProjectsVisibility}
             />
-            <SpinningSquareDivider includeLine={false} />
-            <Footer />
-        </div>
+        </Scaffold>
     );
 }

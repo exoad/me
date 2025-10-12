@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { TTechnology } from '../../types.ts';
 
-import profilePic from '../../assets/images/profile.jpg';
+import profilePic from '../../assets/images/profile.webp';
 
 export default function About({
     title,
@@ -45,6 +45,7 @@ export default function About({
                     className={`w-48 h-48 md:w-64 md:h-64 object-cover hover:scale-105 transition-all duration-1000 ${kindaVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
                     style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
                     draggable={false}
+                    loading="eager"
                 />
                 <div
                     className={`w-px h-16 md:h-24 bg-white transition-all duration-1000 ${kindaVisible ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0'}`}

@@ -2,9 +2,10 @@ import { useRef, useState, useEffect } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import { SiGithub, SiLinkedin } from 'react-icons/si';
 import StarryBackground from '../StarryBackground';
-import theme from '../../config/theme.json';
+import theme from '../../data/theme.json';
 import "../../styles/HomePage.css";
-import upwardsHandSignPic from '../../assets/images/upwards.png';
+import upwardsHandSignPic from '../../assets/images/upwards.webp';
+import { strings } from '../../data/shared.ts';
 
 export default function Hero({
     name,
@@ -28,6 +29,8 @@ export default function Hero({
     const [scrollY, setScrollY] = useState(0);
     const _scrollerTotal = [...subtitles, subtitles[0]];
     useEffect(() => {
+        setHeroVisible(true);
+        onIntersect(true);
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
@@ -40,6 +43,16 @@ export default function Hero({
         );
         if (heroRef.current) {
             observer.observe(heroRef.current);
+        }
+        const lcpContainer = document.getElementById('lcp-image-container');
+        if (lcpContainer) {
+            setTimeout(() => {
+                lcpContainer.style.opacity = '0';
+                lcpContainer.style.transition = 'opacity 300ms ease';
+                setTimeout(() => {
+                    lcpContainer?.remove();
+                }, 300);
+            }, 500);
         }
         return () => observer.disconnect();
     }, [onIntersect]);
@@ -62,6 +75,10 @@ export default function Hero({
                             alt="Logo"
                             className="w-42 h-42 md:w-36 md:h-36 object-contain"
                             draggable={false}
+                            fetchPriority="high"
+                            loading="eager"
+                            id="logo-image"
+                            decoding="sync"
                         />
                         <div className="logo-overlay-fade-out absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black pointer-events-none" />
                     </div>
@@ -126,10 +143,20 @@ export default function Hero({
                         }`}
                     style={{ animationDelay: heroVisible ? '2500ms' : '0ms' }}
                 >
-                    <a href={githubLink} target="_blank" rel="noopener noreferrer" className="text-white hover:text-white transition-all duration-300 inline-block hover:scale-110">
+                    <a
+                        href={githubLink}
+                        aria-label={strings.links.github_aria}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white hover:text-white transition-all duration-300 inline-block hover:scale-110">
                         <SiGithub size={24} />
                     </a>
-                    <a href={linkedinLink} target="_blank" rel="noopener noreferrer" className="text-white hover:text-white transition-all duration-300 inline-block hover:scale-110">
+                    <a
+                        href={linkedinLink}
+                        aria-label={strings.links.linkedin_aria}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white hover:text-white transition-all duration-300 inline-block hover:scale-110">
                         <SiLinkedin size={24} />
                     </a>
                 </div>

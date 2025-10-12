@@ -24,3 +24,15 @@ body {
 .font-playfair {
     font-family: "Playfair Display", serif !important;
 }
+
+#lcp-image-container {
+    background-color: #000;
+    contain: paint;
+}
+
+#lcp-image {
+    width: 144px;
+    height: 144px;
+    object-fit: contain;
+    contain: layout;
+}
