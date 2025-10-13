@@ -1,10 +1,11 @@
 import { useMemo, useEffect, useRef, useState } from 'react';
 import { photos } from "../data/photos";
 import Scaffold from '../components/Scaffold';
-import { MdClose } from "react-icons/md";
 import { strings } from '../data/shared.ts';
 import "../styles/PhotosPage.css";
 import "../styles/Animations.css";
+import PageDescriptor from '../components/PageDescriptor';
+
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
   return date.toLocaleDateString('en-US', {
@@ -15,12 +16,7 @@ function formatDate(dateStr: string) {
 }
 export default function PhotosPage({ scaffoldProps = {} }) {
   const [visiblePhotos, setVisiblePhotos] = useState<Record<string, boolean>>({});
-  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  const [isLoadingBigImage, setisLoadingBigImage] = useState(false);
-  const [hasErrorForBigImage, sethasErrorForBigImage] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
   const photoRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const loadingTimerRef = useRef<number | null>(null);
   useEffect(() => {
     if (photos.length > 0) {
       const initialVisible = photos.slice(0, 2).reduce((acc, _, index) => {
@@ -65,65 +61,10 @@ export default function PhotosPage({ scaffoldProps = {} }) {
     return processed;
   }, []);
 
-  function handlePhotoSelection(src: string) {
-    setisLoadingBigImage(true);
-    setSelectedPhoto(src);
-    sethasErrorForBigImage(false);
-    if (loadingTimerRef.current) {
-      window.clearTimeout(loadingTimerRef.current);
-    }
-    loadingTimerRef.current = window.setTimeout(() => {
-      setisLoadingBigImage(false);
-    }, 10000);
-    const img = new Image();
-    img.src = src;
-    img.onload = () => {
-      setisLoadingBigImage(false);
-      if (loadingTimerRef.current) {
-        window.clearTimeout(loadingTimerRef.current);
-        loadingTimerRef.current = null;
-      }
-    };
-    img.onerror = () => {
-      sethasErrorForBigImage(true);
-      setisLoadingBigImage(false);
-      if (loadingTimerRef.current) {
-        window.clearTimeout(loadingTimerRef.current);
-        loadingTimerRef.current = null;
-      }
-    };
-  }
-
-  function closeModal() {
-    setIsClosing(true);
-    setTimeout(() => {
-      setSelectedPhoto(null);
-      setisLoadingBigImage(false);
-      sethasErrorForBigImage(false);
-      setIsClosing(false);
-      if (loadingTimerRef.current) {
-        window.clearTimeout(loadingTimerRef.current);
-        loadingTimerRef.current = null;
-      }
-    }, 200);
-  }
-
   return (
     <Scaffold showSpinner useForcedPadding={true} {...scaffoldProps}>
       <main className="min-h-screen flex flex-col items-center bg-black">
-        <div
-          className="flex flex-col items-center gap-8 max-w-3xl px-4 sm:px-6"
-        >
-          <h1 className="animate-fade-in text-6xl lg:text-7xl font-bold font-playfair text-center mb-8">
-            {strings.pages.photos.title}
-          </h1>
-          <div className="animate-fade-in" >
-            <div className="w-24 h-px bg-white" />
-          </div>
-          <p className="text-white/70 text-lg text-center max-w-2xl mx-auto font-montserrat leading-relaxed mb-12">
-            {strings.pages.photos.description}
-          </p>
-        </div>
+        <PageDescriptor title={strings.pages.photos.title} description={strings.pages.photos.description} />
         <div className="flex flex-col gap-10 mb-16 w-full px-4" style={{ maxWidth: "min(100%, 690px)" }}>
           {processedPhotos.map((photo) => (
             <div
@@ -137,8 +78,8 @@ export default function PhotosPage({ scaffoldProps = {} }) {
                   {visiblePhotos[photo.id] ? (
                     <div className="photo-aspect-ratio-container">
                       <button
-                        onClick={() => handlePhotoSelection(photo.src)}
-                        className="w-full h-full border-0 p-0 bg-transparent"
+                        onClick={() => window.open(photo.src, '_blank')}
+                        className="w-full h-full bg-transparent"
                         aria-label={`View larger image of ${photo.alt}`}
                       >
                         <img
@@ -154,7 +95,7 @@ export default function PhotosPage({ scaffoldProps = {} }) {
                       </button>
                     </div>
                   ) : (
-                    <div className="photo-aspect-ratio-container bg-gray-900 flex items-center justify-center rounded-xl">
+                    <div className="photo-aspect-ratio-container bg-gray-00 flex items-center justify-center rounded-xl">
                       <div className="loading-spinner"></div>
                     </div>
                   )}
@@ -174,49 +115,6 @@ export default function PhotosPage({ scaffoldProps = {} }) {
             </div>
           ))}
         </div>
-        {selectedPhoto && (
-          <div
-            className={`fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}`}
-          >
-            <button
-              className="absolute inset-0 w-full h-full bg-transparent border-0"
-              onClick={closeModal}
-              aria-label="Close full screen image"
-            />
-            <div className={`relative z-10 flex flex-col items-center justify-center w-full max-w-[95%] max-h-[95vh] ${isClosing ? 'animate-scale-out' : ''}`}>
-              {isLoadingBigImage ? (
-                <div className="flex items-center justify-center bg-black/30 p-8 rounded-lg">
-                  <div className="loading-spinner" />
-                </div>
-              ) : hasErrorForBigImage ? (
-                <div className="flex flex-col items-center justify-center text-white bg-black/40 p-8 rounded-xl backdrop-blur-sm">
-                  <p className="text-lg font-montserrat">{strings.pages.photos.error}</p>
-                </div>
-              ) : (
-                <div className={`modal-image-container w-full flex justify-center p-1 bg-black/30 shadow-xl ${isClosing ? 'animate-scale-out' : 'animate-scale-in'}`}>
-                  <img
-                    src={selectedPhoto}
-                    alt=""
-                    className="max-w-full max-h-[98vh] object-contain"
-                  />
-                </div>
-              )}
-              <button
-                type="button"
-                className="absolute top-4 right-4 w-12 h-12 flex items-center justify-center bg-white text-black rounded-full hover:bg-white/70  transition-all transform hover:scale-95"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  closeModal();
-                }}
-                aria-label="Return to gallery"
-                tabIndex={0}
-              >
-                <MdClose size={28} />
-              </button>
-            </div>
-          </div>
-        )
-        }
       </main >
     </Scaffold >
   );

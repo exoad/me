@@ -194,6 +194,18 @@ export const strings = {
             title: "Photos Showcase",
             description: "A collection of photos that I have captured as a hobbyist photographer and deemed worthy of sharing :).",
             error: "Couldn't load this image. :(.",
+        },
+        contact: {
+            title: "Get in Touch",
+            description: "Feel free to reach out via email or connect with me on any of the following platforms! :)",
+            email: "jackm@exoad.net",
+            email_aria: "Send me an email",
+            github: "exoad",
+            github_aria: "My GitHub Profile",
+        },
+        under_construction: {
+            title: "Under Construction",
+            description: "This page is being worked on, please check back later! :)",
         }
     }
 };

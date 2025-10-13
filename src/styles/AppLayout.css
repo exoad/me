@@ -1,6 +1,5 @@
 .content-container {
     min-height: calc(100vh - 6rem);
-    padding-top: 6rem;
     position: relative;
     overflow: hidden;
 }
