@@ -88,8 +88,8 @@ export default function About({
                         </div>
                     </div>
                     <AttentionButton
-                        ariaLabel="Explore all projects"
-                        onClick={() => window.location.href = '/projects'}
+                        ariaLabel="See More"
+                        onClick={() => window.location.href = '/about'}
                         className={kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
                         style={{ transitionDelay: kindaVisible ? `400ms` : '0ms' }}
                     >

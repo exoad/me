@@ -93,6 +93,8 @@ export default function Projects({
 
                 <div className="h-8" />
                 <AttentionButton
+                    ariaLabel='See More'
+                    onClick={() => window.location.href = '/projects'}
                     className={`transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                     style={{ transitionDelay: projectsVisible ? `${300 + (projects.length * 300) + 400}ms` : '0ms' }}
                 >
