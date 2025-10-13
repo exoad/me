@@ -3,7 +3,7 @@ import { strings, timeline } from "../data/shared.ts";
 import Scaffold from '../components/Scaffold.tsx';
 import type { TTechnology } from '../types.d.ts';
 
-export default function AboutPage() {
+export default function AboutPage({ scaffoldProps = {} }) {
     const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
     const itemRefs = useRef<(HTMLDivElement | null)[]>(Array(timeline.length).fill(null));
     useEffect(() => {
@@ -26,9 +26,8 @@ export default function AboutPage() {
             observers.forEach(observer => observer?.disconnect());
         };
     }, []);
-
     return (
-        <Scaffold>
+        <Scaffold {...scaffoldProps}>
             <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 md:px-16 py-16">
                 <div className="max-w-5xl w-full">
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-playfair text-center mb-20">

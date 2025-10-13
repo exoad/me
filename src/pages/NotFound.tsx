@@ -5,14 +5,14 @@ import Scaffold from '../components/Scaffold.tsx';
 import HoverShowLine from '../components/HoverShowLine.tsx';
 import { FiChevronLeft } from 'react-icons/fi';
 
-export default function NotFound() {
+export default function NotFound({ scaffoldProps = {} }) {
     const [visible, setVisible] = useState(false);
     useEffect(() => {
         const timer = setTimeout(() => setVisible(true), 100);
         return () => clearTimeout(timer);
     }, []);
     return (
-        <Scaffold showSpinner={false}>
+        <Scaffold showSpinner={false} {...scaffoldProps}>
             <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 md:px-16">
                 <div className={`flex flex-col items-center justify-center gap-16 transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}>
                     <h1

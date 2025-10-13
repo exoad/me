@@ -2,15 +2,23 @@ import Footer from './Footer';
 import MenuBar from './MenuBar';
 import SpinningSquareDivider from './SpinningSquareDivider';
 
-export default function Scaffold(children: Readonly<{ showSpinner?: boolean, useForcedPadding?: boolean, children: React.ReactNode; }>) {
+export default function Scaffold(props: Readonly<{
+    showSpinner?: boolean;
+    useForcedPadding?: boolean;
+    skipMenuBar?: boolean;
+    skipFooter?: boolean;
+    children: React.ReactNode;
+}>) {
     return (
         <div className="relative select-none">
-            <MenuBar />
-            {children.useForcedPadding ? <div className="content-wrapper" style={{ paddingTop: "6rem" }}>
-                {children.children}
-            </div> : children.children}
-            {children.showSpinner ? <SpinningSquareDivider includeLine={false} /> : null}
-            <Footer />
+            {!props.skipMenuBar && <MenuBar />}
+            {props.useForcedPadding ? (
+                <div className="content-wrapper" style={{ paddingTop: props.skipMenuBar ? "0" : "6rem" }}>
+                    {props.children}
+                </div>
+            ) : props.children}
+            {props.showSpinner ? <SpinningSquareDivider includeLine={false} /> : null}
+            {!props.skipFooter && <Footer />}
         </div>
     );
 }

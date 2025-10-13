@@ -1,17 +1,53 @@
-import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import NotFound from './pages/NotFound';
+import PhotosPage from './pages/PhotosPage';
+import MenuBar from './components/MenuBar';
+import Footer from './components/Footer';
+import './styles/Animations.css';
+import './styles/AppLayout.css';
 
-const HomePage = lazy(() => import('./pages/HomePage'));
-const NotFound = lazy(() => import('./pages/NotFound'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const PhotosPage = lazy(() => import('./pages/PhotosPage'));
+interface WithPageTransitionProps {
+  [key: string]: unknown;
+}
+type PageTransitionSpeed = 'default' | 'slow' | 'fast';
 
-function LoadingFallback() {
+const withPageTransition = (
+  Component: React.ComponentType<WithPageTransitionProps>,
+  speed: PageTransitionSpeed = 'default'
+) => {
+  return (props: WithPageTransitionProps) => {
+    return (
+      <div className={`page-transition page-transition-enter ${speed}`}>
+        <Component
+          {...props}
+          scaffoldProps={{
+            skipMenuBar: true,
+            skipFooter: true,
+          }}
+        />
+      </div>
+    );
+  };
+};
+
+function AnimatedRoutes() {
+  const TransitionedHomePage = withPageTransition(HomePage, 'default');
+  const TransitionedAboutPage = withPageTransition(AboutPage, 'slow');
+  const TransitionedContactPage = withPageTransition(ContactPage, 'default');
+  const TransitionedPhotosPage = withPageTransition(PhotosPage, 'slow');
+  const TransitionedNotFound = withPageTransition(NotFound, 'fast');
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="loading-spinner"></div>
-    </div>
+    <Routes>
+      <Route path="/" element={<TransitionedHomePage />} />
+      <Route path="/about" element={<TransitionedAboutPage />} />
+      <Route path="/projects" element={<TransitionedHomePage />} />
+      <Route path="/photos" element={<TransitionedPhotosPage />} />
+      <Route path="/contact" element={<TransitionedContactPage />} />
+      <Route path="*" element={<TransitionedNotFound />} />
+    </Routes>
   );
 }
 
@@ -19,16 +55,13 @@ export default function App() {
   document.title = 'Jiaming';
   return (
     <Router>
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/projects" element={<HomePage />} />
-          <Route path="/photos" element={<PhotosPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      <div className="app-container relative select-none">
+        <MenuBar />
+        <main className="content-container">
+          <AnimatedRoutes />
+        </main>
+        <Footer />
+      </div>
     </Router>
   );
 }

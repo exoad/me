@@ -1,53 +1,46 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
-
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
-    chunkSizeWarningLimit: 1000,
-    outDir: 'dist',
+    outDir: "dist",
     assetsInlineLimit: 0,
     emptyOutDir: true,
     sourcemap: false,
-    minify: 'terser',
+    minify: "terser",
     terserOptions: {
-      ecma: 2020,
       compress: {
         drop_console: true,
         drop_debugger: true,
-        passes: 8,
-        toplevel: true,
-        dead_code: true,
-        unused: true,
+        unsafe: true,
+        passes: 4,
         inline: true,
-        collapse_vars: true,
-        reduce_vars: true,
-        conditionals: true,
-        booleans_as_integers: true,
-        evaluate: true,
+        keep_fargs: false,
         pure_getters: true,
-      },
-      mangle: {
+        unsafe_comps: true,
+        unsafe_math: true,
+        unsafe_proto: true,
+        unsafe_regexp: true,
         toplevel: true,
-        properties: true
+        booleans_as_integers: true,
+        conditionals: true,
+        dead_code: true,
+        evaluate: true,
+        unused: true,
+        join_vars: true,
+        collapse_vars: true,
       },
-      format: {
-        comments: false,
-      },
+      format: { indent_level: 0, comments: false },
     },
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor';
-          }
-          if (id.includes('src/components/')) {
-            return 'components';
-          }
-        },
+        manualChunks: undefined,
+        assetFileNames: "assets/[name]-[hash].[ext]",
+        chunkFileNames: "assets/[name]-[hash].js",
+        entryFileNames: "assets/[name]-[hash].js",
       },
     },
   },
-  base: './',
+  base: "./",
 });

@@ -13,7 +13,7 @@ function formatDate(dateStr: string) {
     day: 'numeric'
   });
 }
-export default function PhotosPage() {
+export default function PhotosPage({ scaffoldProps = {} }) {
   const [visiblePhotos, setVisiblePhotos] = useState<Record<string, boolean>>({});
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [isLoadingBigImage, setisLoadingBigImage] = useState(false);
@@ -109,7 +109,7 @@ export default function PhotosPage() {
   }
 
   return (
-    <Scaffold showSpinner useForcedPadding={true}>
+    <Scaffold showSpinner useForcedPadding={true} {...scaffoldProps}>
       <main className="min-h-screen flex flex-col items-center bg-black">
         <div
           className="flex flex-col items-center gap-8 max-w-3xl px-4 sm:px-6"
