@@ -1,81 +1,105 @@
 import type { TShowcasePhoto } from '../types.d.ts';
 
+import baImg from '../assets/images/photos/ba.webp';
+import erImg from '../assets/images/photos/er.webp';
+import jivImg from '../assets/images/photos/jiv.webp';
+import livImg from '../assets/images/photos/liv.webp';
+import qiImg from '../assets/images/photos/qi.webp';
+import sanImg from '../assets/images/photos/san.webp';
+import shiImg from '../assets/images/photos/shi.webp';
+import shiyiImg from '../assets/images/photos/shiyi.webp';
+import siImg from '../assets/images/photos/si.webp';
+import wuImg from '../assets/images/photos/wu.webp';
+import yiImg from '../assets/images/photos/yi.webp';
+
+
 export const photos: TShowcasePhoto[] = [
     {
-        src: "../assets/images/photos/yi.webp",
-        alt: "Photo 1",
-        caption: "Beautiful landscape",
-        location: "Mount Rainier, WA",
-        date: "2024-06-15"
+        src: yiImg,
+        alt: "New York City @ 10th Ave",
+        caption: "Urban NYC Evening",
+        location: "New York City, NY",
+        date: "2024-12-31",
+        thumbnailSrc: yiImg
     },
     {
-        src: "../assets/images/photos/er.webp",
-        alt: "Photo 2",
-        caption: "Sunset over the ocean",
-        location: "Pacific Coast, OR",
-        date: "2024-07-22"
+        src: erImg,
+        alt: "Above The Clouds",
+        caption: "Cloudscape from Above",
+        location: "Warsaw, Poland",
+        date: "2024-7-11",
+        thumbnailSrc: erImg
     },
     {
-        src: "../assets/images/photos/san.webp",
-        alt: "Photo 3",
-        caption: "City skyline at night",
-        location: "Seattle, WA",
-        date: "2024-08-10"
+        src: sanImg,
+        alt: "Penn State - West Campus",
+        caption: "Autumn Campus Walk",
+        location: "State College, PA",
+        date: "2024-11-04",
+        thumbnailSrc: sanImg
     },
     {
-        src: "../assets/images/photos/si.webp",
-        alt: "Photo 4",
-        caption: "Mountain lake reflection",
-        location: "Cascade Mountains",
-        date: "2024-09-05"
+        src: siImg,
+        alt: "Sunset Pier",
+        caption: "Sunset Over The Lake",
+        location: "Great Neck, NY",
+        date: "2025-07-22",
+        thumbnailSrc: siImg
     },
     {
-        src: "../assets/images/photos/wu.webp",
-        alt: "Photo 5",
-        caption: "Desert landscape",
-        location: "Joshua Tree, CA",
-        date: "2024-05-18"
+        src: wuImg,
+        alt: "Hudson Evening Waterfront",
+        caption: "Evening by the Hudson",
+        location: "New York City, NY",
+        date: "2024-06-01",
+        thumbnailSrc: wuImg
     },
     {
-        src: "../assets/images/photos/liv.webp",
-        alt: "Photo 6",
-        caption: "Forest path",
-        location: "Olympic National Park",
-        date: "2024-07-03"
+        src: livImg,
+        alt: "Evening Street View",
+        caption: "A Quiet Street",
+        location: "TangShan, China",
+        date: "2024-07-22",
+        thumbnailSrc: livImg
     },
     {
-        src: "../assets/images/photos/qi.webp",
-        alt: "Photo 7",
-        caption: "Waterfall in spring",
-        location: "Columbia River Gorge",
-        date: "2024-04-12"
+        src: qiImg,
+        alt: "Penn State - Huck Institutes of the Life Sciences",
+        caption: "Cold & Rainy",
+        location: "State College, PA",
+        date: "2024-11-14",
+        thumbnailSrc: qiImg
     },
     {
-        src: "../assets/images/photos/ba.webp",
-        alt: "Photo 8",
-        caption: "Urban architecture",
-        location: "Portland, OR",
-        date: "2024-08-30"
+        src: baImg,
+        alt: "LIRR Train Station Platform",
+        caption: "LIRR",
+        location: "Little Neck, NY",
+        date: "2024-12-31",
+        thumbnailSrc: baImg
     },
     {
-        src: "../assets/images/photos/jiv.webp",
-        alt: "Photo 9",
-        caption: "Winter snowscape",
-        location: "Mount Hood, OR",
-        date: "2023-12-15"
+        src: jivImg,
+        alt: "Waterfront NYC View",
+        caption: "NYC Waterfront",
+        location: "New York City, NY",
+        date: "2024-12-31",
+        thumbnailSrc: jivImg
     },
     {
-        src: "../assets/images/photos/shi.webp",
-        alt: "Photo 10",
-        caption: "Autumn colors",
-        location: "Columbia River Gorge",
-        date: "2023-10-22"
+        src: shiImg,
+        alt: "In flight on a Cessna",
+        caption: "Above the patchwork",
+        location: "College Park, MD",
+        date: "2025-08-31",
+        thumbnailSrc: shiImg
     },
     {
-        src: "../assets/images/photos/shiyi.webp",
-        alt: "Photo 11",
-        caption: "Morning mist over mountains",
-        location: "North Cascades",
-        date: "2024-05-30"
+        src: shiyiImg,
+        alt: "SuZhou Canals",
+        caption: "Canals of SuZhou",
+        location: "SuZhou, China",
+        date: "2024-07-22",
+        thumbnailSrc: shiyiImg
     }
 ];

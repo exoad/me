@@ -8,9 +8,9 @@ export default function Footer() {
                 <div className="w-full md:w-1/3 text-center md:text-left whitespace-pre-line order-2 md:order-1">
                     {strings.footer.legals}
                 </div>
-                <div className="w-full md:w-1/3 text-center order-1 md:order-2 text-white/80">
-                    <div className="text-xs opacity-70 font-playfair font-bold">{strings.footer.site}</div>
-                    <div className="text-xs opacity-50">{strings.footer.thank_you}</div>
+                <div className="w-full md:w-1/3 text-center order-1 md:order-2 text-white/70">
+                    <div className="text-xs font-playfair font-bold">{strings.footer.site}</div>
+                    <div className="text-xs">{strings.footer.thank_you}</div>
                 </div>
                 <div className="w-full md:w-1/3 text-center md:text-right order-3 whitespace-nowrap">
                     {strings.footer.source.leading} <a href={strings.footer.source.url} target="_blank" rel="noopener noreferrer"

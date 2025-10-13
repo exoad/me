@@ -29,4 +29,5 @@ export interface TShowcasePhoto {
     caption?: string;
     location: string;
     date: string;
+    thumbnailSrc: string;
 }

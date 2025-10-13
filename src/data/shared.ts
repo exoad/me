@@ -189,6 +189,10 @@ export const strings = {
             title: "Page Not Found",
             description: "The page you're looking for doesn't exist. It might have been moved or deleted.",
             go_back: "Go Back"
+        },
+        photos: {
+            title: "Photos Showcase",
+            description: "A collection of photos that I have captured as a hobbyist photographer and deemed worthy of sharing :)."
         }
     }
 };

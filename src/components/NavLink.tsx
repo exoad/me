@@ -9,7 +9,6 @@ interface NavLinkProps {
 
 export default function NavLink({ path, label, onClick }: Readonly<NavLinkProps>) {
     const location = useLocation();
-
     const isActive = () => {
         if (path === '/' && location.pathname === '/') return true;
         if (path !== '/' && location.pathname.startsWith(path)) return true;
