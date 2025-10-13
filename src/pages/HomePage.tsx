@@ -5,6 +5,7 @@ import Hero from '../components/HomePage/Hero';
 import About from '../components/HomePage/About';
 import Projects from '../components/HomePage/Projects';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage({ scaffoldProps = {} }) {
     useEffect(() => {
@@ -12,6 +13,7 @@ export default function HomePage({ scaffoldProps = {} }) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }, []);
+    const navigate = useNavigate();
     return (
         <Scaffold {...scaffoldProps}>
             <Hero
@@ -29,6 +31,7 @@ export default function HomePage({ scaffoldProps = {} }) {
                 toolkitTitle={strings.pages.home.about.toolkit_title}
                 technologies={strings.pages.home.about.technologies}
                 seeMore={strings.pages.home.about.more}
+                navigate={navigate}
                 onIntersect={() => { }}
             />
             <SpinningSquareDivider reverse={true} />
@@ -37,6 +40,7 @@ export default function HomePage({ scaffoldProps = {} }) {
                 projects={featuredProjects}
                 viewProjectButtonText={strings.pages.home.view_project_button}
                 viewAllProjectsButtonText={strings.pages.home.view_all_projects_button}
+                navigate={navigate}
                 onIntersect={() => { }}
             />
         </Scaffold>

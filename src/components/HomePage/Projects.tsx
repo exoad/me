@@ -9,12 +9,14 @@ export default function Projects({
     projects,
     viewProjectButtonText,
     viewAllProjectsButtonText,
+    navigate,
     onIntersect
 }: Readonly<{
     title: string;
     projects: TProject[];
     viewProjectButtonText: string;
     viewAllProjectsButtonText: string;
+    navigate: (path: string) => void;
     onIntersect: (isVisible: boolean) => void;
 }>) {
     const projectsRef = useRef<HTMLDivElement>(null);
@@ -94,7 +96,7 @@ export default function Projects({
                 <div className="h-8" />
                 <AttentionButton
                     ariaLabel='See More'
-                    onClick={() => window.location.href = '/projects'}
+                    onClick={() => navigate('/projects')}
                     className={`transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                     style={{ transitionDelay: projectsVisible ? `${300 + (projects.length * 300) + 400}ms` : '0ms' }}
                 >

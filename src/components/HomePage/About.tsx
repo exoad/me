@@ -10,12 +10,14 @@ export default function About({
     toolkitTitle,
     technologies,
     seeMore,
+    navigate,
     onIntersect
 }: Readonly<{
     title: string;
     content: string;
     toolkitTitle: string;
     seeMore: string;
+    navigate: (path: string) => void;
     technologies: TTechnology[];
     onIntersect: (isVisible: boolean) => void;
 }>) {
@@ -89,7 +91,7 @@ export default function About({
                     </div>
                     <AttentionButton
                         ariaLabel="See More"
-                        onClick={() => window.location.href = '/about'}
+                        onClick={() => navigate('/about')}
                         className={kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
                         style={{ transitionDelay: kindaVisible ? `400ms` : '0ms' }}
                     >
