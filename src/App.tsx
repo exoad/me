@@ -13,6 +13,7 @@ import UnderConstruction from './pages/UnderConstructionPage';
 interface WithPageTransitionProps {
   [key: string]: unknown;
 }
+
 type PageTransitionSpeed = 'default' | 'slow' | 'fast';
 
 const withPageTransition = (
@@ -45,10 +46,10 @@ function AnimatedRoutes() {
     <Routes>
       <Route path="/" element={<TransitionedHomePage />} />
       <Route path="/about" element={<TransitionedAboutPage />} />
-      <Route path="/projects" element={<TransitionedHomePage />} />
+      <Route path="/projects" element={<TransitionedUnderConstruction />} />
       <Route path="/photos" element={<TransitionedPhotosPage />} />
       <Route path="/contacts" element={<TransitionedContactPage />} />
-      <Route path="/under-construction" element={<TransitionedUnderConstruction />} />
+      {/* <Route path="/under-construction" element={<TransitionedUnderConstruction />} /> */}
       <Route path="*" element={<TransitionedNotFound />} />
     </Routes>
   );

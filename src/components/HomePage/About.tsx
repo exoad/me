@@ -1,18 +1,21 @@
 import { useRef, useState, useEffect } from 'react';
 import type { TTechnology } from '../../types.d.ts';
-
+import { strings } from '../../data/shared.ts';
 import profilePic from '../../assets/images/profile.webp';
+import AttentionButton from '../AttentionButton';
 
 export default function About({
     title,
     content,
     toolkitTitle,
     technologies,
+    seeMore,
     onIntersect
 }: Readonly<{
     title: string;
     content: string;
     toolkitTitle: string;
+    seeMore: string;
     technologies: TTechnology[];
     onIntersect: (isVisible: boolean) => void;
 }>) {
@@ -84,6 +87,15 @@ export default function About({
                             ))}
                         </div>
                     </div>
+                    <AttentionButton
+                        ariaLabel="Explore all projects"
+                        onClick={() => window.location.href = '/projects'}
+                        className={kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
+                        style={{ transitionDelay: kindaVisible ? `400ms` : '0ms' }}
+                    >
+                        {seeMore}
+                    </AttentionButton>
+
                 </div>
             </div>
         </div>

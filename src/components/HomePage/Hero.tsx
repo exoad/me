@@ -113,9 +113,6 @@ export default function Hero({
                             <div
                                 key={`${item}-${index}`}
                                 className="text-white text-xl text-center h-[2rem] leading-[2rem]"
-                                style={{
-                                    color: index % 2 == 0 || index == 0 || index == _scrollerTotal.length - 1 ? "#fff" : theme.brand
-                                }}
                             >
                                 {item}
                             </div>

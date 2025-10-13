@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import type { TProject } from '../../types.d.ts';
 import { hexToRgba } from '../../utils/css';
 import HoverShowLine from '../HoverShowLine';
+import AttentionButton from '../AttentionButton.tsx';
 
 export default function Projects({
     title,
@@ -91,18 +92,12 @@ export default function Projects({
                 </div>
 
                 <div className="h-8" />
-
-                <button
-                    aria-label="Explore all projects"
-                    onClick={() => window.location.href = '/projects'}
-                    className={`relative flex flex-col items-center justify-center text-white font-montserrat px-6 py-3 transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                <AttentionButton
+                    className={`transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                     style={{ transitionDelay: projectsVisible ? `${300 + (projects.length * 300) + 400}ms` : '0ms' }}
                 >
-                    <span className="relative z-10">
-                        {viewAllProjectsButtonText}
-                    </span>
-                    <span className="block w-full h-px bg-white" />
-                </button>
+                    {viewAllProjectsButtonText}
+                </AttentionButton>
             </div>
         </div>
     );

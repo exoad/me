@@ -172,7 +172,7 @@ export const strings = {
         about: "ABOUT",
         projects: "PROJECTS",
         photos: "PHOTOS",
-        socials: "SOCIALS"
+        contact: "CONTACT"
     },
     name: "Jiaming Meng",
     footer: {
@@ -216,7 +216,7 @@ export const strings = {
                     technologies.jetpack_compose,
                     technologies.python,
                 ],
-                more: "See My Complete Story"
+                more: "Learn More About Me"
             },
             projects_title: "Featured Projects",
             view_project_button: "View Project",
@@ -229,7 +229,8 @@ export const strings = {
             currently: {
                 title: "Currently",
                 content: "2nd year Undergraduate student at the University of Maryland - College Park."
-            }
+            },
+
         },
         not_found: {
             super: "404",
@@ -249,6 +250,12 @@ export const strings = {
             email_aria: "Send me an email",
             github: "exoad",
             github_aria: "My GitHub Profile",
+            resume: {
+                title: "My Resume",
+                aria: "Download my resume (PDF)",
+                button_label: "Download Resume",
+                updated: "PDF, updated Oct 2025"
+            }
         },
         under_construction: {
             title: "Under Construction",

@@ -1,12 +1,17 @@
 import { strings, featuredProjects } from "../data/shared.ts";
 import Scaffold from '../components/Scaffold.tsx';
-
 import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import Hero from '../components/HomePage/Hero';
 import About from '../components/HomePage/About';
 import Projects from '../components/HomePage/Projects';
+import { useEffect } from 'react';
 
 export default function HomePage({ scaffoldProps = {} }) {
+    useEffect(() => {
+        if (window.scrollY > 0) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, []);
     return (
         <Scaffold {...scaffoldProps}>
             <Hero
@@ -23,6 +28,7 @@ export default function HomePage({ scaffoldProps = {} }) {
                 content={strings.pages.home.about.content}
                 toolkitTitle={strings.pages.home.about.toolkit_title}
                 technologies={strings.pages.home.about.technologies}
+                seeMore={strings.pages.home.about.more}
                 onIntersect={() => { }}
             />
             <SpinningSquareDivider reverse={true} />

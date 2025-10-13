@@ -26,6 +26,11 @@ export default function AboutPage({ scaffoldProps = {} }) {
             observers.forEach(observer => observer?.disconnect());
         };
     }, []);
+    useEffect(() => {
+        if (window.scrollY > 0) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, []);
     return (
         <Scaffold {...scaffoldProps}>
             <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 md:px-16 py-16">

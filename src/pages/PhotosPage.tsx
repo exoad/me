@@ -18,6 +18,11 @@ export default function PhotosPage({ scaffoldProps = {} }) {
   const [visiblePhotos, setVisiblePhotos] = useState<Record<string, boolean>>({});
   const photoRefs = useRef<Record<string, HTMLDivElement | null>>({});
   useEffect(() => {
+    if (window.scrollY > 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
+  useEffect(() => {
     if (photos.length > 0) {
       const initialVisible = photos.slice(0, 2).reduce((acc, _, index) => {
         acc[`photo-${index}`] = true;
