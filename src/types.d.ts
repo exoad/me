@@ -20,7 +20,7 @@ export interface TTimelineEntry {
     title: string;
     description: string;
     link?: string;
-    technologies?: TTechnology[];
+    gradientColor?: string;
 }
 
 export interface TShowcasePhoto {

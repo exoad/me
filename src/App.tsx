@@ -55,7 +55,6 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
-  document.title = 'Jiaming';
   return (
     <Router>
       <div className="app-container relative select-none">

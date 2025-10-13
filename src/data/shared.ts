@@ -23,56 +23,99 @@ export const technologies: Record<string, TTechnology> = {
     java_swing: { name: "Java Swing", icon: SiOpenjdk, color: "#ED8B00" }
 };
 
+// months are not accurate, they are solely used for sorting purposes and im too lazy to try and remember the specific months if it is even possible for certain spanning events.
 export const timeline: TTimelineEntry[] = [
+    {
+        displayDate: "August 14, 2006",
+        isoDate: "2006-08-14",
+        title: "Hello World!",
+        description: "I was born...",
+    },
     {
         displayDate: "2018",
         isoDate: "2018-09-01",
-        title: "Started Programming Journey",
-        description: "Began learning C and C++ through self-study, fascinated by low-level systems programming.",
-        technologies: [technologies.c, technologies.cpp]
-    },
-    {
-        displayDate: "2019",
-        isoDate: "2019-03-15",
-        title: "First Open Source Contribution",
-        description: "Contributed to LLVM project, marking the beginning of my involvement in open source development.",
-        technologies: [technologies.llvm, technologies.cpp]
+        title: "First Steps in Programming",
+        description: "Began messing with Scratch and HTML/CSS/JS to make simple games on the web.",
     },
     {
         displayDate: "2020",
-        isoDate: "2020-08-25",
-        title: "University Admission",
-        description: "Enrolled in university to pursue Computer Science, balancing academics with personal projects.",
+        isoDate: "2020-05-15",
+        title: "A Love for Object-Oriented Programming",
+        description: "Started learning Java in high school as well as learning to mod Minecraft with Forge.",
     },
     {
         displayDate: "2021",
-        isoDate: "2021-05-10",
-        title: "Mobile Development Exploration",
-        description: "Discovered Flutter and Dart, building cross-platform applications and expanding my toolkit.",
-        technologies: [technologies.flutter, technologies.dart]
+        isoDate: "2021-01-10",
+        title: "First Open-Source Contribution",
+        description: "Started to learn about Git and GitHub and published some on-going small projects to test. I published my high school projects and some Discord bots I was making at the time.",
+    },
+    {
+        displayDate: "2021",
+        isoDate: "2021-02-10",
+        title: "Exploring Web Development",
+        description: "Dabbed a little bit in with NodeJS and hosting simple web apps off of my own machine. It was also around this time I decided that web development was not for me due to costs and lack of interest.",
+    },
+    {
+        displayDate: "2021",
+        isoDate: "2021-12-20",
+        title: "Started learning C and computer systems",
+        description: "I became fascinated by how computers work, I studied the C programming language and computer architecture as well writing a simple LLVM IR interpreter that handled basic function calls and arithmetic. I would later revisit this project in the coming years to add more features.",
+    },
+    {
+        displayDate: "2021",
+        isoDate: "2022-01-10",
+        title: "VEX Robotics",
+        description: "Joined VEX Robotics team: 1569A Omega. I began to learn about control systems, strategy, and advancing my knowledge of C++. We would later place top 25 in the world at the VEX Robotics World Championship 2022 @ Dallas, TX.",
     },
     {
         displayDate: "2022",
-        isoDate: "2022-01-20",
-        title: "AI/ML Research",
-        description: "Started university research in Artificial Intelligence and Machine Learning, focusing on practical applications.",
-        technologies: [technologies.python]
+        isoDate: "2022-05-15",
+        title: "A Year Long Passion Project: Halcyon",
+        description: "Wrote a cross platform OpenGL graphics library in C with the audio and logic being handled by Java. This was my first time doing any kind of advanced graphics programming and it was a fun ride, but the complexity and burnout got to me after a year.",
+    },
+    {
+        displayDate: "2022",
+        isoDate: "2022-08-20",
+        title: "Baby Upsolver",
+        description: "Began intereted in competitive programming and problem solving. I started doing problems on Codeforces and Codechef and studied algorithms and data structures on the side. I would eventually pause this journey to once again focus on projects and outside interests.",
     },
     {
         displayDate: "2023",
-        isoDate: "2023-06-15",
-        title: "Compiler Design Passion",
-        description: "Began exploring compiler design as a personal passion project, leading to the creation of Kira language.",
-        technologies: [technologies.kotlin, technologies.c]
+        isoDate: "2023-01-10",
+        title: "Dart & Flutter",
+        description: "Started learning Dart & Flutter to make cross-platform applications. I was drawn to the simplicity of the language and the ease of use of Flutter. I would later use this knowledge to remake Halcyon and countless other apps.",
+    },
+    {
+        displayDate: "2023",
+        isoDate: "2023-05-15",
+        title: "Began to standardize my code",
+        description: "I began to clean up code I have written not just stylistically, but semantically thru creating multiple shared libraries across languages for me to use. I also started to formulate my own best practices for Java, C, and Dart.",
     },
     {
         displayDate: "2024",
-        isoDate: "2024-02-28",
-        title: "Portfolio Launch",
-        description: "Launched this portfolio website, showcasing projects and sharing the journey of continuous learning.",
-        technologies: [technologies.typescript, technologies.react, technologies.html, technologies.css]
+        isoDate: "2024-01-10",
+        title: "FRC Robotics",
+        description: "Joined FRC Robotics team: 2638. This was my first time working with a larger team and I was tasked with using my Flutter knowledge and previous experience to create a streamlined scouting app for our team. We would publish this app and get over 10,000+ downloads globally. We would later go on to compete at the FRC World Championship 2024 @ Houston, TX.",
+    },
+    {
+        displayDate: "2024",
+        isoDate: "2024-03-15",
+        title: "Started University",
+        description: "I first attended The Pennsylvania State University as a Computer Science major. I was exposed to a lot of new opportunities, but I would later transfer to the University of Maryland - College Park due to better research opportunities and location.",
+    },
+    {
+        displayDate: "2025",
+        isoDate: "2024-08-20",
+        title: "A New Beginning",
+        description: "Transferred to the University of Maryland - College Park and started off my Sophomore year fresh. I quickly began building connections with professors and peers and started research in AI/ML.",
+    },
+    {
+        displayDate: "October 2025",
+        isoDate: "2024-10-02",
+        title: "Published My Website",
+        description: "Went back to my roots and spent a weekend building and designing my personal website from scratch using React, TypeScript, and TailwindCSS. With the help of AI, I was able to polish the UI design to my liking.",
     }
-];
+].sort((a, b) => new Date(b.isoDate).getTime() - new Date(a.isoDate).getTime()); // this is just a safety measure to ensure it is always sorted correctly especially since im bad with chronological events :(
 
 import halcyonProjectLogo from '../assets/images/projects_logos/halcyon.webp';
 import kiraProjectLogo from '../assets/images/projects_logos/kira.webp';
@@ -183,6 +226,10 @@ export const strings = {
         about: {
             title: "I am Jiaming,",
             description: "A chronological timeline of my personal and professional milestones.\n💖",
+            currently: {
+                title: "Currently",
+                content: "2nd year Undergraduate student at the University of Maryland - College Park."
+            }
         },
         not_found: {
             super: "404",
