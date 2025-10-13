@@ -21,37 +21,6 @@
     }
 }
 
-@keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes scaleIn {
-    0% {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
 .subtitle-roller-anim {
     animation: subtitlesRollAnim 17s ease-in-out infinite;
 }
@@ -59,21 +28,6 @@
 .animate-logo-reveal {
     opacity: 0;
     animation: logoRevealIn 1.42s cubic-bezier(0, 0, 0.2, 1) 600ms forwards;
-}
-
-.animate-fade-in-up {
-    opacity: 0;
-    animation: fadeInUp 0.8s cubic-bezier(0.17, 0.67, 0.38, 1) forwards;
-}
-
-.animate-fade-in {
-    opacity: 0;
-    animation: fadeIn 0.8s ease forwards;
-}
-
-.animate-scale-in {
-    opacity: 0;
-    animation: scaleIn 0.8s cubic-bezier(0, 0, 0.2, 1) forwards;
 }
 
 .landing-more-below-pulser {

@@ -18,7 +18,7 @@ export default function NavLink({ path, label, onClick }: Readonly<NavLinkProps>
     return (
         <button
             onClick={() => onClick(path)}
-            className={`bg-transparent border-none text-white text-sm md:text-base font-light font-montserrat py-2 px-3 md:px-6 cursor-pointer transition-colors duration-300 group ${isActive() ? 'text-white' : 'text-white/80'}`}
+            className={`bg-transparent border-none text-white text-sm md:text-base font-light font-montserrat py-2 px-3 md:px-4 cursor-pointer transition-colors duration-300 group ${isActive() ? 'text-white' : 'text-white/80'}`}
         >
             {label}
             <HoverShowLine />

@@ -192,7 +192,8 @@ export const strings = {
         },
         photos: {
             title: "Photos Showcase",
-            description: "A collection of photos that I have captured as a hobbyist photographer and deemed worthy of sharing :)."
+            description: "A collection of photos that I have captured as a hobbyist photographer and deemed worthy of sharing :).",
+            error: "Couldn't load this image. :(.",
         }
     }
 };

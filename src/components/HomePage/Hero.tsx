@@ -4,6 +4,7 @@ import { SiGithub, SiLinkedin } from 'react-icons/si';
 import StarryBackground from '../StarryBackground';
 import theme from '../../data/theme.json';
 import "../../styles/HomePage.css";
+import "../../styles/Animations.css";
 import upwardsHandSignPic from '../../assets/images/upwards.webp';
 import { strings } from '../../data/shared.ts';
 

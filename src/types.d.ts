@@ -24,10 +24,10 @@ export interface TTimelineEntry {
 }
 
 export interface TShowcasePhoto {
-    src: string;
+    src: string | any;
     alt: string;
     caption?: string;
     location: string;
     date: string;
-    thumbnailSrc: string;
+    thumbnailSrc: string | any;
 }

@@ -1,0 +1,64 @@
+@keyframes drawerSlideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.drawer-overlay {
+    animation: overlayFadeIn 0.3s ease forwards;
+    backdrop-filter: blur(8px);
+}
+
+.drawer-menu {
+    animation: drawerSlideIn 0.35s cubic-bezier(0.21, 1, 0.3, 1) forwards;
+    backdrop-filter: blur(15px);
+    contain: layout;
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+}
+
+@media (hover: none) and (pointer: coarse) {
+    button {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+
+    button:active {
+        transform: scale(0.97);
+        transition: transform 0.1s ease-out;
+    }
+
+    .drawer-menu button {
+        position: relative;
+        overflow: hidden;
+        min-height: 60px;
+    }
+
+    .drawer-menu button:active::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: background-color 0.3s;
+    }
+}
+
+@supports (-webkit-touch-callout: none) {
+    button {
+        -webkit-touch-callout: none;
+    }
+}
