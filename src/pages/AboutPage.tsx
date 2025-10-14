@@ -46,7 +46,7 @@ export default function AboutPage({ scaffoldProps = {} }) {
 
                 <div className="max-w-8xl">
                     <div className="relative">
-                        <div className="absolute left-6 top-0 w-px bg-gradient-to-b from-white to-transparent h-full shadow-[0_0_16px_rgba(255,255,255,0.8)]"></div>
+                        <div className="absolute left-6 top-0 w-px bg-gradient-to-b from-white to-transparent h-full shadow-[0_0_16px_black]" />
                         <div>
                             {timeline.map((item, index) => {
                                 const year = new Date(item.isoDate).getFullYear();
@@ -58,7 +58,7 @@ export default function AboutPage({ scaffoldProps = {} }) {
                                         style={{ transitionDelay: visibleItems.has(index) ? `${index * 80}ms` : '0ms' }}
                                     >
                                         <div
-                                            className={`absolute left-6 transform -translate-x-1/2 w-4 h-4 bg-white rounded-full z-10 transition-all duration-150 shadow-[0_0_16px_rgba(255,255,255,0.9)] ${visibleItems.has(index) ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
+                                            className={`absolute left-6 transform -translate-x-1/2 w-4 h-4 bg-white rounded-full z-10 transition-all duration-150 ${visibleItems.has(index) ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
                                             style={{ transitionDelay: visibleItems.has(index) ? `${(index * 80) + 120}ms` : '0ms' }}
                                         ></div>
 

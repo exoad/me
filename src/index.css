@@ -30,3 +30,24 @@ body {
     object-fit: contain;
     contain: layout;
 }
+
+@supports selector(::-webkit-scrollbar) {
+    *::-webkit-scrollbar {
+        width: 0.48em;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: black;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: white;
+    }
+}
+
+@supports (scrollbar-color: auto) and (not selector(::-webkit-scrollbar)) {
+    * {
+        scrollbar-width: auto;
+        scrollbar-color: white transparent;
+    }
+}

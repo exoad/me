@@ -216,7 +216,8 @@ export const strings = {
                     technologies.jetpack_compose,
                     technologies.python,
                 ],
-                more: "Learn More About Me"
+                more: "Learn More About Me",
+                cool_photos: "See Some Cool Photos"
             },
             projects_title: "Featured Projects",
             view_project_button: "View Project",

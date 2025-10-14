@@ -26,20 +26,11 @@ export default function HomePage({ scaffoldProps = {} }) {
                 onIntersect={() => { }}
             />
             <About
-                title={strings.pages.home.about.title}
-                content={strings.pages.home.about.content}
-                toolkitTitle={strings.pages.home.about.toolkit_title}
-                technologies={strings.pages.home.about.technologies}
-                seeMore={strings.pages.home.about.more}
                 navigate={navigate}
                 onIntersect={() => { }}
             />
             <SpinningSquareDivider reverse={true} />
             <Projects
-                title={strings.pages.home.projects_title}
-                projects={featuredProjects}
-                viewProjectButtonText={strings.pages.home.view_project_button}
-                viewAllProjectsButtonText={strings.pages.home.view_all_projects_button}
                 navigate={navigate}
                 onIntersect={() => { }}
             />

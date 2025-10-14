@@ -1,21 +1,13 @@
 import { useRef, useState, useEffect } from 'react';
-import type { TProject } from '../../types.d.ts';
 import { hexToRgba } from '../../utils/css';
 import HoverShowLine from '../HoverShowLine';
 import AttentionButton from '../AttentionButton.tsx';
+import { projects, strings } from '../../data/shared.ts';
 
 export default function Projects({
-    title,
-    projects,
-    viewProjectButtonText,
-    viewAllProjectsButtonText,
     navigate,
     onIntersect
 }: Readonly<{
-    title: string;
-    projects: TProject[];
-    viewProjectButtonText: string;
-    viewAllProjectsButtonText: string;
     navigate: (path: string) => void;
     onIntersect: (isVisible: boolean) => void;
 }>) {
@@ -46,7 +38,7 @@ export default function Projects({
                     className={`text-white text-3xl md:text-5xl lg:text-7xl font-bold font-playfair transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                     style={{ transitionDelay: projectsVisible ? '100ms' : '0ms' }}
                 >
-                    {title}
+                    {strings.pages.home.projects_title}
                 </h1>
                 <div
                     className={`w-[8rem] h-px bg-white transition-all duration-1000 ${projectsVisible ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`}
@@ -85,7 +77,7 @@ export default function Projects({
                                     className="bg-transparent border-none text-white text-sm font-light font-montserrat py-2 px-6 cursor-pointer duration-300 group"
                                     onClick={() => window.open(project.link, '_blank')}
                                 >
-                                    {viewProjectButtonText}
+                                    {strings.pages.home.view_project_button}
                                     <HoverShowLine />
                                 </button>
                             </div>
@@ -100,7 +92,7 @@ export default function Projects({
                     className={`transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                     style={{ transitionDelay: projectsVisible ? `${300 + (projects.length * 300) + 400}ms` : '0ms' }}
                 >
-                    {viewAllProjectsButtonText}
+                    {strings.pages.home.view_all_projects_button}
                 </AttentionButton>
             </div>
         </div>

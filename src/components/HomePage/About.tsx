@@ -1,24 +1,15 @@
 import { useRef, useState, useEffect } from 'react';
 import type { TTechnology } from '../../types.d.ts';
-import { strings } from '../../data/shared.ts';
+import { strings, technologies } from '../../data/shared.ts';
 import profilePic from '../../assets/images/profile.webp';
 import AttentionButton from '../AttentionButton';
+import { Column, Row } from '../FlexLayouter.tsx';
 
 export default function About({
-    title,
-    content,
-    toolkitTitle,
-    technologies,
-    seeMore,
     navigate,
     onIntersect
 }: Readonly<{
-    title: string;
-    content: string;
-    toolkitTitle: string;
-    seeMore: string;
     navigate: (path: string) => void;
-    technologies: TTechnology[];
     onIntersect: (isVisible: boolean) => void;
 }>) {
     const aboutRef = useRef<HTMLDivElement>(null);
@@ -42,8 +33,8 @@ export default function About({
     }, [onIntersect]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8" ref={aboutRef}>
-            <div className="flex flex-col md:flex-row items-center md:gap-16 gap-8 w-full max-w-6xl">
+        <div className="min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-14 py-3" ref={aboutRef}>
+            <div className="flex flex-col justify-center items-center md:gap-6 gap-4 w-full max-w-6xl">
                 <img
                     src={profilePic}
                     alt="Profile"
@@ -52,54 +43,74 @@ export default function About({
                     draggable={false}
                     loading="eager"
                 />
-                <div
-                    className={`w-px h-16 md:h-24 bg-white transition-all duration-1000 ${kindaVisible ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0'}`}
-                    style={{ transitionDelay: kindaVisible ? '300ms' : '0ms' }}
-                ></div>
-                <div className="flex flex-col md:items-start md:text-left text-center items-center max-w-4xl w-full gap-6">
+                <PfpDividerLine kindaVisible={kindaVisible} />
+                <div className="flex flex-col items-center max-w-2xl w-full gap-16">
                     <h1
                         className={`text-white text-4xl md:text-7xl lg:text-7xl font-bold font-playfair transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                         style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
                     >
-                        {title}
+                        {strings.pages.home.about.title}
                     </h1>
                     <p
-                        className={`text-white text-base md:text-lg leading-relaxed font-montserrat transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                        className={`text-white text-base md:text-lg leading-relaxed font-montserrat text-center transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                         style={{ transitionDelay: kindaVisible ? '300ms' : '0ms' }}
                     >
-                        {content}
+                        {strings.pages.home.about.content}
                     </p>
-                    <div className="mt-8 flex flex-col gap-4">
+                    <div className="flex flex-col items-center gap-4">
                         <h2
                             className={`text-white text-2xl font-bold font-playfair transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                             style={{ transitionDelay: kindaVisible ? '500ms' : '0ms' }}
                         >
-                            {toolkitTitle}
+                            {strings.pages.home.about.toolkit_title}
                         </h2>
-                        <div className="flex flex-wrap gap-4 justify-start">
-                            {technologies.map((item, index) => (
-                                <div
-                                    key={item.name}
-                                    className={`flex items-center gap-2 transition-all duration-1000 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`}
-                                    style={{ transitionDelay: `${index * 350}ms`, color: item.color }}
-                                >
-                                    <item.icon className="text-xs" />
-                                    <span className="text-white text-sm font-montserrat">{item.name}</span>
-                                </div>
-                            ))}
+                        <div className="flex flex-wrap gap-4 justify-center">
+                            {Object.entries(strings.pages.home.about.technologies).map((item, index) => {
+                                const Icon = item[1].icon;
+                                return (
+                                    <div
+                                        key={item[0]}
+                                        className={`flex items-center gap-2 transition-all duration-1000 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`}
+                                        style={{ transitionDelay: `${index * 350}ms`, color: item[1].color }}
+                                    >
+                                        <Icon className="text-xs" />
+                                        <span className="text-white text-sm font-montserrat">{item[1].name}</span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
-                    <AttentionButton
-                        ariaLabel="See More"
-                        onClick={() => navigate('/about')}
-                        className={kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
-                        style={{ transitionDelay: kindaVisible ? `400ms` : '0ms' }}
-                    >
-                        {seeMore}
-                    </AttentionButton>
-
+                    {/*cool divider line effect, but the border really belongs to the first button lol */}
+                    <Column gap={0}>
+                        <AttentionButton
+                            ariaLabel="See More"
+                            onClick={() => navigate('/about')}
+                            className={kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
+                            style={{ transitionDelay: kindaVisible ? `400ms` : '0ms' }}
+                        >
+                            {strings.pages.home.about.more}
+                        </AttentionButton>
+                        <AttentionButton
+                            ariaLabel='See More'
+                            onClick={() => navigate("/photos")}
+                            className={kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
+                            style={{ transitionDelay: kindaVisible ? `550ms` : '0ms' }}
+                            useChildStyle
+                            noUnderline
+                        >
+                            <span className="relative z-10 font-playfair text-md text-white/70 font-light tracking-wide transition-transform duration-300 group-hover:scale-105">
+                                {strings.pages.home.about.cool_photos}
+                            </span>
+                        </AttentionButton>
+                    </Column>
                 </div>
             </div>
         </div>
     );
 }
+function PfpDividerLine({ kindaVisible }: Readonly<{ kindaVisible: boolean; }>) {
+    return <div
+        className={`h-px w-16 md:w-24 bg-white transition-all duration-1000 ${kindaVisible ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0'}`}
+        style={{ transitionDelay: kindaVisible ? '300ms' : '0ms' }} />;
+}
+
