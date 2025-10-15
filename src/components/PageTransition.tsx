@@ -22,11 +22,10 @@ export default function PageTransition({ children, speed = 'default' }: Readonly
         }, 400);
         return () => clearTimeout(timer);
     }, [location, children, displayedLocation.pathname]);
-    const transitionClass = isTransitioning
-        ? `page-transition page-transition-exit ${speed}`
-        : `page-transition page-transition-enter ${speed}`;
     return (
-        <div className={transitionClass}>
+        <div className={isTransitioning
+            ? `page-transition page-transition-exit ${speed}`
+            : `page-transition page-transition-enter ${speed}`}>
             {content}
         </div>
     );

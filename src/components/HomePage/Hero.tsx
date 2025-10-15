@@ -1,8 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import { SiGithub, SiLinkedin } from 'react-icons/si';
-import StarryBackground from '../StarryBackground';
-import theme from '../../data/theme.json';
+import WarpTunnelBg from '../WarpTunnelBg';
 import "../../styles/HomePage.css";
 import "../../styles/Animations.css";
 import upwardsHandSignPic from '../../assets/images/upwards.webp';
@@ -67,7 +66,7 @@ export default function Hero({
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-black px-4 sm:px-8 md:px-16 relative" ref={heroRef}>
-            <StarryBackground scrollY={scrollY} />
+            <WarpTunnelBg scrollY={scrollY} />
             <div className="flex flex-col items-center justify-center gap-6 z-10 max-w-3xl mx-auto">
                 <div className="relative mb-1">
                     <div className={`relative origin-center ${heroVisible ? 'animate-logo-reveal' : ''}`}>

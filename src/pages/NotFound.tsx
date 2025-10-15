@@ -4,6 +4,7 @@ import { strings } from '../data/shared.ts';
 import Scaffold from '../components/Scaffold.tsx';
 import HoverShowLine from '../components/HoverShowLine.tsx';
 import { FiChevronLeft } from 'react-icons/fi';
+import StarBg from "../components/StarsBg";
 
 export default function NotFound({ scaffoldProps = {} }) {
     const [visible, setVisible] = useState(false);
@@ -13,6 +14,8 @@ export default function NotFound({ scaffoldProps = {} }) {
     }, []);
     return (
         <Scaffold showSpinner={false} {...scaffoldProps}>
+            <StarBg scrollY={0} />
+
             <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 md:px-16">
                 <div className={`flex flex-col items-center justify-center gap-16 transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}>
                     <h1

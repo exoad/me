@@ -5,7 +5,7 @@ import Scaffold from '../components/Scaffold.tsx';
 import HoverShowLine from '../components/HoverShowLine.tsx';
 import { FiChevronLeft } from 'react-icons/fi';
 import { MdConstruction } from "react-icons/md";
-import StarryBackground from '../components/StarryBackground.tsx';
+import WarpTunnelBg from '../components/WarpTunnelBg.tsx';
 export default function UnderConstruction({ scaffoldProps = {} }) {
     const [visible, setVisible] = useState(false);
     useEffect(() => {
@@ -15,7 +15,7 @@ export default function UnderConstruction({ scaffoldProps = {} }) {
     return (
         <Scaffold showSpinner={false} {...scaffoldProps}>
             <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 md:px-16">
-                <StarryBackground scrollY={1} />
+                <WarpTunnelBg scrollY={1} />
                 <div className={`flex flex-col items-center justify-center gap-16 transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}>
                     <MdConstruction className="text-white text-8xl md:text-9xl" />
                     <p className="text-white text-xl md:text-5xl font-medium text-center font-playfair "
