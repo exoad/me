@@ -31,3 +31,8 @@ export interface TShowcasePhoto {
     date: string;
     thumbnailSrc: string | any;
 }
+
+export interface TStalkEntry {
+    city: string;
+    state?: string;
+}

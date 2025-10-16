@@ -12,18 +12,21 @@ export default function Projects({
     onIntersect: (isVisible: boolean) => void;
 }>) {
     const projectsRef = useRef<HTMLDivElement>(null);
-    const [projectsVisible, setProjectsVisible] = useState(false);
+    const [kindaVisible, setkindaVisible] = useState(false);
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        setProjectsVisible(true);
+                        setkindaVisible(true);
                         onIntersect(true);
+                    } else {
+                        setkindaVisible(false);
+                        onIntersect(false);
                     }
                 });
             },
-            { threshold: 0.2 }
+            { threshold: 0.3 }
         );
         if (projectsRef.current) {
             observer.observe(projectsRef.current);
@@ -35,22 +38,21 @@ export default function Projects({
         <div className="min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8" ref={projectsRef}>
             <div className="flex flex-col items-center justify-center gap-12 w-full max-w-6xl">
                 <h1
-                    className={`text-white text-3xl md:text-5xl lg:text-7xl font-bold font-playfair transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                    style={{ transitionDelay: projectsVisible ? '100ms' : '0ms' }}
+                    className={`text-white text-3xl md:text-5xl lg:text-7xl font-bold font-playfair transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
+                    style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
                 >
                     {strings.pages.home.projects_title}
                 </h1>
                 <div
-                    className={`w-[8rem] h-px bg-white transition-all duration-1000 ${projectsVisible ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`}
-                    style={{ transitionDelay: projectsVisible ? '200ms' : '0ms' }}
+                    className={`w-[8rem] h-px bg-white transition-all duration-1000 ${kindaVisible ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`}
+                    style={{ transitionDelay: kindaVisible ? '250ms' : '0ms' }}
                 ></div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
                     {projects.map((project, index) => (
                         <div
                             key={project.title}
-                            className={`w-80 bg-transparent transition-all duration-1000 ease-out p-8 grid grid-rows-[auto_1fr_auto] min-h-[22rem] ${projectsVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
-                            style={{ transitionDelay: projectsVisible ? `${300 + (index * 300)}ms` : '0ms' }}
+                            className={`w-80 bg-transparent transition-all duration-1000 ease-out p-8 grid grid-rows-[auto_1fr_auto] min-h-[22rem] ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
+                            style={{ transitionDelay: kindaVisible ? `${300 + (index * 200)}ms` : '0ms' }}
                         >
                             <div className="flex flex-col items-center gap-3">
                                 {project.logo && (
@@ -89,8 +91,8 @@ export default function Projects({
                 <AttentionButton
                     ariaLabel='See More'
                     onClick={() => navigate('/projects')}
-                    className={`transition-all duration-1000 ${projectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                    style={{ transitionDelay: projectsVisible ? `${300 + (projects.length * 300) + 400}ms` : '0ms' }}
+                    className={`transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
+                    style={{ transitionDelay: kindaVisible ? `${300 + (projects.length * 200) + 400}ms` : '0ms' }}
                 >
                     {strings.pages.home.view_all_projects_button}
                 </AttentionButton>

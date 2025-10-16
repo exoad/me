@@ -6,6 +6,7 @@ import "../../styles/HomePage.css";
 import "../../styles/Animations.css";
 import upwardsHandSignPic from '../../assets/images/upwards.webp';
 import { strings } from '../../data/shared.ts';
+import { Column } from '../FlexLayouter.tsx';
 
 export default function Hero({
     name,
@@ -83,20 +84,23 @@ export default function Hero({
                         <div className="logo-overlay-fade-out absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black pointer-events-none" />
                     </div>
                 </div>
-                <h1
-                    className={`text-white text-5xl md:text-7xl font-bold font-playfair tracking-wide ${heroVisible ? 'animate-scale-in' : 'opacity-0'
-                        }`}
-                    style={{ animationDelay: heroVisible ? '900ms' : '0ms' }}
-                >
-                    {name}
-                </h1>
-                <p
-                    className={`text-white/90 text-base md:text-lg text-center max-w-lg mx-auto font-montserrat ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'
-                        }`}
-                    style={{ animationDelay: heroVisible ? '1300ms' : '0ms' }}
-                >
-                    {tagline}
-                </p>
+                <Column gap={6}>
+
+                    <h1
+                        className={`text-white text-5xl md:text-7xl font-bold font-playfair tracking-wide ${heroVisible ? 'animate-scale-in' : 'opacity-0'
+                            }`}
+                        style={{ animationDelay: heroVisible ? '900ms' : '0ms' }}
+                    >
+                        {name}
+                    </h1>
+                    <p
+                        className={`text-white/90 text-lg text-center mx-auto font-montserrat ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'
+                            }`}
+                        style={{ animationDelay: heroVisible ? '1300ms' : '0ms' }}
+                    >
+                        {tagline}
+                    </p>
+                </Column>
                 <div
                     className={`w-20 h-px bg-white/70 my-1 ${heroVisible ? 'animate-fade-in' : 'opacity-0'
                         }`}
@@ -111,7 +115,7 @@ export default function Hero({
                         {_scrollerTotal.map((item, index) => (
                             <div
                                 key={`${item}-${index}`}
-                                className="text-white text-xl text-center h-[2rem] leading-[2rem]"
+                                className="text-white text-lg text-center h-[2rem] leading-[2rem]"
                             >
                                 {item}
                             </div>

@@ -161,6 +161,15 @@ export const strings = {
             ["exoad", "#11fa95b2"]
         ]
     },
+    stalk: [
+        {
+            city: "New York City",
+            state: "NY",
+        },
+        {
+            city: "Washington D.C.",
+        }
+    ],
     links: {
         github: "https://github.com/exoad",
         github_aria: "My GitHub Profile",
@@ -188,11 +197,11 @@ export const strings = {
     timeline: timeline,
     pages: {
         home: {
-            tagline: "Building software with a passion for simplicity and performance.",
+            tagline: "Mobile Dev • Compilers • Computer Architecture",
             scroll_text: "More to see below",
             // currently_working: "Currently working on: Systems programming & compiler optimization",
             subtitles: [
-                "Hobbyist Programmer",
+                "Hobbyist Developer",
                 "Full-time University Student",
                 "Open-Source Enthusiast",
                 "AI/ML Researcher",
@@ -203,17 +212,14 @@ export const strings = {
                 "Avid Movie Watcher"
             ],
             about: {
-                title: "About Me",
-                content: "Hi! I am Jiaming, a hobbyist programmer and full-time university student with a passion for low-level systems. My interests extend to mobile and web development, and I'm currently engaged in university research on AL & ML, while exploring compiler design as a personal passion project. Beyond programming, I find inspiration through hiking, photography, and watching movies.",
-                toolkit_title: "My Toolkit",
+                content: "I'm Jiaming, a university student and hobbyist programmer passionate about low-level systems. I explore mobile and web development, research AI & ML, and tinker with compiler design. Outside of code, I enjoy hiking, photography, and movies.",
+                toolkit_title: "My Favorite Tools",
                 technologies: [
                     technologies.c,
                     technologies.cpp,
-                    technologies.dart,
                     technologies.flutter,
                     technologies.kotlin,
                     technologies.java,
-                    technologies.jetpack_compose,
                     technologies.python,
                 ],
                 more: "Learn More About Me",
@@ -231,7 +237,6 @@ export const strings = {
                 title: "Currently",
                 content: "2nd year Undergraduate student at the University of Maryland - College Park."
             },
-
         },
         not_found: {
             super: "404",

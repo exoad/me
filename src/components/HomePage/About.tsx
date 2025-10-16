@@ -1,9 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
-import type { TTechnology } from '../../types.d.ts';
-import { strings, technologies } from '../../data/shared.ts';
+import { strings } from '../../data/shared.ts';
 import profilePic from '../../assets/images/profile.webp';
 import AttentionButton from '../AttentionButton';
 import { Column, Row } from '../FlexLayouter.tsx';
+import { MdLocationPin } from "react-icons/md";
 
 export default function About({
     navigate,
@@ -21,10 +21,13 @@ export default function About({
                     if (entry.isIntersecting) {
                         setkindaVisible(true);
                         onIntersect(true);
+                    } else {
+                        setkindaVisible(false);
+                        onIntersect(false);
                     }
                 });
             },
-            { threshold: 0.2 }
+            { threshold: 0.3 }
         );
         if (aboutRef.current) {
             observer.observe(aboutRef.current);
@@ -38,28 +41,36 @@ export default function About({
                 <img
                     src={profilePic}
                     alt="Profile"
-                    className={`w-48 h-48 md:w-64 md:h-64 object-cover hover:scale-105 transition-all duration-1000 ${kindaVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
+                    className={`w-48 h-48 md:w-64 md:h-64 object-cover hover:scale-105 transition-all delay-200 duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
                     style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
                     draggable={false}
                     loading="eager"
                 />
-                <PfpDividerLine kindaVisible={kindaVisible} />
-                <div className="flex flex-col items-center max-w-2xl w-full gap-16">
-                    <h1
-                        className={`text-white text-4xl md:text-7xl lg:text-7xl font-bold font-playfair transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                        style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
-                    >
-                        {strings.pages.home.about.title}
-                    </h1>
+                <div className="flex flex-col items-center max-w-2xl w-full gap-8">
+                    <Row gap={4}>
+                        {strings.stalk.map((stalk, index) => {
+                            return (
+                                <div
+                                    key={`${stalk.city}-${index}`}
+                                    className={`flex text-white px-2 py-1 items-center gap-2 transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
+                                    style={{ transitionDelay: `${index * 200}ms` }}
+                                >
+                                    <MdLocationPin className="text-md" />
+                                    {stalk.city}{stalk.state ? `, ${stalk.state}` : ""}
+                                </div>
+                            );
+                        })}
+                    </Row>
                     <p
-                        className={`text-white text-base md:text-lg leading-relaxed font-montserrat text-center transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                        className={`text-white text-base md:text-lg leading-relaxed font-montserrat text-center transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
                         style={{ transitionDelay: kindaVisible ? '300ms' : '0ms' }}
                     >
                         {strings.pages.home.about.content}
                     </p>
+                    <PfpDividerLine kindaVisible={kindaVisible} />
                     <div className="flex flex-col items-center gap-4">
                         <h2
-                            className={`text-white text-2xl font-bold font-playfair transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                            className={`text-white text-2xl font-bold font-playfair transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
                             style={{ transitionDelay: kindaVisible ? '500ms' : '0ms' }}
                         >
                             {strings.pages.home.about.toolkit_title}
@@ -70,10 +81,10 @@ export default function About({
                                 return (
                                     <div
                                         key={item[0]}
-                                        className={`flex items-center gap-2 transition-all duration-1000 ${kindaVisible ? 'opacity-100' : 'opacity-0'}`}
-                                        style={{ transitionDelay: `${index * 350}ms`, color: item[1].color }}
+                                        className={`flex items-center gap-2 transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
+                                        style={{ transitionDelay: `${index * 150}ms`, color: item[1].color }}
                                     >
-                                        <Icon className="text-xs" />
+                                        <Icon className="text-md" />
                                         <span className="text-white text-sm font-montserrat">{item[1].name}</span>
                                     </div>
                                 );
@@ -98,7 +109,7 @@ export default function About({
                             useChildStyle
                             noUnderline
                         >
-                            <span className="relative z-10 font-playfair text-md text-white/70 font-light tracking-wide transition-transform duration-300 group-hover:scale-105">
+                            <span className="relative z-10 text-base font-montserrat text-white/70 font-light tracking-wide transition-transform duration-300 group-hover:scale-105">
                                 {strings.pages.home.about.cool_photos}
                             </span>
                         </AttentionButton>

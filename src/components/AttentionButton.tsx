@@ -25,7 +25,7 @@ export default function AttentionButton({
             className={`relative flex flex-col items-center justify-center text-white py-2 px-2 delay-150 duration-700 group ${noUnderline ? '' : 'border-b-1 border-b-white'} ${className}`}
             style={style}
         >
-            {!useChildStyle ? <span className="relative z-10 font-playfair text-lg font-semibold tracking-wide transition-transform duration-300 group-hover:scale-105">
+            {!useChildStyle ? <span className="relative z-10 font-montserrat text-base font-semibold tracking-wide transition-transform duration-300 group-hover:scale-105">
                 {children}
             </span> : children}
         </button>
