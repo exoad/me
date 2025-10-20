@@ -1,5 +1,5 @@
 {
-  "name": "worker-name",
+  "name": "mywebsite",
   "compatibility_date": "2025-10-20",
   "main": "src/index.ts"
 }
