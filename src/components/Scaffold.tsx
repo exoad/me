@@ -1,3 +1,4 @@
+import React from 'react';
 import Footer from './Footer';
 import MenuBar from './MenuBar';
 import SpinningSquareDivider from './SpinningSquareDivider';
@@ -21,4 +22,10 @@ export default function Scaffold(props: Readonly<{
             {!props.skipFooter && <Footer />}
         </div>
     );
+}
+
+export function ScaffoldContent(props: Readonly<{ useDefaultLayout?: boolean; children: React.ReactNode; className?: string; }>) {
+    return <div className={`bg-black min-h-screen ${props.className ?? ""} ${props.useDefaultLayout ? 'flex flex-col items-center justify-center' : ''} px-4 sm:px-8 md:px-16 py-16`}>
+        {props.children}
+    </div>;
 }

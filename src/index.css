@@ -33,11 +33,12 @@ body {
 
 @supports selector(::-webkit-scrollbar) {
     *::-webkit-scrollbar {
-        width: 0.48em;
+        width: 0.36em;
     }
 
     *::-webkit-scrollbar-track {
         background: black;
+        border-left: 1px solid #333333;
     }
 
     *::-webkit-scrollbar-thumb {

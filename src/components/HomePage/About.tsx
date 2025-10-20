@@ -17,7 +17,7 @@ export default function About({
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
-                entries.forEach((entry) => {
+                for (const entry of entries) {
                     if (entry.isIntersecting) {
                         setkindaVisible(true);
                         onIntersect(true);
@@ -25,7 +25,7 @@ export default function About({
                         setkindaVisible(false);
                         onIntersect(false);
                     }
-                });
+                }
             },
             { threshold: 0.3 }
         );

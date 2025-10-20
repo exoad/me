@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { strings, timeline } from "../data/shared.ts";
-import Scaffold from '../components/Scaffold.tsx';
+import Scaffold, { ScaffoldContent } from '../components/Scaffold.tsx';
 import PageDescriptor from '../components/PageDescriptor.tsx';
+import { Column } from '../components/FlexLayouter.tsx';
 
 export default function AboutPage({ scaffoldProps = {} }) {
     const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
@@ -11,11 +12,11 @@ export default function AboutPage({ scaffoldProps = {} }) {
             if (!ref) return null;
             const observer = new IntersectionObserver(
                 (entries) => {
-                    entries.forEach((entry) => {
+                    for (const entry of entries) {
                         if (entry.isIntersecting) {
                             setVisibleItems(prev => new Set([...prev, index]));
                         }
-                    });
+                    }
                 },
                 { threshold: 0.3 }
             );
@@ -23,7 +24,9 @@ export default function AboutPage({ scaffoldProps = {} }) {
             return observer;
         });
         return () => {
-            observers.forEach(observer => observer?.disconnect());
+            for (const observer of observers) {
+                observer?.disconnect();
+            }
         };
     }, []);
     useEffect(() => {
@@ -33,17 +36,16 @@ export default function AboutPage({ scaffoldProps = {} }) {
     }, []);
     return (
         <Scaffold {...scaffoldProps}>
-            <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 md:px-16 py-16">
-                <div className="max-w-5xl flex flex-col items-center">
+            <ScaffoldContent useDefaultLayout>
+                <Column className="max-w-5xl">
                     <PageDescriptor noBottomPadding title={strings.pages.about.title} description={strings.pages.about.description} />
-                </div>
+                </Column>
                 <div className="mb-16 mt-8 text-center max-w-lg">
                     <h2 className="text-white text-lg font-semibold mb-4 font-montserrat">{strings.pages.about.currently.title}
                     </h2>
                     <p className="text-white/70 text-base md:text-lg font-light leading-relaxed font-montserrat">{strings.pages.about.currently.content}
                     </p>
                 </div>
-
                 <div className="max-w-8xl">
                     <div className="relative">
                         <div className="absolute left-6 top-0 w-px bg-gradient-to-b from-white to-transparent h-full shadow-[0_0_16px_black]" />
@@ -81,7 +83,7 @@ export default function AboutPage({ scaffoldProps = {} }) {
                         </div>
                     </div>
                 </div>
-            </div>
+            </ScaffoldContent>
         </Scaffold>
     );
 }

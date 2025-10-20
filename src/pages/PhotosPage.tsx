@@ -48,11 +48,11 @@ export default function PhotosPage({ scaffoldProps = {} }) {
         }
       });
     }, options);
-    Object.entries(photoRefs.current).forEach(([_, ref]) => {
+    for (const [_, ref] of Object.entries(photoRefs.current)) {
       if (ref) {
         observer.observe(ref);
       }
-    });
+    }
     return () => observer.disconnect();
   }, []);
 

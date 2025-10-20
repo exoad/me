@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import Scaffold from '../components/Scaffold';
+import Scaffold, { ScaffoldContent } from '../components/Scaffold';
 import { strings } from '../data/shared.ts';
 
 
@@ -11,13 +11,13 @@ export default function ContactPage({ scaffoldProps = {} }) {
     }, []);
     return (
         <Scaffold {...scaffoldProps}>
-            <div className="min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-16">
+            <ScaffoldContent useDefaultLayout>
                 <div className="flex flex-col md:flex-row items-center md:gap-16 gap-8 w-full max-w-4xl">
                     <div className="flex flex-col items-center md:items-start text-center md:text-left gap-8 w-full">
                         <h1 className="text-white text-4xl md:text-6xl font-bold font-playfair mb-2 transition-all duration-700">
                             {strings.pages.contact.title}
                         </h1>
-                        <p className="text-white/80 text-base md:text-lg font-montserrat leading-relaxed mb-4 transition-all duration-700">
+                        <p className="text-white/70 text-base md:text-lg font-montserrat leading-relaxed mb-4 transition-all duration-700">
                             {strings.pages.contact.description}
                         </p>
                         <ResumeBlock />
@@ -32,7 +32,7 @@ export default function ContactPage({ scaffoldProps = {} }) {
                     </div>
 
                 </div>
-            </div>
+            </ScaffoldContent>
         </Scaffold>
     );
 }

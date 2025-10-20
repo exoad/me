@@ -120,17 +120,17 @@
 }
 
 .page-transition-enter.fast {
-    animation-duration: 0.8s;
+    animation-duration: 1.2s;
 }
 
 .page-transition-exit.fast {
-    animation-duration: 0.7s;
-}
-
-.page-transition-enter.slow {
     animation-duration: 1s;
 }
 
+.page-transition-enter.slow {
+    animation-duration: 1.3s;
+}
+
 .page-transition-exit.slow {
-    animation-duration: 0.8s;
+    animation-duration: 1.15s;
 }

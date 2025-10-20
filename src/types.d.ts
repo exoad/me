@@ -4,6 +4,8 @@ export interface TTechnology {
     color: string;
 }
 
+export type TProjectState = "finished" | "archived" | "active";
+
 export interface TProject {
     title: string;
     description: string;
@@ -11,7 +13,9 @@ export interface TProject {
     logo?: string;
     link: string;
     featured: boolean;
+    demoImage?: string;
     technologies: TTechnology[];
+    state: TProjectState;
 }
 
 export interface TTimelineEntry {

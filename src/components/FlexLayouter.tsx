@@ -52,7 +52,7 @@ function _findFlexClass(
 
 export function Row({
     children, mainAxisAlignment = "start", crossAxisAlignment = "center", gap = 0, className = "",
-}: FlexLayouter) {
+}: Readonly<FlexLayouter>) {
     return (
         <div
             className={`${_findFlexClass(
@@ -69,7 +69,7 @@ export function Row({
 
 export function Column({
     children, mainAxisAlignment = "start", crossAxisAlignment = "center", gap = 0, className = "",
-}: FlexLayouter) {
+}: Readonly<FlexLayouter>) {
     return (
         <div
             className={`${_findFlexClass(

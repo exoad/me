@@ -1,23 +1,18 @@
-import { useState, useEffect } from 'react';
 import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import { strings } from '../data/shared.ts';
-import Scaffold from '../components/Scaffold.tsx';
+import Scaffold, { ScaffoldContent } from '../components/Scaffold.tsx';
 import HoverShowLine from '../components/HoverShowLine.tsx';
 import { FiChevronLeft } from 'react-icons/fi';
 import StarBg from "../components/StarsBg";
+import { Column } from '../components/FlexLayouter.tsx';
 
 export default function NotFound({ scaffoldProps = {} }) {
-    const [visible, setVisible] = useState(false);
-    useEffect(() => {
-        const timer = setTimeout(() => setVisible(true), 100);
-        return () => clearTimeout(timer);
-    }, []);
     return (
         <Scaffold showSpinner={false} {...scaffoldProps}>
             <StarBg scrollY={0} />
+            <ScaffoldContent useDefaultLayout>
 
-            <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 md:px-16">
-                <div className={`flex flex-col items-center justify-center gap-16 transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}>
+                <Column gap={16} mainAxisAlignment="center" className="transition-opacity duration-1000">
                     <h1
                         className="text-white text-8xl md:text-9xl font-bold font-playfair"
                         style={{ textShadow: '0 0 20px rgba(255,255,255,0.3)' }}
@@ -33,21 +28,17 @@ export default function NotFound({ scaffoldProps = {} }) {
                         {strings.pages.not_found.description}
                     </p>
                     <SpinningSquareDivider />
-                    <div className="flex flex-row items-center justify-centergap-2 text-white/70">
-                        <FiChevronLeft className="text-white text-2xl mt-4" />
-                        <button
-                            className="bg-transparent text-white md:text-base font-light py-3 px-6 cursor-pointer hover:text-gray-300 transition-colors duration-300 group font0-montserrat"
-                            onClick={() => window.history.back()}
-                        >
-                            <span className="text-xl">
-                                {strings.pages.not_found.go_back}
-                            </span>
-                            <HoverShowLine />
-                        </button>
-
-                    </div>
-                </div>
-            </div>
+                    <button
+                        className="bg-transparent text-white md:text-base font-light py-3 px-6 cursor-pointer hover:text-gray-300 transition-colors duration-300 group font0-montserrat"
+                        onClick={() => globalThis.history.back()}
+                    >
+                        <span className="text-xl">
+                            {strings.pages.not_found.go_back}
+                        </span>
+                        <HoverShowLine />
+                    </button>
+                </Column>
+            </ScaffoldContent>
         </Scaffold>
     );
 }

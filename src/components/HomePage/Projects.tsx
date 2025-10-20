@@ -48,7 +48,7 @@ export default function Projects({
                     style={{ transitionDelay: kindaVisible ? '250ms' : '0ms' }}
                 ></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-                    {projects.map((project, index) => (
+                    {projects.filter((project, _) => project.featured).map((project, index) => (
                         <div
                             key={project.title}
                             className={`w-80 bg-transparent transition-all duration-1000 ease-out p-8 grid grid-rows-[auto_1fr_auto] min-h-[22rem] ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
@@ -86,7 +86,6 @@ export default function Projects({
                         </div>
                     ))}
                 </div>
-
                 <div className="h-8" />
                 <AttentionButton
                     ariaLabel='See More'

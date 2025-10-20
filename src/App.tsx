@@ -3,12 +3,12 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import NotFound from './pages/NotFound';
+import ProjectsPage from './pages/ProjectsPage';
 import PhotosPage from './pages/PhotosPage';
 import MenuBar from './components/MenuBar';
 import Footer from './components/Footer';
 import './styles/Animations.css';
 import './styles/AppLayout.css';
-import UnderConstruction from './pages/UnderConstructionPage';
 
 interface WithPageTransitionProps {
   [key: string]: unknown;
@@ -41,15 +41,14 @@ function AnimatedRoutes() {
   const TransitionedContactPage = withPageTransition(ContactPage, 'default');
   const TransitionedPhotosPage = withPageTransition(PhotosPage, 'slow');
   const TransitionedNotFound = withPageTransition(NotFound, 'fast');
-  const TransitionedUnderConstruction = withPageTransition(UnderConstruction, 'fast');
+  const TransitionedProjectsPage = withPageTransition(ProjectsPage, 'slow');
   return (
     <Routes>
       <Route path="/" element={<TransitionedHomePage />} />
       <Route path="/about" element={<TransitionedAboutPage />} />
-      <Route path="/projects" element={<TransitionedUnderConstruction />} />
+      <Route path="/projects" element={<TransitionedProjectsPage />} />
       <Route path="/photos" element={<TransitionedPhotosPage />} />
       <Route path="/contacts" element={<TransitionedContactPage />} />
-      {/* <Route path="/under-construction" element={<TransitionedUnderConstruction />} /> */}
       <Route path="*" element={<TransitionedNotFound />} />
     </Routes>
   );

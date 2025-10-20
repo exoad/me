@@ -1,4 +1,4 @@
-import { strings, featuredProjects } from "../data/shared.ts";
+import { strings } from "../data/shared.ts";
 import Scaffold from '../components/Scaffold.tsx';
 import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import Hero from '../components/HomePage/Hero';

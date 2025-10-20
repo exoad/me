@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import { strings } from '../data/shared.ts';
-import Scaffold from '../components/Scaffold.tsx';
+import Scaffold, { ScaffoldContent } from '../components/Scaffold.tsx';
 import HoverShowLine from '../components/HoverShowLine.tsx';
 import { FiChevronLeft } from 'react-icons/fi';
 import { MdConstruction } from "react-icons/md";
@@ -14,7 +14,7 @@ export default function UnderConstruction({ scaffoldProps = {} }) {
     }, []);
     return (
         <Scaffold showSpinner={false} {...scaffoldProps}>
-            <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 md:px-16">
+            <ScaffoldContent useDefaultLayout>
                 <WarpTunnelBg scrollY={1} />
                 <div className={`flex flex-col items-center justify-center gap-16 transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}>
                     <MdConstruction className="text-white text-8xl md:text-9xl" />
@@ -31,7 +31,7 @@ export default function UnderConstruction({ scaffoldProps = {} }) {
                         <FiChevronLeft className="text-white text-2xl mt-4" />
                         <button
                             className="bg-transparent text-white md:text-base font-light py-3 px-6 cursor-pointer hover:text-gray-300 transition-colors duration-300 group font0-montserrat"
-                            onClick={() => window.history.back()}
+                            onClick={() => globalThis.history.back()}
                         >
                             <span className="text-xl">
                                 {strings.pages.not_found.go_back}
@@ -41,7 +41,7 @@ export default function UnderConstruction({ scaffoldProps = {} }) {
 
                     </div>
                 </div>
-            </div>
+            </ScaffoldContent>
         </Scaffold>
     );
 }
