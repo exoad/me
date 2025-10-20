@@ -2,11 +2,16 @@ import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import { strings } from '../data/shared.ts';
 import Scaffold, { ScaffoldContent } from '../components/Scaffold.tsx';
 import HoverShowLine from '../components/HoverShowLine.tsx';
-import { FiChevronLeft } from 'react-icons/fi';
 import StarBg from "../components/StarsBg";
 import { Column } from '../components/FlexLayouter.tsx';
+import { useEffect } from 'react';
 
 export default function NotFound({ scaffoldProps = {} }) {
+    useEffect(() => {
+        if (window.scrollY > 0) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, []);
     return (
         <Scaffold showSpinner={false} {...scaffoldProps}>
             <StarBg scrollY={0} />

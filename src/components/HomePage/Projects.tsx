@@ -3,6 +3,8 @@ import { hexToRgba } from '../../utils/css';
 import HoverShowLine from '../HoverShowLine';
 import AttentionButton from '../AttentionButton.tsx';
 import { projects, strings } from '../../data/shared.ts';
+import { Row } from '../FlexLayouter.tsx';
+import ProjectsColorBar from '../ProjectsColorBar.tsx';
 
 export default function Projects({
     navigate,
@@ -16,7 +18,7 @@ export default function Projects({
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
-                entries.forEach((entry) => {
+                for (const entry of entries) {
                     if (entry.isIntersecting) {
                         setkindaVisible(true);
                         onIntersect(true);
@@ -24,7 +26,7 @@ export default function Projects({
                         setkindaVisible(false);
                         onIntersect(false);
                     }
-                });
+                }
             },
             { threshold: 0.3 }
         );
@@ -71,9 +73,7 @@ export default function Projects({
                                 <p className="mt-1 text-white/90 text-sm text-center font-montserrat">{project.description}</p>
                             </div>
                             <div className="flex flex-col items-center gap-3 row-start-3 mt-4">
-                                <p className="text-white/80 text-xs text-center font-montserrat">
-                                    {project.technologies.map(tech => tech.name).join(', ')}
-                                </p>
+                                <ProjectsColorBar technologies={project.technologies} ref={project.title} isSmall />
                                 <span className="block w-12 h-px bg-white/60" />
                                 <button
                                     className="bg-transparent border-none text-white text-sm font-light font-montserrat py-2 px-6 cursor-pointer duration-300 group"
@@ -91,7 +91,7 @@ export default function Projects({
                     ariaLabel='See More'
                     onClick={() => navigate('/projects')}
                     className={`transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
-                    style={{ transitionDelay: kindaVisible ? `${300 + (projects.length * 200) + 400}ms` : '0ms' }}
+                    style={{ transitionDelay: kindaVisible ? `${(projects.length * 75)}ms` : '0ms' }}
                 >
                     {strings.pages.home.view_all_projects_button}
                 </AttentionButton>

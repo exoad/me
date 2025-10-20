@@ -156,7 +156,7 @@ export const projects: TProject[] = [
     },
     {
         title: "Halcyon",
-        description: "A desktop audio player with a modern UI, engineered for minimal CPU and memory footprint, smooth visualizations, and support for 20+ audio formats.",
+        description: "A desktop audio player with a modern UI supporting for over 20 audio formats supported across all major operating systems.",
         color: "#4ecdc4",
         link: "https://exoad.github.io/Halcyon.github/",
         technologies: [technologies.c, technologies.java, technologies.opengl],
