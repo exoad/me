@@ -1,5 +1,6 @@
 {
   "name": "mywebsite",
   "compatibility_date": "2025-10-20",
-  "main": "src/main.tsx"
+  "main": "src/main.tsx",
+  "pages_build_output_dir": "./dist"
 }
