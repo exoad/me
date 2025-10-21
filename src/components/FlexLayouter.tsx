@@ -46,41 +46,39 @@ function _findFlexClass(
         direction === "row" ? "flex-row" : "flex-col",
         justifyMap[main],
         alignMap[cross],
-        gap ? `gap-${gap}` : "",
+       gap > 0 ? `gap-${gap}` : "",
     ].filter(Boolean).join(" ");
 }
 
 export function Row({
-    children, mainAxisAlignment = "start", crossAxisAlignment = "center", gap = 0, className = "",
-
+    children,
+    mainAxisAlignment = "start",
+    crossAxisAlignment = "center",
+    gap = 0,
+    className = "",
 }: Readonly<FlexLayouter>) {
     return (
         <div
-            className={`${_findFlexClass(
-                "row",
-                mainAxisAlignment,
-                crossAxisAlignment,
-                gap
-            )} ${className}`}
+            className={`${_findFlexClass("row", mainAxisAlignment, crossAxisAlignment, gap)} ${className}`}
         >
-            {children}
+            {children ?? null}
         </div>
     );
 }
 
 export function Column({
-    children, mainAxisAlignment = "start", crossAxisAlignment = "center", gap = 0, className = "",
+    children,
+    mainAxisAlignment = "start",
+    crossAxisAlignment = "center",
+    gap = 0,
+    className = "",
 }: Readonly<FlexLayouter>) {
     return (
         <div
-            className={`${_findFlexClass(
-                "col",
-                mainAxisAlignment,
-                crossAxisAlignment,
-                gap
-            )} ${className}`}
+            className={`${_findFlexClass("col", mainAxisAlignment, crossAxisAlignment, gap)} ${className}`}
         >
-            {children}
+            {children ?? null}
         </div>
     );
 }
+

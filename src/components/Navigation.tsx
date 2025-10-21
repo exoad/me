@@ -45,13 +45,13 @@ export default function Navigation({ items, onNavigate }: Readonly<{
                     <MdMenu size="2rem" />
                 </button>
             </div>
-            {isSidebarOpen && (
+            {isSidebarOpen ? (
                 <div
                     className="fixed inset-0 z-30 bg-black/40"
                     onClick={() => setIsSidebarOpen(false)}
                     aria-hidden="true"
                 />
-            )}
+            ) : null}
             <div className="md:hidden">
                 {createPortal(
                     <div
