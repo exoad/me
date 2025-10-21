@@ -36,7 +36,7 @@ export default function About({
     }, [onIntersect]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-14 py-3" ref={aboutRef}>
+        <div className="min-h-screen flex items-center justify-center bg-black px-12 sm:px-8 md:px-14 py-3" ref={aboutRef}>
             <div className="flex flex-col justify-center items-center md:gap-6 gap-4 w-full max-w-6xl">
                 <img
                     src={profilePic}
@@ -52,7 +52,7 @@ export default function About({
                             return (
                                 <div
                                     key={`${stalk.city}-${index}`}
-                                    className={`flex text-white px-2 py-1 items-center gap-2 transition-all duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
+                                    className={`flex text-white px-2 py-1 items-center text-center gap-2 transition-all duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
                                     style={{ transitionDelay: `${index * 200}ms` }}
                                 >
                                     <MdLocationPin className="text-md" />

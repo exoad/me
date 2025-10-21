@@ -6,7 +6,7 @@ import { Column } from '../components/FlexLayouter.tsx';
 
 export default function AboutPage({ scaffoldProps = {} }) {
     const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
-    const itemRefs = useRef<(HTMLDivElement | null)[]>(Array(timeline.length).fill(null));
+    const itemRefs = useRef<(HTMLDivElement | null)[]>(new Array(timeline.length).fill(null));
     useEffect(() => {
         const observers = itemRefs.current.map((ref, index) => {
             if (!ref) return null;

@@ -25,7 +25,7 @@ export default function Scaffold(props: Readonly<{
 }
 
 export function ScaffoldContent(props: Readonly<{ useDefaultLayout?: boolean; children: React.ReactNode; className?: string; }>) {
-    return <div className={`bg-black min-h-screen ${props.className ?? ""} ${props.useDefaultLayout ? 'flex flex-col items-center justify-center' : ''} px-4 sm:px-8 md:px-16 py-16`}>
+    return <div className={`bg-black min-h-screen ${props.className ?? ""} ${props.useDefaultLayout ? 'flex flex-col items-center justify-center' : ''} px-4 sm:px-8 md:px-16 py-32`}>
         {props.children}
     </div>;
 }

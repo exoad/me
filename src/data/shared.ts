@@ -345,7 +345,10 @@ export const strings = {
         about: "ABOUT",
         projects: "PROJECTS",
         photos: "PHOTOS",
-        contact: "CONTACT"
+        contact: "CONTACT",
+        mobile_menu: {
+            title: "Menu"
+        }
     },
     name: "Jiaming Meng",
     footer: {
@@ -426,9 +429,8 @@ export const strings = {
             github: "exoad",
             github_aria: "My GitHub Profile",
             resume: {
-                title: "My Resume",
                 aria: "Download my resume (PDF)",
-                button_label: "Download Resume",
+                button_label: "Download My Resume",
                 updated: "PDF, updated Oct 2025"
             }
         },

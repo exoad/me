@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Scaffold, { ScaffoldContent } from '../components/Scaffold';
 import { strings } from '../data/shared.ts';
+import { Column } from '../components/FlexLayouter.tsx';
 
 
 export default function ContactPage({ scaffoldProps = {} }) {
@@ -39,7 +40,6 @@ export default function ContactPage({ scaffoldProps = {} }) {
 
 function ResumeBlock() {
     return <div className="w-full max-w-md mt-4 mb-2 flex flex-col items-center md:items-start">
-        <h2 className="text-white text-xl font-bold font-playfair mb-2">{strings.pages.contact.resume.title}</h2>
         <a
             href="https://exoad.github.io/me-pictures-bucket/Resume%20(V5).pdf"
             target="_blank"
@@ -50,7 +50,7 @@ function ResumeBlock() {
             <span className="relative z-10 font-playfair text-[1rem] font-semibold tracking-wide transition-transform duration-300 group-hover:scale-105">
                 {strings.pages.contact.resume.button_label}
             </span>
-            <span className="absolute left-0 bottom-0 w-full h-px bg-gradient-to-r from-white via-white/60 to-white opacity-70 transition-all duration-500 group-hover:opacity-100" />
+            <span className="absolute left-0 bottom-0 w-full h-px bg-white" />
         </a>
         <span className="text-xs text-white/60 font-montserrat mt-2">
             {strings.pages.contact.resume.updated}
@@ -60,14 +60,21 @@ function ResumeBlock() {
 
 function ContactLink({ href, label, value, subtitle = "" }) {
     return (
-        <div className="flex flex-col">
-            <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined} className="flex items-center gap-3 text-white font-montserrat transition-colors duration-200">
-                <span className="font-bold">{label}:</span>
-                {value}
+        <Column className="items-center md:items-start">
+            <a
+                href={href}
+                target={href.startsWith("http") ? "_blank" : undefined}
+                rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 text-white font-montserrat transition-colors duration-200"
+            >
+                <span className="font-bold font-playfair text-xl">{label}</span>
+                <span className="text-white/70" >{value}</span>
             </a>
             {subtitle && (
-                <span className="text-xs text-white/70 font-montserrat mt-1">{subtitle}</span>
+                <span className="text-xs italic text-white/50 font-montserrat mt-1">
+                    {subtitle}
+                </span>
             )}
-        </div>
+        </Column>
     );
 }

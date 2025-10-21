@@ -74,7 +74,6 @@ export default function Projects({
                             </div>
                             <div className="flex flex-col items-center gap-3 row-start-3 mt-4">
                                 <ProjectsColorBar technologies={project.technologies} ref={project.title} isSmall />
-                                <span className="block w-12 h-px bg-white/60" />
                                 <button
                                     className="bg-transparent border-none text-white text-sm font-light font-montserrat py-2 px-6 cursor-pointer duration-300 group"
                                     onClick={() => window.open(project.link, '_blank')}
