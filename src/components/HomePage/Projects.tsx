@@ -3,7 +3,6 @@ import { hexToRgba } from '../../utils/css';
 import HoverShowLine from '../HoverShowLine';
 import AttentionButton from '../AttentionButton.tsx';
 import { projects, strings } from '../../data/shared.ts';
-import { Row } from '../FlexLayouter.tsx';
 import ProjectsColorBar from '../ProjectsColorBar.tsx';
 
 export default function Projects({
