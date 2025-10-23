@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "serve": "vite preview --host",
-    "prepare": "tw-patch"
+    "prepare": "tw-patch install"
   },
   "dependencies": {
     "react": "^19.1.0",
