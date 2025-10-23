@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://your-website-url.com/sitemap.xml
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /vite/
+Disallow: /private/
+Sitemap: https://exoad.net/sitemap.xml
