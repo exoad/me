@@ -9,7 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "serve": "vite preview --host"
+    "serve": "vite preview --host",
+    "prepare": "tw-patch"
   },
   "dependencies": {
     "react": "^19.1.0",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@tailwindcss/vite": "^4.1.7",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
@@ -28,9 +30,10 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "tailwindcss": "^4.1.7",
-    "@tailwindcss/vite": "^4.1.7",
+    "tailwindcss-patch": "^7.1.6",
     "terser": "^5.44.0",
     "typescript": "^5.8.3",
+    "unplugin-tailwindcss-mangle": "^4.1.2",
     "vite": "^6.3.5"
   }
 }
