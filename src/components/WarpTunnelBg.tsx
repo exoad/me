@@ -7,10 +7,9 @@ export default function WarpTunnelBg({ scrollY }: Readonly<{ scrollY: number; }>
   const particles = useMemo(
     () =>
       Array.from({ length: _particles }).map((_, i) => {
-        const angle = Math.random() * Math.PI * 2;
         return {
           id: i,
-          angle,
+          angle: Math.random() * Math.PI * 2,
           life: 500 + Math.random() * 1000,
           speed: 5.5 + Math.random() * 20.3,
           delay: Math.random() * 2,

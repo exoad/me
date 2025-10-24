@@ -140,7 +140,7 @@ export default function Hero({
           }
         `}</style>
                 <div
-                    className={`flex gap-5 mt-3 ${heroVisible ? 'animate-scale-in' : 'opacity-0'
+                    className={`flex gap-6 mt-3 ${heroVisible ? 'animate-scale-in' : 'opacity-0'
                         }`}
                     style={{ animationDelay: heroVisible ? '2500ms' : '0ms' }}
                 >

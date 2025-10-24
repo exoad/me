@@ -1,18 +1,13 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import utwm from 'unplugin-tailwindcss-mangle/vite';
 import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    utwm({
-      classGenerator: {
-        classPrefix: "x-"
-      }
-    }),
   ],
   build: {
+    cssMinify: 'lightningcss',
     outDir: "dist",
     assetsInlineLimit: 0,
     emptyOutDir: true,
