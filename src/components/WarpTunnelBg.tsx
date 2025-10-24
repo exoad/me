@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import "../styles/WarpTunnelBg.css";
 
-const _particles = 320;
+const _particles = 420;
+
 
 export default function WarpTunnelBg({ scrollY }: Readonly<{ scrollY: number; }>) {
   const particles = useMemo(
@@ -15,6 +16,7 @@ export default function WarpTunnelBg({ scrollY }: Readonly<{ scrollY: number; }>
           delay: Math.random() * 2,
           size: 2 + Math.random() * 3,
           stretch: 4.5 + Math.random() * 6,
+
         };
       }),
     [_particles]

@@ -85,13 +85,8 @@ export default function Hero({
                     </div>
                 </div>
                 <Column gap={6}>
-
-                    <h1
-                        className={`text-white text-5xl md:text-7xl font-bold font-playfair tracking-wide ${heroVisible ? 'animate-scale-in' : 'opacity-0'
-                            }`}
-                        style={{ animationDelay: heroVisible ? '900ms' : '0ms' }}
-                    >
-                        {name}
+                    <h1 className="relative inline-block font-bold font-playfair text-5xl md:text-7xl">
+                        <span className="relative text-white">{name}</span>
                     </h1>
                     <p
                         className={`text-white/90 text-lg text-center mx-auto font-montserrat ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'

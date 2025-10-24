@@ -39,18 +39,18 @@ export const timeline: TTimelineEntry[] = [
         title: "First Steps in Programming",
         description: "Began messing with Scratch and HTML/CSS/JS to make simple games on the web.",
     },
-    {
-        displayDate: "2020",
-        isoDate: "2020-05-15",
-        title: "A Love for Object-Oriented Programming",
-        description: "Started learning Java in high school as well as learning to mod Minecraft with Forge.",
-    },
-    {
-        displayDate: "2021",
-        isoDate: "2021-01-10",
-        title: "First Open-Source Contribution",
-        description: "Started to learn about Git and GitHub and published some on-going small projects to test. I published my high school projects and some Discord bots I was making at the time.",
-    },
+    // {
+    //     displayDate: "2020",
+    //     isoDate: "2020-05-15",
+    //     title: "A Love for Object-Oriented Programming",
+    //     description: "Started learning Java in high school as well as learning to mod Minecraft with Forge.",
+    // },
+    // {
+    //     displayDate: "2021",
+    //     isoDate: "2021-01-10",
+    //     title: "First Open-Source Contribution",
+    //     description: "Started to learn about Git and GitHub and published some on-going small projects to test. I published my high school projects and some Discord bots I was making at the time.",
+    // },
     {
         displayDate: "2021",
         isoDate: "2021-02-10",
@@ -75,24 +75,24 @@ export const timeline: TTimelineEntry[] = [
         title: "A Year Long Passion Project: Halcyon",
         description: "Wrote a cross platform OpenGL graphics library in C with the audio and logic being handled by Java. This was my first time doing any kind of advanced graphics programming and it was a fun ride, but the complexity and burnout got to me after a year.",
     },
-    {
-        displayDate: "2022",
-        isoDate: "2022-08-20",
-        title: "Baby Upsolver",
-        description: "Began intereted in competitive programming and problem solving. I started doing problems on Codeforces and Codechef and studied algorithms and data structures on the side. I would eventually pause this journey to once again focus on projects and outside interests.",
-    },
-    {
-        displayDate: "2023",
-        isoDate: "2023-01-10",
-        title: "Dart & Flutter",
-        description: "Started learning Dart & Flutter to make cross-platform applications. I was drawn to the simplicity of the language and the ease of use of Flutter. I would later use this knowledge to remake Halcyon and countless other apps.",
-    },
-    {
-        displayDate: "2023",
-        isoDate: "2023-05-15",
-        title: "Began to standardize my code",
-        description: "I began to clean up code I have written not just stylistically, but semantically thru creating multiple shared libraries across languages for me to use. I also started to formulate my own best practices for Java, C, and Dart.",
-    },
+    // {
+    //     displayDate: "2022",
+    //     isoDate: "2022-08-20",
+    //     title: "Baby Upsolver",
+    //     description: "Began intereted in competitive programming and problem solving. I started doing problems on Codeforces and Codechef and studied algorithms and data structures on the side. I would eventually pause this journey to once again focus on projects and outside interests.",
+    // },
+    // {
+    //     displayDate: "2023",
+    //     isoDate: "2023-01-10",
+    //     title: "Dart & Flutter",
+    //     description: "Started learning Dart & Flutter to make cross-platform applications. I was drawn to the simplicity of the language and the ease of use of Flutter. I would later use this knowledge to remake Halcyon and countless other apps.",
+    // },
+    // {
+    //     displayDate: "2023",
+    //     isoDate: "2023-05-15",
+    //     title: "Began to standardize my code",
+    //     description: "I began to clean up code I have written not just stylistically, but semantically thru creating multiple shared libraries across languages for me to use. I also started to formulate my own best practices for Java, C, and Dart.",
+    // },
     {
         displayDate: "2024",
         isoDate: "2024-01-10",
@@ -107,15 +107,23 @@ export const timeline: TTimelineEntry[] = [
     },
     {
         displayDate: "2025",
-        isoDate: "2024-08-20",
+        isoDate: "2025-08-20",
         title: "A New Beginning",
         description: "Transferred to the University of Maryland - College Park and started off my Sophomore year fresh. I quickly began building connections with professors and peers and started research in AI/ML.",
     },
+    // {
+    //     displayDate: "October 2025",
+    //     isoDate: "2024-10-02",
+    //     title: "Published My Website",
+    //     description: "Went back to my roots and spent a weekend building and designing my personal website from scratch using React, TypeScript, and TailwindCSS. With the help of AI, I was able to polish the UI design to my liking.",
+    // },
     {
         displayDate: "October 2025",
-        isoDate: "2024-10-02",
-        title: "Published My Website",
-        description: "Went back to my roots and spent a weekend building and designing my personal website from scratch using React, TypeScript, and TailwindCSS. With the help of AI, I was able to polish the UI design to my liking.",
+        isoDate: "2025-10-19",
+        title: "Joined Startup Shell",
+        description: "I was accepted into Startup Shell, a student run startup incubator at UMD.",
+        link: "https://startupshell.org/"
+
     }
 ].sort((a, b) => new Date(b.isoDate).getTime() - new Date(a.isoDate).getTime()); // this is just a safety measure to ensure it is always sorted correctly especially since im bad with chronological events :(
 
@@ -135,7 +143,7 @@ import prismixLogo from "../assets/images/projects_logos/prismix.webp";
 export const projects: TProject[] = [
     {
         title: "Kira",
-        description: "A simple, pragmatic, object-oriented programming language focused on compile-time code generation and native performance.",
+        description: "A modern object oriented programming language focused on simplicity and maintainability.",
         color: "#d396ff",
         link: "https://github.com/exoad/kira",
         technologies: [technologies.kotlin, technologies.c],
@@ -372,9 +380,9 @@ export const strings = {
                 "Full-time University Student",
                 "Open-Source Enthusiast",
                 "AI/ML Researcher",
+                "Libre design Advocate",
                 "Part-time Upsolver",
                 "Design Minimalist",
-                "Tea Connoisseur",
                 "Casual Photographer",
                 "Avid Movie Watcher"
             ],
@@ -406,6 +414,11 @@ export const strings = {
             },
         },
         projects: {
+            title: {
+                prompt: "Projects",
+                figure: "What I Have Built",
+                label: "Built with my passion to enjoy learning novel concepts and creating libre solutions."
+            },
             project: {
                 view_project: "Visit Project"
             }
