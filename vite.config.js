@@ -8,7 +8,7 @@ export default defineConfig({
     tailwindcss(),
     utwm({
       classGenerator: {
-        classPrefix: ""
+        classPrefix: "x-"
       }
     }),
   ],
