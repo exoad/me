@@ -66,8 +66,7 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
                         {strings.pages.projects.title.label}
                     </p>
                 </Column>
-
-                <Divider className="w-full" />
+                <Divider className="w-full md:my-8 my-4" />
                 <div className="grid gap-8 md:gap-10 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                     {projects.map((proj, index) => (
                         <a
