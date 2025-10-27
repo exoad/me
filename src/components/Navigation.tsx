@@ -26,7 +26,7 @@ export default function Navigation({ items, onNavigate }: Readonly<{
 
     return (
         <div className="relative">
-            <nav className="hidden md:flex md:justify-start w-auto">
+            <nav className="hidden sm:flex sm:justify-start w-auto">
                 {items.map((item) => (
                     <NavLink
                         key={item.path}
@@ -36,7 +36,7 @@ export default function Navigation({ items, onNavigate }: Readonly<{
                     />
                 ))}
             </nav>
-            <div className="md:hidden">
+            <div className="sm:hidden">
                 <button
                     className="flex items-center justify-center py-3 text-white font-medium bg-transparent transition-colors active:scale-95"
                     onClick={() => setIsSidebarOpen(true)}
@@ -52,10 +52,9 @@ export default function Navigation({ items, onNavigate }: Readonly<{
                     aria-hidden="true"
                 />
             ) : null}
-            <div className="md:hidden">
+            <div className="sm:hidden sm:pt-20">
                 {createPortal(
-                    <div
-                        className={`fixed select-none bottom-0 left-0 w-screen h-screen bg-black/70 backdrop-blur-md border-t border-white/20 z-[99999] transform transition-transform ease-[cubic-bezier(0,0,0.2,1)] duration-300 ${isSidebarOpen ? 'translate-y-0' : 'translate-y-full'}`}
+                    <div className={`fixed inset-0 select-none w-screen h-screen bg-black/70 backdrop-blur-md border-t border-white/20 z-[99999] transform transition-transform ease-in-out duration-400 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
                     >
                         <div className="h-16 flex items-center justify-between px-6 border-b border-white/20">
                             <span className="text-2xl text-white font-medium">{strings.navigation.mobile_menu.title}</span>

@@ -27,7 +27,7 @@ export default function About({
                     }
                 }
             },
-            { threshold: 0.3 }
+            { threshold: 0.2 }
         );
         if (aboutRef.current) {
             observer.observe(aboutRef.current);
@@ -41,25 +41,15 @@ export default function About({
                 <img
                     src={profilePic}
                     alt="Profile"
-                    className={`w-48 h-48 md:w-64 md:h-64 object-cover hover:scale-105 transition-all delay-200 duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
+                    className={`w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 object-cover hover:scale-105 transition-all delay-200 duration-500 mb-8 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
                     style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
                     draggable={false}
-                    loading="eager"
+                    loading="lazy"
                 />
                 <div className="flex flex-col items-center max-w-2xl w-full gap-8">
-                    <Row gap={4}>
-                        {strings.stalk.map((stalk, index) => {
-                            return (
-                                <div
-                                    key={`${stalk.city}-${index}`}
-                                    className={`flex text-white px-2 py-1 items-center text-center gap-2 transition-all duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
-                                    style={{ transitionDelay: `${index * 200}ms` }}
-                                >
-                                    <MdLocationPin className="text-md" />
-                                    {stalk.city}{stalk.state ? `, ${stalk.state}` : ""}
-                                </div>
-                            );
-                        })}
+                    <Row gap={2} mainAxisAlignment="center" className={`text-white px-2 text-center gap-1 transition-all duration-500 delay-200 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}>
+                            <MdLocationPin className="text-md" />
+                            {`${strings.stalk.city}, ${strings.stalk.state}`}
                     </Row>
                     <p
                         className={`text-white text-base md:text-lg leading-relaxed font-montserrat text-center transition-all duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
@@ -84,7 +74,7 @@ export default function About({
                                         className={`flex items-center gap-2 transition-all duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
                                         style={{ transitionDelay: `${index * 120}ms`, color: item[1].color }}
                                     >
-                                        <Icon className="text-md" />
+                                        <Icon className="text-sm md:text-base" />
                                         <span className="text-white text-sm font-montserrat">{item[1].name}</span>
                                     </div>
                                 );

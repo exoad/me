@@ -8,6 +8,9 @@ import upwardsHandSignPic from '../../assets/images/upwards.webp';
 import { strings } from '../../data/shared.ts';
 import { Column } from '../FlexLayouter.tsx';
 
+const BASE_DELAY = 200;
+const STEP_DELAY = 300;
+
 export default function Hero({
     name,
     tagline,
@@ -74,7 +77,7 @@ export default function Hero({
                         <img
                             src={upwardsHandSignPic}
                             alt="Logo"
-                            className="w-42 h-42 md:w-36 md:h-36 object-contain"
+                            className="w-26 h-26 sm:w-36 sm:h-36 md:w-38 md:h-38 object-contain"
                             draggable={false}
                             fetchPriority="high"
                             loading="eager"
@@ -84,33 +87,34 @@ export default function Hero({
                         <div className="logo-overlay-fade-out absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black pointer-events-none" />
                     </div>
                 </div>
-                <Column gap={6}>
-                    <h1 className="relative inline-block font-bold font-playfair text-5xl md:text-7xl">
+                <Column gap={6} className="ease-in-out">
+                    <h1
+                        className={`relative inline-block font-bold text-center font-playfair text-5xl md:text-7xl ${heroVisible ? 'animate-fade-in-up' : 'opacity-0 scale-90'}`}
+                        style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 0}ms` : '0ms' }}
+                    >
                         <span className="relative text-white">{name}</span>
                     </h1>
                     <p
-                        className={`text-white/90 text-lg text-center mx-auto font-montserrat ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'
-                            }`}
-                        style={{ animationDelay: heroVisible ? '1300ms' : '0ms' }}
+                        className={`text-white px-6 sm:px-0 text-base md:text-lg text-center mx-auto font-montserrat ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
+                        style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 1}ms` : '0ms' }}
                     >
                         {tagline}
                     </p>
                 </Column>
                 <div
-                    className={`w-20 h-px bg-white/70 my-1 ${heroVisible ? 'animate-fade-in' : 'opacity-0'
-                        }`}
-                    style={{ animationDelay: heroVisible ? '1700ms' : '0ms' }}
+                    className={`w-20 h-px bg-white/70 my-1 ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
+                    style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 2}ms` : '0ms' }}
                 />
                 <div
-                    className={`overflow-hidden h-[2rem] ${heroVisible ? 'animate-fade-in' : 'opacity-0'
+                    className={`overflow-hidden h-[2rem] ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'
                         }`}
-                    style={{ animationDelay: heroVisible ? '2100ms' : '0ms' }}
+                    style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 3}ms` : '0ms' }}
                 >
                     <div className="subtitle-roller-anim flex flex-col font-montserrat">
                         {_scrollerTotal.map((item, index) => (
                             <div
                                 key={`${item}-${index}`}
-                                className="text-white text-lg text-center h-[2rem] leading-[2rem]"
+                                className="text-white text-base md:text-lg text-center h-[2rem] leading-[2rem]"
                             >
                                 {item}
                             </div>
@@ -137,7 +141,7 @@ export default function Hero({
                 <div
                     className={`flex gap-6 mt-3 ${heroVisible ? 'animate-scale-in' : 'opacity-0'
                         }`}
-                    style={{ animationDelay: heroVisible ? '2500ms' : '0ms' }}
+                    style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 4}ms` : '0ms' }}
                 >
                     <a
                         href={githubLink}
@@ -159,7 +163,7 @@ export default function Hero({
                 <div
                     className={`landing-more-below-pulser absolute bottom-8 flex flex-col items-center gap-1 ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'
                         }`}
-                    style={{ animationDelay: heroVisible ? '2900ms' : '0ms' }}
+                    style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 5}ms` : '0ms' }}
                 >
                     <p className="text-white/60 text-xs font-montserrat">
                         {scrollText}

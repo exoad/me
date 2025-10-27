@@ -14,6 +14,9 @@
 .warp-particle {
     position: absolute;
     top: 50%;
+    will-change: transform, opacity;
+    transform-origin: center center;
+    contain: layout style paint;
     left: 50%;
     background: linear-gradient(
         to right,
@@ -33,7 +36,7 @@
         opacity: 0;
     }
     30% {
-      opacity: 1;
+        opacity: 1;
     }
     100% {
         transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy)))

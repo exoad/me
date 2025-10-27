@@ -55,25 +55,25 @@ export const timeline: TTimelineEntry[] = [
         displayDate: "2021",
         isoDate: "2021-02-10",
         title: "Exploring Web Development",
-        description: "Dabbed a little bit in with NodeJS and hosting simple web apps off of my own machine. It was also around this time I decided that web development was not for me due to costs and lack of interest.",
+        description: "Experimented with Node.js by self-hosting simple web apps, but ultimately decided web development wasn't the right path for me."
     },
     {
         displayDate: "2021",
         isoDate: "2021-12-20",
         title: "Started learning C and computer systems",
-        description: "I became fascinated by how computers work, I studied the C programming language and computer architecture as well writing a simple LLVM IR interpreter that handled basic function calls and arithmetic. I would later revisit this project in the coming years to add more features.",
+        description: "Studied C and computer architecture, building a simple LLVM IR interpreter for basic function calls and arithmetic. Revisited the project later to expand its features."
     },
     {
         displayDate: "2021",
         isoDate: "2022-01-10",
         title: "VEX Robotics",
-        description: "Joined VEX Robotics team: 1569A Omega. I began to learn about control systems, strategy, and advancing my knowledge of C++. We would later place top 25 in the world at the VEX Robotics World Championship 2022 @ Dallas, TX.",
+        description: "Joined VEX Robotics Team 1569A Omega, where I learned control systems, strategy, and advanced my C++ skills. We placed top 25 globally at the 2022 VEX Robotics World Championship in Dallas."
     },
     {
         displayDate: "2022",
         isoDate: "2022-05-15",
         title: "A Year Long Passion Project: Halcyon",
-        description: "Wrote a cross platform OpenGL graphics library in C with the audio and logic being handled by Java. This was my first time doing any kind of advanced graphics programming and it was a fun ride, but the complexity and burnout got to me after a year.",
+        description: "Developed a cross-platform OpenGL graphics library in C with audio and logic in Java. My first experience with advanced graphics programming, completed over the course of a year."
     },
     // {
     //     displayDate: "2022",
@@ -97,19 +97,19 @@ export const timeline: TTimelineEntry[] = [
         displayDate: "2024",
         isoDate: "2024-01-10",
         title: "FRC Robotics",
-        description: "Joined FRC Robotics team: 2638. This was my first time working with a larger team and I was tasked with using my Flutter knowledge and previous experience to create a streamlined scouting app for our team. We would publish this app and get over 10,000+ downloads globally. We would later go on to compete at the FRC World Championship 2024 @ Houston, TX.",
+        description: "Joined FRC Team 2638, where I built a Flutter-based scouting app that reached 10,000+ global downloads. Our team later competed at the 2024 FRC World Championship in Houston.",
     },
     {
         displayDate: "2024",
         isoDate: "2024-03-15",
         title: "Started University",
-        description: "I first attended The Pennsylvania State University as a Computer Science major. I was exposed to a lot of new opportunities, but I would later transfer to the University of Maryland - College Park due to better research opportunities and location.",
+        description: "Began as a Computer Science major at Penn State before transferring to the University of Maryland, College Park for stronger research opportunities and location."
     },
     {
         displayDate: "2025",
         isoDate: "2025-08-20",
         title: "A New Beginning",
-        description: "Transferred to the University of Maryland - College Park and started off my Sophomore year fresh. I quickly began building connections with professors and peers and started research in AI/ML.",
+        description: "Transferred to the University of Maryland, College Park as a sophomore, where I built connections with faculty and peers and began research in AI/ML."
     },
     // {
     //     displayDate: "October 2025",
@@ -121,7 +121,7 @@ export const timeline: TTimelineEntry[] = [
         displayDate: "October 2025",
         isoDate: "2025-10-19",
         title: "Joined Startup Shell",
-        description: "I was accepted into Startup Shell, a student run startup incubator at UMD.",
+        description: "I joined Startup Shell, a student run startup incubator at UMD.",
         link: "https://startupshell.org/"
 
     }
@@ -333,15 +333,10 @@ export const strings = {
             ["exoad", "#11fa95b2"]
         ]
     },
-    stalk: [
-        {
-            city: "New York City",
-            state: "NY",
-        },
-        {
-            city: "Washington D.C.",
-        }
-    ],
+    stalk: {
+        city: "New York City",
+        state: "NY",
+    },
     links: {
         github: "https://github.com/exoad",
         github_aria: "My GitHub Profile",
@@ -367,7 +362,7 @@ export const strings = {
             url: "https://github.com/exoad/me",
             url_attr: "github.com/exoad/me"
         },
-        thank_you: "Thank you for visiting :)"
+        pointer: "🛐🤺"
     },
     timeline: timeline,
     pages: {
@@ -442,7 +437,7 @@ export const strings = {
             github: "exoad",
             github_aria: "My GitHub Profile",
             resume: {
-                aria: "Download my resume (PDF)",
+                aria: "View my resume (PDF)",
                 button_label: "Download My Resume",
                 updated: "PDF, updated Oct 2025"
             }

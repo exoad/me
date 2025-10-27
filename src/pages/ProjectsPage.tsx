@@ -11,10 +11,12 @@ import ProjectsColorBar from '../components/ProjectsColorBar.tsx';
 const gradients = [
     "from-[#ff1e56] via-[#00f0ff] to-[#7f00ff]",
     "from-[#ffd700] via-[#00ff87] to-[#0066ff]",
-    "from-[#ff6f61] via-[#8ac926] to-[#1982c4]",
-    "from-[#ff9f1c] via-[#8338ec] to-[#06d6a0]",
     "from-[#e71d36] via-[#06d6a0] to-[#fffa65]",
     "from-[#3a86ff] via-[#ff006e] to-[#ffd6e0]",
+    "from-[#ff7eb3] via-[#ff65a3] to-[#7afcff]",
+    "from-[#f72585] via-[#b5179e] to-[#7209b7]",
+    "from-[#ff9a9e] via-[#fad0c4] to-[#fad390]",
+    "from-[#a1c4fd] via-[#c2e9fb] to-[#667eea]"
 ];
 
 export default function ProjectsPage({ scaffoldProps = {} }) {
@@ -49,23 +51,24 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
     }, []);
 
     return <Scaffold {...scaffoldProps}>
-        <Column gap={12} crossAxisAlignment='start' className="px-12">
-            <div className="relative mt-32 px-6 sm:px-12 text-center sm:text-left">
-                <h2
-                    className="text-7xl md:text-8xl lg:text-[9rem] font-extrabold text-white/20 uppercase tracking-widest mb-2 sm:mb-0"
-                >
-                    {strings.pages.projects.title.prompt}
-                </h2>
-                <h3 className="text-4xl md:text-6xl font-bold text-white mb-2">
-                    {strings.pages.projects.title.figure}
-                </h3>
-                <p className="text-white text-lg md:text-xl sm:mx-0">
-                    {strings.pages.projects.title.label}
-                </p>
-            </div>
-            <Divider className="w-full" />
-            <ScaffoldContent className="gap-32" useDefaultLayout>
-                <div className="grid gap-8 md:gap-12 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <ScaffoldContent useDefaultLayout className="w-full overflow-x-hidden">
+            <Column gap={12} crossAxisAlignment="start" className="px-4 sm:px-8 md:px-12">
+                <Column gap={4} className="text-center w-full mb-8 px-4">
+                    <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-[9rem]font-extrabold text-white/20 uppercase tracking-widest leading-tight">
+                        {strings.pages.projects.title.prompt}
+                    </h2>
+
+                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-snu" >
+                        {strings.pages.projects.title.figure}
+                    </h3>
+
+                    <p className="text-smsm:text-basemd:text-lg font-montserrat mt-4 text-white/70">
+                        {strings.pages.projects.title.label}
+                    </p>
+                </Column>
+
+                <Divider className="w-full" />
+                <div className="grid gap-8 md:gap-10 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
                     {projects.map((proj, index) => (
                         <a
                             key={proj.title}
@@ -76,7 +79,7 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
                                 ? "opacity-100 translate-y-0 scale-100 blur-0"
                                 : "opacity-0 translate-y-6 sm:translate-y-8 lg:translate-y-10 scale-95 blur-sm"
                                 }`}
-                            style={{ transitionDelay: `${150 + index}ms` }}
+                            style={{ transitionDelay: `${120 + index}ms` }}
                             ref={(el) => { itemRefs.current[index] = el; }}
                         >
                             <div className="overflow-hidden shadow-lg hover:scale-[1.02] ease-[cubic-bezier(0,0,0.2,1)] transition-transform duration-200">
@@ -86,12 +89,12 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
                                             <img
                                                 src={proj.demoImage}
                                                 alt={`${proj.title} background`}
-                                                className="absolute inset-0 w-full h-full p-6 blur-lg scale-95 opacity-40"
+                                                className="absolute inset-0 w-full h-full p-6 blur-lg opacity-40"
                                             />
                                             <img
                                                 src={proj.demoImage}
                                                 alt={proj.title}
-                                                className="relative w-full h-full object-contain z-10"
+                                                className="relative w-[90%] h-[70%] object-contain z-10"
                                             />
                                             {proj.logo && (
                                                 <img
@@ -123,7 +126,7 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
                                 <div className="py-5">
                                     <div className="flex items-center justify-between mb-2">
                                         <h3
-                                            className="text-2xl font-bold font-playfair"
+                                            className="text-xl sm:text-2xl lg:text-3xl font-bold font-playfair break-words"
                                             style={{ textShadow: `2px 2px ${hexToRgba(proj.color, 0.7)}` }}
                                         >
                                             {proj.title}
@@ -134,7 +137,7 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
                                             {proj.state}
                                         </span>
                                     </div>
-                                    <p className="text-white/70 text-md font-montserrat mb-4">
+                                    <p className="text-white/70 text-sm sm:text-md font-montserrat mb-4">
                                         {proj.description}
                                     </p>
                                     <Row gap={0}>
@@ -156,7 +159,7 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
                         </a>
                     ))}
                 </div>
-            </ScaffoldContent>
-        </Column>
-    </Scaffold>;
+            </Column>
+        </ScaffoldContent>
+    </Scaffold >;
 }

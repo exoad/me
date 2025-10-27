@@ -6,7 +6,7 @@ import Navigation from './Navigation';
 export default function MenuBar() {
     const navigate = useNavigate();
     return (
-        <header className="w-full fixed top-0 z-50 backdrop-blur-sm bg-black/48 border-b-1 border-b-white/20">
+        <header className="w-full fixed top-0 z-50 backdrop-blur-md bg-black/70 border-b-1 border-b-white/20 brightness-150">
             <div className="flex justify-between items-center" style={{ padding: '0.25rem 4rem' }}>
                 <NameToggle names={strings.header.names_funny} />
                 <Navigation items={[

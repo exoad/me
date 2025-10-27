@@ -56,7 +56,7 @@ export default function AboutPage({ scaffoldProps = {} }) {
                                     <div
                                         key={`${item.displayDate}-${item.title}`}
                                         ref={el => { itemRefs.current[index] = el; }}
-                                        className={`relative flex items-center transition-all duration-200 ${visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${year - (index < timeline.length - 1 ? new Date(timeline[index + 1].isoDate).getFullYear() : year) > 1 ? 'mb-32 md:mb-40' : 'mb-16 md:mb-20'}`}
+                                        className={`relative flex flex-row items-center transition-all duration-200 ${visibleItems.has(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${year - (index < timeline.length - 1 ? new Date(timeline[index + 1].isoDate).getFullYear() : year) > 1 ? 'mb-32 md:mb-40' : 'mb-16 md:mb-20'}`}
                                         style={{ transitionDelay: visibleItems.has(index) ? `${index * 80}ms` : '0ms' }}
                                     >
                                         <div
@@ -65,17 +65,14 @@ export default function AboutPage({ scaffoldProps = {} }) {
                                         ></div>
 
                                         <div
-                                            className={`absolute left-6 top-1/2 h-px bg-gradient-to-r from-white to-white/30 transition-all duration-200 ${visibleItems.has(index) ? 'w-20 opacity-100' : 'w-0 opacity-0'}`}
+                                            className={`absolute left-6 top-1/2 h-px bg-gradient-to-r from-white to-white/30 transition-all duration-200 ${visibleItems.has(index) ? 'sm:w-16 w-[12dvw] opacity-100' : 'w-0 opacity-0'}`}
                                             style={{ transitionDelay: visibleItems.has(index) ? `${(index * 80) + 180}ms` : '0ms' }}
                                         ></div>
 
-
-                                        <div className="w-full max-w-lg ml-28">
-                                            <div className="backdrop-blur-md rounded-md p-5">
-                                                <div className="text-white/70 text-xs font-montserrat uppercase tracking-wide mb-2">{item.displayDate}</div>
-                                                <h3 className="text-white text-xl font-bold font-playfair mb-2">{item.title}</h3>
-                                                <p className="text-white/90 text-sm font-montserrat leading-relaxed">{item.description}</p>
-                                            </div>
+                                        <div className="w-full max-w-lg ml-[22dvw] sm:ml-26 pr-2">
+                                            <div className="text-white/70 text-xs font-montserrat uppercase tracking-wide mb-2">{item.displayDate}</div>
+                                            <h3 className="text-white text-xl font-bold font-playfair mb-2">{item.title}</h3>
+                                            <p className="text-white/90 text-sm font-montserrat leading-relaxed">{item.description}</p>
                                         </div>
                                     </div>
                                 );

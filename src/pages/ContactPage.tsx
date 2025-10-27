@@ -18,7 +18,7 @@ export default function ContactPage({ scaffoldProps = {} }) {
                         <h1 className="text-white text-4xl md:text-6xl font-bold font-playfair mb-2 transition-all duration-700">
                             {strings.pages.contact.title}
                         </h1>
-                        <p className="text-white/70 text-base md:text-lg font-montserrat leading-relaxed mb-4 transition-all duration-700">
+                        <p className="text-white/70 text-base md:text-lg font-montserrat leading-relaxed mb-4 transition-all duration-700 md:px-0 px-8">
                             {strings.pages.contact.description}
                         </p>
                         <ResumeBlock />

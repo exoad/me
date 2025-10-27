@@ -1,10 +1,9 @@
 import { useMemo } from "react";
 import "../styles/WarpTunnelBg.css";
 
-const _particles = 420;
-
 
 export default function WarpTunnelBg({ scrollY }: Readonly<{ scrollY: number; }>) {
+  const _particles = useMemo(() => Math.min(Math.floor(200 * (window.devicePixelRatio || 1) * ((navigator.hardwareConcurrency || 4) / 4)), 320), []);
   const particles = useMemo(
     () =>
       Array.from({ length: _particles }).map((_, i) => {

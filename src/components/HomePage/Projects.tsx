@@ -27,7 +27,7 @@ export default function Projects({
                     }
                 }
             },
-            { threshold: 0.3 }
+            { threshold: 0.2 }
         );
         if (projectsRef.current) {
             observer.observe(projectsRef.current);
@@ -37,7 +37,7 @@ export default function Projects({
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-black px-4 sm:px-8 md:px-16 py-8" ref={projectsRef}>
-            <div className="flex flex-col items-center justify-center gap-12 w-full max-w-6xl">
+            <div className="flex flex-col items-center justify-center gap-6 md:gap-12 w-full max-w-6xl">
                 <h1
                     className={`text-white text-3xl md:text-5xl lg:text-7xl font-bold font-playfair transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
                     style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
@@ -48,7 +48,7 @@ export default function Projects({
                     className={`w-[8rem] h-px bg-white transition-all duration-1000 ${kindaVisible ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`}
                     style={{ transitionDelay: kindaVisible ? '250ms' : '0ms' }}
                 ></div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-10 justify-items-center">
                     {projects.filter((project, _) => project.featured).map((project, index) => (
                         <div
                             key={project.title}
@@ -84,12 +84,12 @@ export default function Projects({
                         </div>
                     ))}
                 </div>
-                <div className="h-8" />
+                <div className="h-0 md:h-8" />
                 <AttentionButton
                     ariaLabel='See More'
                     onClick={() => navigate('/projects')}
                     className={`transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
-                    style={{ transitionDelay: kindaVisible ? `${(projects.length * 75)}ms` : '0ms' }}
+                    style={{ transitionDelay: kindaVisible ? `${(projects.length * 60)}ms` : '0ms' }}
                 >
                     {strings.pages.home.view_all_projects_button}
                 </AttentionButton>
