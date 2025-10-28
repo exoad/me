@@ -10,7 +10,9 @@ import shiyiImg from '../assets/images/photos/shiyi.webp';
 import siImg from '../assets/images/photos/si.webp';
 import wuImg from '../assets/images/photos/wu.webp';
 import yiImg from '../assets/images/photos/yi.webp';
-
+import nycStreeImg from '../assets/images/photos/nyc_stree.webp';
+import nycStreeImg2 from '../assets/images/photos/nyc_stree2.webp';
+import nycDowntownImg from '../assets/images/photos/nyc_downtown.webp';
 
 /* bucket endpoint: https://exoad.github.io/me-pictures-bucket/ */
 export const photos: TShowcasePhoto[] = [
@@ -23,12 +25,20 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: yiImg
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(5).jpg",
-        alt: "Above The Clouds",
-        caption: "Cloudscape from Above",
-        location: "Warsaw, Poland",
-        date: "2024-7-11",
-        thumbnailSrc: erImg
+        src: "https://exoad.github.io/me-pictures-bucket/IMG_20251028_104400.jpg",
+        alt: "Bustling NYC",
+        caption: "Bustling NYC",
+        location: "New York City, NY",
+        date: "2024-06-07",
+        thumbnailSrc: nycStreeImg
+    },
+    {
+        src: "https://exoad.github.io/me-pictures-bucket/IMG_20251028_104651.jpg",
+        alt: "City Cross Section",
+        caption: "City Cross Section",
+        location: "New York City, NY",
+        date: "2024-12-24",
+        thumbnailSrc: nycStreeImg2
     },
     {
         src: "https://exoad.github.io/me-pictures-bucket/photo%20(7).jpg",
@@ -39,6 +49,14 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: siImg
     },
     {
+        src: "https://exoad.github.io/me-pictures-bucket/photo%20(11).jpg",
+        alt: "LIRR Train Station Platform",
+        caption: "LIRR",
+        location: "Little Neck, NY",
+        date: "2024-12-31",
+        thumbnailSrc: baImg
+    },
+    {
         src: "https://exoad.github.io/me-pictures-bucket/photo%20(8).jpg",
         alt: "Hudson Evening Waterfront",
         caption: "Evening by the Hudson",
@@ -47,12 +65,12 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: wuImg
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(9).jpg",
-        alt: "Evening Street View",
-        caption: "A Quiet Street",
-        location: "TangShan, China",
-        date: "2024-07-22",
-        thumbnailSrc: livImg
+        src: "https://exoad.github.io/me-pictures-bucket/IMG_20251028_105547.jpg",
+        alt: "NYC Downtown Skyline",
+        caption: "Downtown Skyline",
+        location: "New York City, NY",
+        date: "2024-12-31",
+        thumbnailSrc: nycDowntownImg
     },
     {
         src: "https://exoad.github.io/me-pictures-bucket/photo%20(10).jpg",
@@ -63,13 +81,14 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: qiImg
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(11).jpg",
-        alt: "LIRR Train Station Platform",
-        caption: "LIRR",
-        location: "Little Neck, NY",
-        date: "2024-12-31",
-        thumbnailSrc: baImg
+        src: "https://exoad.github.io/me-pictures-bucket/photo%20(9).jpg",
+        alt: "Evening Street View",
+        caption: "A Quiet Street",
+        location: "TangShan, China",
+        date: "2024-07-22",
+        thumbnailSrc: livImg
     },
+
     {
         src: "https://exoad.github.io/me-pictures-bucket/photo%20(1).jpg",
         alt: "Waterfront NYC View",
@@ -85,6 +104,14 @@ export const photos: TShowcasePhoto[] = [
         location: "College Park, MD",
         date: "2025-08-31",
         thumbnailSrc: shiImg
+    },
+    {
+        src: "https://exoad.github.io/me-pictures-bucket/photo%20(5).jpg",
+        alt: "Above The Clouds",
+        caption: "Cloudscape from Above",
+        location: "Warsaw, Poland",
+        date: "2024-7-11",
+        thumbnailSrc: erImg
     },
     {
         src: "https://exoad.github.io/me-pictures-bucket/photo%20(3).jpg",
