@@ -3,7 +3,7 @@ import "../styles/WarpTunnelBg.css";
 
 
 export default function WarpTunnelBg({ scrollY }: Readonly<{ scrollY: number; }>) {
-  const _particles = useMemo(() => Math.min(Math.floor(200 * (window.devicePixelRatio || 1) * ((navigator.hardwareConcurrency || 4) / 4)), 320), []);
+  const _particles = useMemo(() => Math.min(Math.floor(300 * (window.devicePixelRatio || 1) * ((navigator.hardwareConcurrency || 4) / 4)), 450), []);
   const particles = useMemo(
     () =>
       Array.from({ length: _particles }).map((_, i) => {
