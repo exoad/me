@@ -14,20 +14,22 @@ export default function About({
 }>) {
     const aboutRef = useRef<HTMLDivElement>(null);
     const [kindaVisible, setkindaVisible] = useState(false);
+    const [scrollY, setScrollY] = useState(0);
     useEffect(() => {
         const observer = new IntersectionObserver(
             (entries) => {
                 for (const entry of entries) {
+                    setScrollY(entry.intersectionRatio);
                     if (entry.isIntersecting) {
                         setkindaVisible(true);
                         onIntersect(true);
                     } else {
-                        setkindaVisible(false);
                         onIntersect(false);
+                        setkindaVisible(false);
                     }
                 }
             },
-            { threshold: 0.2 }
+            { threshold: Array.from({ length: 21 }, (_, i) => i / 20) }
         );
         if (aboutRef.current) {
             observer.observe(aboutRef.current);
@@ -45,8 +47,12 @@ export default function About({
                     <img
                         src={profilePic}
                         alt="Profile Glow"
-                        className="absolute inset-0 w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 object-cover scale-415 blur-sm opacity-30"
-                        style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
+                        className="absolute inset-0 w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 object-cover scale-415 blur-lg"
+                        style={{
+                            transitionDelay: kindaVisible ? '100ms' : '0ms',
+                            opacity: Math.min(scrollY, 0.3),
+                            transition: 'opacity 0.5s ease-out',
+                        }}
                         draggable={false}
                         loading="lazy"
                     />
@@ -56,7 +62,7 @@ export default function About({
                         className={`relative w-48 h-48 md:w-64 md:h-64 object-cover z-10 hover:scale-105 transition-all delay-70 duration-350 ${kindaVisible
                             ? 'opacity-100 translate-y-0 scale-100'
                             : 'opacity-0 translate-y-6 scale-95'
-                        }`}
+                            }`}
                         style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
                         draggable={false}
                         loading="lazy"
