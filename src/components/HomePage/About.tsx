@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { strings } from '../../data/shared.ts';
-import profilePic from '../../assets/images/profile.webp';
+import profilePic from '../../assets/images/profile_image.webp';
 import AttentionButton from '../AttentionButton';
 import { Column, Row } from '../FlexLayouter.tsx';
 import { MdLocationPin } from "react-icons/md";
@@ -37,19 +37,37 @@ export default function About({
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-black px-12 sm:px-8 md:px-14 py-3" ref={aboutRef}>
-            <div className="flex flex-col justify-center items-center md:gap-6 gap-4 w-full max-w-6xl">
-                <img
-                    src={profilePic}
-                    alt="Profile"
-                    className={`w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 object-cover hover:scale-105 transition-all delay-200 duration-500 mb-8 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
-                    style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
-                    draggable={false}
-                    loading="lazy"
-                />
+            <Column mainAxisAlignment='center' crossAxisAlignment='center' className='md:gap-6 gap-4 w-full max-w-6xl' >
+                <Column
+                    gap={0}
+                    className="relative mb-8"
+                >
+                    <img
+                        src={profilePic}
+                        alt="Profile Glow"
+                        className="absolute inset-0 w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 object-cover scale-415 blur-sm opacity-30"
+                        style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
+                        draggable={false}
+                        loading="lazy"
+                    />
+                    <img
+                        src={profilePic}
+                        alt="Profile"
+                        className={`relative w-48 h-48 md:w-64 md:h-64 object-cover z-10 hover:scale-105 transition-all delay-70 duration-350 ${kindaVisible
+                            ? 'opacity-100 translate-y-0 scale-100'
+                            : 'opacity-0 translate-y-6 scale-95'
+                        }`}
+                        style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
+                        draggable={false}
+                        loading="lazy"
+                    />
+                </Column>
+
+
                 <div className="flex flex-col items-center max-w-2xl w-full gap-8">
                     <Row gap={2} mainAxisAlignment="center" className={`text-white px-2 text-center gap-1 transition-all duration-500 delay-200 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}>
-                            <MdLocationPin className="text-md" />
-                            {`${strings.stalk.city}, ${strings.stalk.state}`}
+                        <MdLocationPin className="text-md" />
+                        {`${strings.stalk.city}, ${strings.stalk.state}`}
                     </Row>
                     <p
                         className={`text-white text-base md:text-lg leading-relaxed font-montserrat text-center transition-all duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
@@ -105,7 +123,7 @@ export default function About({
                         </AttentionButton>
                     </Column>
                 </div>
-            </div>
+            </Column>
         </div>
     );
 }
