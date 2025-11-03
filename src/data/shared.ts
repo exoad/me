@@ -139,6 +139,7 @@ import nukleonLogo from "../assets/images/projects_logos/nukleon.webp";
 import onlyHeadingsLogo from "../assets/images/projects_logos/onlyheadings.webp";
 import toasterifyLogo from "../assets/images/projects_logos/toasterify.webp";
 import prismixLogo from "../assets/images/projects_logos/prismix.webp";
+import moriLogo from "../assets/images/projects_logos/mori.webp";
 
 export const projects: TProject[] = [
     {
@@ -151,17 +152,7 @@ export const projects: TProject[] = [
         logo: kiraProjectLogo,
         state: "active",
     },
-    {
-        title: "OnTheFly",
-        description: "A cross-platform background utility that uses your custom rules to automatically organize files in real time as they arrive.",
-        color: "#ff6b6b",
-        link: "https://github.com/exoad/on_the_fly",
-        technologies: [technologies.dart, technologies.flutter, technologies.python],
-        featured: true,
-        demoImage: "https://github.com/exoad/on_the_fly/raw/master/repo/sc_1.png?raw=true",
-        logo: ontheflyProjectLogo,
-        state: "finished",
-    },
+
     {
         title: "Halcyon",
         description: "A desktop audio player with a modern UI supporting for over 20 audio formats supported across all major operating systems.",
@@ -172,6 +163,28 @@ export const projects: TProject[] = [
         demoImage: "https://github.com/exoad/Halcyon.c/blob/master/repo/img/upload.png?raw=true",
         logo: halcyonProjectLogo,
         state: "archived",
+    },
+    {
+        title: "Mori",
+        description: "A website that shows your finite life span, so why not watch it disappear. Or watch how much more sleep you have left and more...",
+        color: "#cf6e29",
+        link: "https://exoad.github.io/mori/",
+        technologies: [technologies.react, technologies.typescript],
+        demoImage: "https://exoad.github.io/me-pictures-bucket/Screenshot_2-11-2025_202550_exoad.github.io.jpeg",
+        featured: true,
+        logo: moriLogo,
+        state: "finished",
+    },
+    {
+        title: "OnTheFly",
+        description: "A cross-platform background utility that uses your custom rules to automatically organize files in real time as they arrive.",
+        color: "#ff6b6b",
+        link: "https://github.com/exoad/on_the_fly",
+        technologies: [technologies.dart, technologies.flutter, technologies.python],
+        featured: true,
+        demoImage: "https://github.com/exoad/on_the_fly/raw/master/repo/sc_1.png?raw=true",
+        logo: ontheflyProjectLogo,
+        state: "finished",
     },
     {
         title: "Filewatch",

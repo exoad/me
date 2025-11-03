@@ -96,7 +96,7 @@ export default function About({
                                     <div
                                         key={item[0]}
                                         className={`flex items-center gap-2 transition-all duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
-                                        style={{ transitionDelay: `${index * 120}ms`, color: item[1].color }}
+                                        style={{ transitionDelay: `${index * 120}ms` }}
                                     >
                                         <Icon className="text-sm md:text-base" />
                                         <span className="text-white text-sm font-montserrat">{item[1].name}</span>
