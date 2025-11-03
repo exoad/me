@@ -171,7 +171,7 @@ export const projects: TProject[] = [
         link: "https://exoad.github.io/mori/",
         technologies: [technologies.react, technologies.typescript],
         demoImage: "https://exoad.github.io/me-pictures-bucket/Screenshot_2-11-2025_202550_exoad.github.io.jpeg",
-        featured: true,
+        featured: false,
         logo: moriLogo,
         state: "finished",
     },
