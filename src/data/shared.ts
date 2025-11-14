@@ -146,13 +146,12 @@ export const projects: TProject[] = [
         title: "Kira",
         description: "A modern object oriented programming language focused on simplicity and maintainability.",
         color: "#d396ff",
-        link: "https://github.com/exoad/kira",
+        link: "https://exoad.github.io/kira_lang/",
         technologies: [technologies.kotlin, technologies.c],
         featured: true,
         logo: kiraProjectLogo,
         state: "active",
     },
-
     {
         title: "Halcyon",
         description: "A desktop audio player with a modern UI supporting for over 20 audio formats supported across all major operating systems.",
@@ -194,7 +193,7 @@ export const projects: TProject[] = [
         technologies: [technologies.kotlin],
         featured: false,
         logo: filewatchProjectLogo,
-        state: "active"
+        state: "archived"
     },
     {
         title: "GTFO-RundownRoulette",
@@ -402,8 +401,6 @@ export const strings = {
                     technologies.cpp,
                     technologies.flutter,
                     technologies.kotlin,
-                    technologies.java,
-                    technologies.python,
                 ],
                 more: "Learn More About Me",
                 cool_photos: "See Some Cool Photos"
