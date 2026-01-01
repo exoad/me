@@ -1,7 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /src/
-Disallow: /node_modules/
-Disallow: /vite/
-Disallow: /private/
 Sitemap: https://exoad.net/sitemap.xml

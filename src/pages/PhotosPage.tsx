@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useRef, useState } from 'react';
 import { photos } from "../data/photos";
 import Scaffold from '../components/Scaffold';
+import SEO from '../components/SEO';
 import { strings } from '../data/shared.ts';
 import "../styles/PhotosPage.css";
 import "../styles/Animations.css";
@@ -68,6 +69,11 @@ export default function PhotosPage({ scaffoldProps = {} }) {
 
   return (
     <Scaffold showSpinner useForcedPadding={true} {...scaffoldProps}>
+      <SEO
+        title="Photos"
+        description={strings.pages.photos.description}
+        url="https://exoad.net/photos"
+      />
       <main className="min-h-screen flex flex-col items-center bg-black">
         <PageDescriptor title={strings.pages.photos.title} description={strings.pages.photos.description} />
         <div className="flex flex-col gap-10 mb-16 w-full px-4" style={{ maxWidth: "min(100%, 690px)" }}>

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { strings, timeline } from "../data/shared.ts";
 import Scaffold, { ScaffoldContent } from '../components/Scaffold.tsx';
+import SEO from '../components/SEO.tsx';
 import PageDescriptor from '../components/PageDescriptor.tsx';
 import { Column } from '../components/FlexLayouter.tsx';
 
@@ -36,6 +37,11 @@ export default function AboutPage({ scaffoldProps = {} }) {
     }, []);
     return (
         <Scaffold {...scaffoldProps}>
+            <SEO
+                title="About"
+                description={strings.pages.about.description.replace('\n', ' ')}
+                url="https://exoad.net/about"
+            />
             <ScaffoldContent useDefaultLayout>
                 <Column className="max-w-5xl">
                     <PageDescriptor noBottomPadding title={strings.pages.about.title} description={strings.pages.about.description} />

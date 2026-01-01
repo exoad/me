@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Scaffold, { ScaffoldContent } from '../components/Scaffold';
+import SEO from '../components/SEO';
 import { projects, strings } from "../data/shared.ts";
 import HoverShowLine from '../components/HoverShowLine.tsx';
 import { MdOutlineArrowOutward } from "react-icons/md";
@@ -51,6 +52,11 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
     }, []);
 
     return <Scaffold {...scaffoldProps}>
+        <SEO
+            title="Projects"
+            description={strings.pages.projects.title.label}
+            url="https://exoad.net/projects"
+        />
         <ScaffoldContent useDefaultLayout className="w-full overflow-x-hidden">
             <Column gap={12} crossAxisAlignment="start" className="px-4 sm:px-8 md:px-12">
                 <Column gap={4} className="text-center w-full mb-8 px-4">

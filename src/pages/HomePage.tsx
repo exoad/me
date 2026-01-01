@@ -1,5 +1,6 @@
 import { strings } from "../data/shared.ts";
 import Scaffold from '../components/Scaffold.tsx';
+import SEO from '../components/SEO.tsx';
 import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import Hero from '../components/HomePage/Hero';
 import About from '../components/HomePage/About';
@@ -16,6 +17,10 @@ export default function HomePage({ scaffoldProps = {} }) {
     const navigate = useNavigate();
     return (
         <Scaffold {...scaffoldProps}>
+            <SEO
+                title="Home"
+                description={strings.pages.home.about.content}
+            />
             <Hero
                 name={strings.name}
                 tagline={strings.pages.home.tagline}

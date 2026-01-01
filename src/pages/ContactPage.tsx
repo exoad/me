@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import Scaffold, { ScaffoldContent } from '../components/Scaffold';
+import SEO from '../components/SEO';
 import { strings } from '../data/shared.ts';
 import { Column } from '../components/FlexLayouter.tsx';
 
@@ -12,6 +13,11 @@ export default function ContactPage({ scaffoldProps = {} }) {
     }, []);
     return (
         <Scaffold {...scaffoldProps}>
+            <SEO
+                title="Contact"
+                description={strings.pages.contact.description}
+                url="https://exoad.net/contacts"
+            />
             <ScaffoldContent useDefaultLayout>
                 <div className="flex flex-col md:flex-row items-center md:gap-16 gap-8 w-full max-w-4xl">
                     <div className="flex flex-col items-center md:items-start text-center md:text-left gap-8 w-full">
@@ -58,7 +64,14 @@ function ResumeBlock() {
     </div>;
 }
 
-function ContactLink({ href, label, value, subtitle = "" }) {
+interface ContactLinkProps {
+    href: string;
+    label: string;
+    value: string;
+    subtitle?: string;
+}
+
+function ContactLink({ href, label, value, subtitle = "" }: ContactLinkProps) {
     return (
         <Column className="items-center md:items-start">
             <a

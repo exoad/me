@@ -1,6 +1,7 @@
 import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import { strings } from '../data/shared.ts';
 import Scaffold, { ScaffoldContent } from '../components/Scaffold.tsx';
+import SEO from '../components/SEO.tsx';
 import HoverShowLine from '../components/HoverShowLine.tsx';
 import StarBg from "../components/StarsBg";
 import { Column } from '../components/FlexLayouter.tsx';
@@ -14,6 +15,11 @@ export default function NotFound({ scaffoldProps = {} }) {
     }, []);
     return (
         <Scaffold showSpinner={false} {...scaffoldProps}>
+            <SEO
+                title="Page Not Found"
+                description={strings.pages.not_found.description}
+                type='website'
+            />
             <StarBg scrollY={0} />
             <ScaffoldContent useDefaultLayout>
 
