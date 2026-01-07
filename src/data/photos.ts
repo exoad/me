@@ -14,10 +14,9 @@ import nycStreeImg from "../assets/images/photos/nyc_stree.webp";
 import nycStreeImg2 from "../assets/images/photos/nyc_stree2.webp";
 import nycDowntownImg from "../assets/images/photos/nyc_downtown.webp";
 
-/* bucket endpoint: https://exoad.github.io/me-pictures-bucket/ */
 export const photos: TShowcasePhoto[] = [
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(4).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(4).jpg",
         alt: "New York City @ 10th Ave",
         caption: "Urban NYC Evening",
         location: "New York City, NY",
@@ -25,7 +24,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: yiImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/IMG_20251028_104400.jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/IMG_20251028_104400.jpg",
         alt: "Bustling NYC",
         caption: "Bustling NYC",
         location: "New York City, NY",
@@ -33,7 +32,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: nycStreeImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/IMG_20251028_104651.jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/IMG_20251028_104651.jpg",
         alt: "City Cross Section",
         caption: "City Cross Section",
         location: "New York City, NY",
@@ -41,7 +40,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: nycStreeImg2,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(7).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(7).jpg",
         alt: "Sunset Pier",
         caption: "Sunset Over The Lake",
         location: "Great Neck, NY",
@@ -49,7 +48,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: siImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(11).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(11).jpg",
         alt: "LIRR Train Station Platform",
         caption: "LIRR",
         location: "Little Neck, NY",
@@ -57,7 +56,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: baImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(8).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(8).jpg",
         alt: "Hudson Evening Waterfront",
         caption: "Evening by the Hudson",
         location: "New York City, NY",
@@ -65,7 +64,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: wuImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/IMG_20251028_105547.jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/IMG_20251028_105547.jpg",
         alt: "NYC Downtown Skyline",
         caption: "Downtown Skyline",
         location: "New York City, NY",
@@ -73,7 +72,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: nycDowntownImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(10).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(10).jpg",
         alt: "Penn State - Huck Institutes of the Life Sciences",
         caption: "Cold & Rainy",
         location: "State College, PA",
@@ -81,7 +80,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: qiImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(9).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(9).jpg",
         alt: "Evening Street View",
         caption: "A Quiet Street",
         location: "TangShan, China",
@@ -90,7 +89,7 @@ export const photos: TShowcasePhoto[] = [
     },
 
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(1).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(1).jpg",
         alt: "Waterfront NYC View",
         caption: "NYC Waterfront",
         location: "New York City, NY",
@@ -98,7 +97,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: jivImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(2).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(2).jpg",
         alt: "In flight on a Cessna",
         caption: "Above the patchwork",
         location: "College Park, MD",
@@ -106,7 +105,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: shiImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(5).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(5).jpg",
         alt: "Above The Clouds",
         caption: "Cloudscape from Above",
         location: "Warsaw, Poland",
@@ -114,7 +113,7 @@ export const photos: TShowcasePhoto[] = [
         thumbnailSrc: erImg,
     },
     {
-        src: "https://exoad.github.io/me-pictures-bucket/photo%20(3).jpg",
+        src: "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/photo%20(3).jpg",
         alt: "SuZhou Canals",
         caption: "Canals of SuZhou",
         location: "SuZhou, China",
