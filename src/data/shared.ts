@@ -18,6 +18,7 @@ import {
     SiCss3,
     SiNodedotjs,
     SiSnapchat,
+    SiPytorch,
 } from "react-icons/si";
 import type { TProject, TTimelineEntry, TTechnology } from "../types.d.ts";
 
@@ -47,6 +48,7 @@ export const technologies: Record<string, TTechnology> = {
     java_swing: { name: "Java Swing", icon: SiOpenjdk, color: "#ED8B00" },
     android: { name: "Android", icon: SiAndroid, color: "#32de84" },
     lens_studio: { name: "Lens Studio", icon: SiSnapchat, color: "#fffc00" },
+    torch: { name: "PyTorch", icon: SiPytorch, color: "#ee4c2c" },
 };
 
 // months are not accurate, they are solely used for sorting purposes and im too lazy to try and remember the specific months if it is even possible for certain spanning events.
@@ -224,16 +226,44 @@ export const projects: TProject[] = [
         featured: false,
     },
     {
+        title: "Prosodia-Seq",
+        description:
+            "A lightweight system that maps English phoneme sequences to context-aware Mandarin pinyin. It blends a seq2seq model with a rule-based resolver to refine outputs and provide confidence and approximation metadata.",
+        color: "#6b5b95",
+        link: "https://github.com/exoad/Prosodia-Seq",
+        technologies: [technologies.python, technologies.torch],
+        featured: false,
+        state: "finished",
+    },
+    {
+        title: "ShipDSL",
+        description:
+            "A DSL for forming simple scripts. It uses brace-based syntax {} for blocks, supports conditional execution with if/elif/else, and distinguishes between built-in tags and custom tasks using the $ prefix.",
+        color: "#ff7b25",
+        link: "https://github.com/exoad/ship",
+        technologies: [technologies.python],
+        featured: false,
+        state: "finished",
+    },
+    {
+        title: "Lair33",
+        description:
+            "A horror game focused around exploring a temporal shifting megastructure. Based on Doom 64 mechanics built in C and entirely running on the CPU.",
+        color: "#7f8c8d",
+        link: "https://github.com/exoad/Lair133",
+        technologies: [technologies.c],
+        featured: false,
+        demoImage:
+            "https://github.com/meng-jack/me-pictures-bucket/blob/main/2025-11-06%2013_24_47-Friends%20-%20Discord.png?raw=true",
+        state: "archived",
+    },
+    {
         title: "OnTheFly",
         description:
             "A cross-platform background utility that uses your custom rules to automatically organize files in real time as they arrive.",
         color: "#ff6b6b",
         link: "https://github.com/exoad/on_the_fly",
-        technologies: [
-            technologies.dart,
-            technologies.flutter,
-            technologies.python,
-        ],
+        technologies: [technologies.flutter, technologies.python],
         featured: true,
         demoImage:
             "https://github.com/exoad/on_the_fly/raw/master/repo/sc_1.png?raw=true",
@@ -257,7 +287,7 @@ export const projects: TProject[] = [
             "A fully custom randomization tool for the co-op horror shooter GTFO on Steam, designed to inject fresh variety into every run. Built from scratch, the application also faithfully recreates the game's canonical design system.",
         color: "#ffbb02",
         link: "https://github.com/exoad/GTFO-RundownRoulette",
-        technologies: [technologies.flutter, technologies.dart],
+        technologies: [technologies.flutter],
         featured: false,
         demoImage:
             "https://github.com/exoad/GTFO-RundownRoulette/raw/main/repository/screenshot2.png",
@@ -291,7 +321,8 @@ export const projects: TProject[] = [
             "An AR weather applet that visualized the weather around you in the future and for other locations.",
         color: "#ffad4a",
         link: "https://github.com/exoad/visus",
-        demoImage: "https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/visus_sc.png",
+        demoImage:
+            "https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/visus_sc.png",
         featured: false,
         technologies: [technologies.lens_studio, technologies.javascript],
         state: "finished",
@@ -302,7 +333,7 @@ export const projects: TProject[] = [
             "A 2D automation & management game about nuclear power taking place within an Orwellian Society. It is with a custom sprite packer along with a custom graphics layer ontop of Flutter.",
         link: "https://github.com/exoad/nukleon",
         logo: nukleonLogo,
-        technologies: [technologies.dart, technologies.flutter, technologies.c],
+        technologies: [technologies.flutter, technologies.c],
         color: "#d1cdb5",
         featured: false,
         state: "active",
@@ -317,11 +348,7 @@ export const projects: TProject[] = [
         demoImage:
             "https://github.com/exoad/toasterify/raw/main/repo/screenshot.png",
         featured: false,
-        technologies: [
-            technologies.android,
-            technologies.flutter,
-            technologies.dart,
-        ],
+        technologies: [technologies.android, technologies.flutter],
         state: "finished",
     },
     {
@@ -386,11 +413,7 @@ export const projects: TProject[] = [
         demoImage:
             "https://github.com/exoad/onlyheadings/raw/master/repository/screenshot1.jpg",
         featured: false,
-        technologies: [
-            technologies.android,
-            technologies.flutter,
-            technologies.dart,
-        ],
+        technologies: [technologies.android, technologies.flutter],
         state: "finished",
     },
     {
@@ -410,6 +433,18 @@ export const projects: TProject[] = [
         state: "finished",
     },
     {
+        title: "Rebels Scouting App 2024 'Argus'",
+        description:
+            "The scouting app created by team 2638 Rebel Robotics for the 2024 FRC Game CRESCENDO.",
+        featured: false,
+        state: "finished",
+        link: "https://github.com/rebels2638/ScoutingApp2024",
+        color: "#000000",
+        technologies: [technologies.flutter, technologies.android],
+        logo: "https://github.com/rebels2638/ScoutingApp2024/raw/master/repo/assets/logo.png",
+        demoImage: "https://rebels2638.github.io/ArgusGuide/images/Home.png",
+    },
+    {
         title: "com.jackmeng",
         description:
             "My standard library/toolkit for JVM environments. It features 30+ utilities for dealing from graph algorithms to Java Swing helpers.",
@@ -418,6 +453,16 @@ export const projects: TProject[] = [
         color: "#000000",
         technologies: [technologies.kotlin, technologies.java],
         state: "archived",
+    },
+    {
+        title: "f_off",
+        description:
+            "Small browser extension to completely hide Discord messages from blocked users.",
+        link: "https://github.com/exoad/f_off",
+        color: "#000000",
+        featured: false,
+        technologies: [technologies.javascript],
+        state: "finished",
     },
 ];
 
