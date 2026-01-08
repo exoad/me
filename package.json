@@ -12,6 +12,11 @@
     "preview": "vite preview",
     "serve": "vite preview --host"
   },
+  "overrides": {
+    "react-helmet-async": {
+      "react": "$react"
+    }
+  },
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
