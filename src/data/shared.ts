@@ -206,7 +206,7 @@ export const projects: TProject[] = [
         link: "https://exoad.github.io/mori/",
         technologies: [technologies.react, technologies.typescript],
         demoImage:
-            "https://exoad.github.io/me-pictures-bucket/Screenshot_2-11-2025_202550_exoad.github.io.jpeg",
+            "https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/Screenshot_2-11-2025_202550_exoad.github.io.jpeg",
         featured: false,
         logo: moriLogo,
         state: "finished",
@@ -291,7 +291,7 @@ export const projects: TProject[] = [
             "An AR weather applet that visualized the weather around you in the future and for other locations.",
         color: "#ffad4a",
         link: "https://github.com/exoad/visus",
-        demoImage: "https://exoad.github.io/me-pictures-bucket/visus_sc.png",
+        demoImage: "https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/visus_sc.png",
         featured: false,
         technologies: [technologies.lens_studio, technologies.javascript],
         state: "finished",
