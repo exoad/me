@@ -45,7 +45,7 @@ function AnimatedRoutes() {
   return (
     <Routes>
       <Route path="/" element={<TransitionedHomePage />} />
-      <Route path="/about" element={<TransitionedAboutPage />} />
+      {/* <Route path="/about" element={<TransitionedAboutPage />} /> */}
       <Route path="/projects" element={<TransitionedProjectsPage />} />
       <Route path="/photos" element={<TransitionedPhotosPage />} />
       <Route path="/contacts" element={<TransitionedContactPage />} />

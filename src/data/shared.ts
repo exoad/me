@@ -510,9 +510,8 @@ export const strings = {
     timeline: timeline,
     pages: {
         home: {
-            tagline: "Mobile Dev • Compilers • Computer Architecture",
+            tagline: "Compilers • Computer Architecture • Open Source",
             scroll_text: "More to see below",
-            // currently_working: "Currently working on: Systems programming & compiler optimization",
             subtitles: [
                 "Hobbyist Developer",
                 "Full-time University Student",
@@ -526,13 +525,11 @@ export const strings = {
             ],
             about: {
                 content:
-                    "I'm Jiaming, a university student and hobbyist programmer passionate about low-level systems. I explore mobile and web development, research AI & ML, and tinker with compiler design. Outside of code, I enjoy hiking, photography, and movies.",
+                    "I'm Jiaming, a university student and hobbyist programmer passionate about low-level systems. I spend a lot of time making hobbyist open source projects and generally just fool around with systems. I research AI & ML, and tinker with compiler design. Outside of code, I enjoy hiking, photography, and movies.",
                 toolkit_title: "I Use:",
                 technologies: [
                     technologies.c,
                     technologies.cpp,
-                    technologies.flutter,
-                    technologies.kotlin,
                 ],
                 more: "Learn More About Me",
                 cool_photos: "See Some Cool Photos",
