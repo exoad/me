@@ -1,0 +1,307 @@
+/*
+ * Gruvbox Dark Theme - Complete Color Palette
+ * Based on https://github.com/morhetz/gruvbox
+ *
+ * This theme uses the full gruvbox color palette for a cohesive,
+ * warm, and visually appealing dark theme.
+ */
+
+/* ============================================
+   CORE PALETTE - CSS Custom Properties
+   ============================================ */
+
+:root {
+    /* Dark Background Colors (from dark to light) */
+    --gb-bg0-hard: #1d2021;
+    --gb-bg0: #282828;
+    --gb-bg0-soft: #32302f;
+    --gb-bg1: #3c3836;
+    --gb-bg2: #504945;
+    --gb-bg3: #665c54;
+    --gb-bg4: #7c6f64;
+
+    /* Light Foreground Colors (from light to dark) */
+    --gb-fg0: #fbf1c7;
+    --gb-fg1: #ebdbb2;
+    --gb-fg2: #d5c4a1;
+    --gb-fg3: #bdae93;
+    --gb-fg4: #a89984;
+
+    /* Accent Colors - Normal */
+    --gb-red: #cc241d;
+    --gb-green: #98971a;
+    --gb-yellow: #d79921;
+    --gb-blue: #458588;
+    --gb-purple: #b16286;
+    --gb-aqua: #689d6a;
+    --gb-orange: #d65d0e;
+    --gb-gray: #928374;
+
+    /* Accent Colors - Dim */
+    --gb-red-dim: #9d0006;
+    --gb-green-dim: #79740e;
+    --gb-yellow-dim: #b57614;
+    --gb-blue-dim: #076678;
+    --gb-purple-dim: #8f3f71;
+    --gb-aqua-dim: #427b58;
+    --gb-orange-dim: #af3a03;
+
+    /* Semantic Color Mappings */
+    --color-bg-primary: var(--gb-bg0-hard);
+    --color-bg-secondary: var(--gb-bg0);
+    --color-bg-tertiary: var(--gb-bg1);
+    --color-bg-elevated: var(--gb-bg2);
+
+    --color-fg-primary: var(--gb-fg0);
+    --color-fg-secondary: var(--gb-fg1);
+    --color-fg-tertiary: var(--gb-fg2);
+    --color-fg-muted: var(--gb-fg3);
+    --color-fg-dim: var(--gb-fg4);
+
+    --color-accent-primary: var(--gb-orange);
+    --color-accent-secondary: var(--gb-yellow);
+    --color-accent-tertiary: var(--gb-aqua);
+
+    --color-success: var(--gb-green);
+    --color-warning: var(--gb-yellow);
+    --color-error: var(--gb-red);
+    --color-info: var(--gb-blue);
+
+    --color-border: var(--gb-bg3);
+    --color-border-light: var(--gb-bg4);
+}
+
+/* ============================================
+   TAILWIND V4 THEME DEFINITION
+   ============================================ */
+
+@theme {
+    /* Background Colors */
+    --color-gb-bg0-hard: var(--gb-bg0-hard);
+    --color-gb-bg0: var(--gb-bg0);
+    --color-gb-bg0-soft: var(--gb-bg0-soft);
+    --color-gb-bg1: var(--gb-bg1);
+    --color-gb-bg2: var(--gb-bg2);
+    --color-gb-bg3: var(--gb-bg3);
+    --color-gb-bg4: var(--gb-bg4);
+
+    /* Foreground Colors */
+    --color-gb-fg0: var(--gb-fg0);
+    --color-gb-fg1: var(--gb-fg1);
+    --color-gb-fg2: var(--gb-fg2);
+    --color-gb-fg3: var(--gb-fg3);
+    --color-gb-fg4: var(--gb-fg4);
+
+    /* Accent Colors */
+    --color-gb-red: var(--gb-red);
+    --color-gb-red-dim: var(--gb-red-dim);
+    --color-gb-green: var(--gb-green);
+    --color-gb-green-dim: var(--gb-green-dim);
+    --color-gb-yellow: var(--gb-yellow);
+    --color-gb-yellow-dim: var(--gb-yellow-dim);
+    --color-gb-blue: var(--gb-blue);
+    --color-gb-blue-dim: var(--gb-blue-dim);
+    --color-gb-purple: var(--gb-purple);
+    --color-gb-purple-dim: var(--gb-purple-dim);
+    --color-gb-aqua: var(--gb-aqua);
+    --color-gb-aqua-dim: var(--gb-aqua-dim);
+    --color-gb-orange: var(--gb-orange);
+    --color-gb-orange-dim: var(--gb-orange-dim);
+    --color-gb-gray: var(--gb-gray);
+
+    /* Semantic Colors */
+    --color-bg-primary: var(--color-bg-primary);
+    --color-bg-secondary: var(--color-bg-secondary);
+    --color-bg-tertiary: var(--color-bg-tertiary);
+    --color-bg-elevated: var(--color-bg-elevated);
+
+    --color-fg-primary: var(--color-fg-primary);
+    --color-fg-secondary: var(--color-fg-secondary);
+    --color-fg-tertiary: var(--color-fg-tertiary);
+    --color-fg-muted: var(--color-fg-muted);
+    --color-fg-dim: var(--color-fg-dim);
+
+    --color-accent: var(--color-accent-primary);
+    --color-accent-secondary: var(--color-accent-secondary);
+    --color-accent-tertiary: var(--color-accent-tertiary);
+
+    --color-success: var(--color-success);
+    --color-warning: var(--color-warning);
+    --color-error: var(--color-error);
+    --color-info: var(--color-info);
+
+    --color-border: var(--color-border);
+    --color-border-light: var(--color-border-light);
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+html, body, #root {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: var(--color-bg-primary);
+    color: var(--color-fg-secondary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Font Utilities */
+.font-sans {
+    font-family: "Inter", system-ui, sans-serif !important;
+}
+
+.font-display {
+    font-family: "Inter", system-ui, sans-serif !important;
+    font-weight: 700;
+}
+
+/* Selection Styling */
+::selection {
+    background: var(--gb-orange-dim);
+    color: var(--gb-fg0);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--gb-bg0);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gb-bg3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gb-bg4);
+}
+
+/* Focus Ring */
+:focus-visible {
+    outline: 2px solid var(--gb-orange);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   COMPONENT PATTERNS
+   ============================================ */
+
+/* Card Pattern */
+.gb-card {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+}
+
+.gb-card-elevated {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* Button Patterns */
+.gb-button {
+    background: var(--gb-orange);
+    color: var(--gb-bg0);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.gb-button:hover {
+    background: var(--gb-orange-dim);
+}
+
+.gb-button-secondary {
+    background: transparent;
+    color: var(--color-fg-secondary);
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.gb-button-secondary:hover {
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-border-light);
+}
+
+/* Link Patterns */
+.gb-link {
+    color: var(--gb-orange);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.gb-link:hover {
+    color: var(--gb-orange-dim);
+    text-decoration: underline;
+}
+
+/* Divider Pattern */
+.gb-divider {
+    background: var(--color-border);
+    height: 1px;
+}
+
+.gb-divider-accent {
+    background: var(--gb-orange);
+    height: 1px;
+}
+
+/* Tag/Badge Pattern */
+.gb-tag {
+    background: var(--color-bg-tertiary);
+    color: var(--color-fg-tertiary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+}
+
+.gb-tag-accent {
+    background: var(--gb-orange-dim);
+    color: var(--gb-fg0);
+}
+
+.gb-tag-success {
+    background: var(--gb-green-dim);
+    color: var(--gb-fg0);
+}
+
+.gb-tag-info {
+    background: var(--gb-blue-dim);
+    color: var(--gb-fg0);
+}
+
+/* Status Colors */
+.status-active {
+    color: var(--gb-green);
+}
+
+.status-finished {
+    color: var(--gb-blue);
+}
+
+.status-paused {
+    color: var(--gb-yellow);
+}
+
+.status-archived {
+    color: var(--gb-gray);
+}

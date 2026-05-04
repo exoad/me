@@ -1,54 +1,63 @@
 @import url("./assets/fonts/fonts.css");
 @import "tailwindcss";
+@import "./styles/gruvbox-theme.css";
 
-html {
-    scroll-behavior: smooth;
+/* ============================================
+   LEGACY COLOR VARIABLES (for backward compatibility)
+   ============================================ */
+
+@theme {
+    --color-bg0: #1d2021;
+    --color-bg0_h: #1d2021;
+    --color-bg0_s: #32302f;
+    --color-bg1: #3c3836;
+    --color-bg2: #504945;
+    --color-bg3: #665c54;
+    --color-bg4: #7c6f64;
+    --color-fg0: #fbf1c7;
+    --color-fg: #ebdbb2;
+    --color-fg2: #d5c4a1;
+    --color-fg3: #bdae93;
+    --color-fg4: #a89984;
+    --color-red: #cc241d;
+    --color-red-dim: #9d0006;
+    --color-green: #98971a;
+    --color-green-dim: #79740e;
+    --color-yellow: #d79921;
+    --color-yellow-dim: #b57614;
+    --color-blue: #458588;
+    --color-blue-dim: #076678;
+    --color-purple: #b16286;
+    --color-purple-dim: #8f3f71;
+    --color-aqua: #689d6a;
+    --color-aqua-dim: #427b58;
+    --color-orange: #d65d0e;
+    --color-orange-dim: #af3a03;
+    --color-gray: #928374;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+html, body, #root {
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    font-family: "Playfair Display", serif;
-    background: #000;
-    color: #fff;
+    font-family: "Inter", system-ui, sans-serif;
+    background: var(--color-bg-primary);
+    color: var(--color-fg-secondary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.font-montserrat {
-    font-family: "Montserrat", sans-serif !important;
+.font-sans {
+    font-family: "Inter", system-ui, sans-serif !important;
 }
 
-.font-playfair {
-    font-family: "Playfair Display", serif !important;
-}
-
-#lcp-image-container {
-    background-color: #000;
-    contain: paint;
-}
-
-#lcp-image {
-    width: 144px;
-    height: 144px;
-    object-fit: contain;
-    contain: layout;
-}
-
-@supports selector(::-webkit-scrollbar) {
-    *::-webkit-scrollbar {
-        width: 0.36em;
-    }
-
-    *::-webkit-scrollbar-track {
-        background: black;
-        border-left: 1px solid #333333;
-    }
-
-    *::-webkit-scrollbar-thumb {
-        background-color: white;
-    }
-}
-
-@supports (scrollbar-color: auto) and (not selector(::-webkit-scrollbar)) {
-    * {
-        scrollbar-width: auto;
-        scrollbar-color: white transparent;
-    }
+.font-display {
+    font-family: "Inter", system-ui, sans-serif !important;
+    font-weight: 700;
 }

@@ -11,7 +11,7 @@ export default function ProjectsColorBar(props: Readonly<{ ref: string; isSmall?
             >
                 <Row gap={2} className="text-xs">
                     <span style={{ color: t.color }}> <t.icon /></span>
-                    <span className="font-montserrat py-1 text-white">
+                    <span className="font-montserrat py-1 text-gb-fg1">
                         {t.name}
                     </span>
                 </Row>

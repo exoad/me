@@ -47,14 +47,14 @@ export default function AboutPage({ scaffoldProps = {} }) {
                     <PageDescriptor noBottomPadding title={strings.pages.about.title} description={strings.pages.about.description} />
                 </Column>
                 <div className="mb-16 mt-8 text-center max-w-lg">
-                    <h2 className="text-white text-lg font-semibold mb-4 font-montserrat">{strings.pages.about.currently.title}
+                    <h2 className="text-gb-fg0 text-lg font-semibold mb-4 font-montserrat">{strings.pages.about.currently.title}
                     </h2>
-                    <p className="text-white/70 text-base md:text-lg font-light leading-relaxed font-montserrat">{strings.pages.about.currently.content}
+                    <p className="text-gb-fg3 text-base md:text-lg font-light leading-relaxed font-montserrat">{strings.pages.about.currently.content}
                     </p>
                 </div>
                 <div className="max-w-8xl">
                     <div className="relative">
-                        <div className="absolute left-6 top-0 w-px bg-gradient-to-b from-white to-transparent h-full shadow-[0_0_16px_black]" />
+                        <div className="absolute left-6 top-0 w-px bg-gradient-to-b from-gb-fg2 to-transparent h-full shadow-[0_0_16px_rgba(251,241,199,0.2)]" />
                         <div>
                             {timeline.map((item, index) => {
                                 const year = new Date(item.isoDate).getFullYear();
@@ -66,19 +66,19 @@ export default function AboutPage({ scaffoldProps = {} }) {
                                         style={{ transitionDelay: visibleItems.has(index) ? `${index * 80}ms` : '0ms' }}
                                     >
                                         <div
-                                            className={`absolute left-6 transform -translate-x-1/2 w-4 h-4 bg-white rounded-full z-10 transition-all duration-150 ${visibleItems.has(index) ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
+                                            className={`absolute left-6 transform -translate-x-1/2 w-4 h-4 bg-gb-orange rounded-full z-10 transition-all duration-150 ${visibleItems.has(index) ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}
                                             style={{ transitionDelay: visibleItems.has(index) ? `${(index * 80) + 120}ms` : '0ms' }}
                                         ></div>
 
                                         <div
-                                            className={`absolute left-6 top-1/2 h-px bg-gradient-to-r from-white to-white/30 transition-all duration-200 ${visibleItems.has(index) ? 'sm:w-16 w-[12dvw] opacity-100' : 'w-0 opacity-0'}`}
+                                            className={`absolute left-6 top-1/2 h-px bg-gradient-to-r from-gb-orange to-gb-orange/30 transition-all duration-200 ${visibleItems.has(index) ? 'sm:w-16 w-[12dvw] opacity-100' : 'w-0 opacity-0'}`}
                                             style={{ transitionDelay: visibleItems.has(index) ? `${(index * 80) + 180}ms` : '0ms' }}
                                         ></div>
 
                                         <div className="w-full max-w-lg ml-[22dvw] sm:ml-26 pr-2">
-                                            <div className="text-white/70 text-xs font-montserrat uppercase tracking-wide mb-2">{item.displayDate}</div>
-                                            <h3 className="text-white text-xl font-bold font-playfair mb-2">{item.title}</h3>
-                                            <p className="text-white/90 text-sm font-montserrat leading-relaxed">{item.description}</p>
+                                            <div className="text-gb-fg4 text-xs font-montserrat uppercase tracking-wide mb-2">{item.displayDate}</div>
+                                            <h3 className="text-gb-fg0 text-xl font-bold font-playfair mb-2">{item.title}</h3>
+                                            <p className="text-gb-fg2 text-sm font-montserrat leading-relaxed">{item.description}</p>
                                         </div>
                                     </div>
                                 );

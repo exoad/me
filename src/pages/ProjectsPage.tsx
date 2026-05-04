@@ -10,14 +10,14 @@ import { Column, Row } from "../components/FlexLayouter.tsx";
 import ProjectsColorBar from '../components/ProjectsColorBar.tsx';
 
 const gradients = [
-    "from-[#ff1e56] via-[#00f0ff] to-[#7f00ff]",
-    "from-[#ffd700] via-[#00ff87] to-[#0066ff]",
-    "from-[#e71d36] via-[#06d6a0] to-[#fffa65]",
-    "from-[#3a86ff] via-[#ff006e] to-[#ffd6e0]",
-    "from-[#ff7eb3] via-[#ff65a3] to-[#7afcff]",
-    "from-[#f72585] via-[#b5179e] to-[#7209b7]",
-    "from-[#ff9a9e] via-[#fad0c4] to-[#fad390]",
-    "from-[#a1c4fd] via-[#c2e9fb] to-[#667eea]"
+    "from-gb-red via-gb-orange to-gb-yellow",
+    "from-gb-yellow via-gb-green to-gb-aqua",
+    "from-gb-aqua via-gb-blue to-gb-purple",
+    "from-gb-purple via-gb-red to-gb-orange",
+    "from-gb-orange via-gb-yellow to-gb-green",
+    "from-gb-green via-gb-aqua to-gb-blue",
+    "from-gb-blue via-gb-purple to-gb-red",
+    "from-gb-yellow via-gb-orange to-gb-red"
 ];
 
 export default function ProjectsPage({ scaffoldProps = {} }) {
@@ -60,15 +60,15 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
         <ScaffoldContent useDefaultLayout className="w-full overflow-x-hidden">
             <Column gap={12} crossAxisAlignment="start" className="px-4 sm:px-8 md:px-12">
                 <Column gap={4} className="text-center w-full mb-8 px-4">
-                    <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-[9rem]font-extrabold text-white/20 uppercase tracking-widest leading-tight">
+                    <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-[9rem] font-extrabold text-gb-fg4/30 uppercase tracking-widest leading-tight">
                         {strings.pages.projects.title.prompt}
                     </h2>
 
-                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-snu" >
+                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gb-fg0 leading-snu" >
                         {strings.pages.projects.title.figure}
                     </h3>
 
-                    <p className="text-smsm:text-basemd:text-lg font-montserrat mt-4 text-white/70">
+                    <p className="text-sm sm:text-base md:text-lg font-montserrat mt-4 text-gb-fg3">
                         {strings.pages.projects.title.label}
                     </p>
                 </Column>
@@ -131,18 +131,18 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
                                 <div className="py-5">
                                     <div className="flex items-center justify-between mb-2">
                                         <h3
-                                            className="text-xl sm:text-2xl lg:text-3xl font-bold font-playfair break-words"
+                                            className="text-xl sm:text-2xl lg:text-3xl font-bold font-playfair break-words text-gb-fg0"
                                             style={{ textShadow: `2px 2px ${hexToRgba(proj.color, 0.7)}` }}
                                         >
                                             {proj.title}
                                         </h3>
                                         <span
-                                            className={`px-1.5 py-0.5 text-xs rounded-sm font-medium capitalize ${proj.state === "active" ? "bg-green-500/20 text-green-400" : proj.state === "finished" ? "bg-blue-500/20 text-blue-400" : "bg-gray-500/20 text-gray-400"}`}
+                                            className={`px-1.5 py-0.5 text-xs rounded-sm font-medium capitalize ${proj.state === "active" ? "bg-gb-green/20 text-gb-green" : proj.state === "finished" ? "bg-gb-blue/20 text-gb-blue" : "bg-gb-gray/20 text-gb-gray"}`}
                                         >
                                             {proj.state}
                                         </span>
                                     </div>
-                                    <p className="text-white/70 text-sm sm:text-md font-montserrat mb-4">
+                                    <p className="text-gb-fg3 text-sm sm:text-md font-montserrat mb-4">
                                         {proj.description}
                                     </p>
                                     <Row gap={0}>
@@ -150,7 +150,7 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
                                     </Row>
                                     <Divider className="w-full my-4" />
                                     <button
-                                        className=" bg-transparent border-none text-white text-md font-light font-montserrat cursor-pointer duration-300 group"
+                                        className=" bg-transparent border-none text-gb-fg1 text-md font-light font-montserrat cursor-pointer duration-300 group"
                                         onClick={() => window.open(proj.link, "_blank")}
                                     >
                                         <Row gap={2} mainAxisAlignment='center'>

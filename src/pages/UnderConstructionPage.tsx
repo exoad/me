@@ -17,20 +17,20 @@ export default function UnderConstruction({ scaffoldProps = {} }) {
             <ScaffoldContent useDefaultLayout>
                 <WarpTunnelBg scrollY={1} />
                 <div className={`flex flex-col items-center justify-center gap-16 transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}>
-                    <MdConstruction className="text-white text-8xl md:text-9xl" />
-                    <p className="text-white text-xl md:text-5xl font-medium text-center font-playfair "
+                    <MdConstruction className="text-gb-orange text-8xl md:text-9xl" />
+                    <p className="text-gb-fg0 text-xl md:text-5xl font-medium text-center font-playfair "
                     >
                         {strings.pages.under_construction.title}
                     </p>
-                    <p className="text-white/70 text-base md:text-lg text-center max-w-md font-montserrat"
+                    <p className="text-gb-fg3 text-base md:text-lg text-center max-w-md font-montserrat"
                     >
                         {strings.pages.under_construction.description}
                     </p>
                     <SpinningSquareDivider />
-                    <div className="flex flex-row items-center justify-centergap-2 text-white/70">
-                        <FiChevronLeft className="text-white text-2xl mt-4" />
+                    <div className="flex flex-row items-center justify-center gap-2 text-gb-fg3">
+                        <FiChevronLeft className="text-gb-fg1 text-2xl mt-4" />
                         <button
-                            className="bg-transparent text-white md:text-base font-light py-3 px-6 cursor-pointer hover:text-gray-300 transition-colors duration-300 group font0-montserrat"
+                            className="bg-transparent text-gb-fg1 md:text-base font-light py-3 px-6 cursor-pointer hover:text-gb-orange transition-colors duration-300 group font-montserrat"
                             onClick={() => globalThis.history.back()}
                         >
                             <span className="text-xl">

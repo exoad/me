@@ -4,7 +4,7 @@ import { Column } from './FlexLayouter.tsx';
 
 export default function Footer() {
     return (
-        <footer className="footer-component w-full text-white/70 text-sm font-montserrat py-4 text-center">
+        <footer className="footer-component w-full text-gb-fg3 text-sm font-montserrat py-4 text-center">
             <Column className="md:flex-row" gap={2} mainAxisAlignment="spaceBetween" crossAxisAlignment="center">
                 <div className="w-full md:w-1/3 md:text-left whitespace-pre-line order-2 md:order-1">
                     {strings.footer.legals}
@@ -15,7 +15,7 @@ export default function Footer() {
                 </div>
                 <div className="w-full md:w-1/3 md:text-right order-3 whitespace-nowrap">
                     {strings.footer.source.leading} <a href={strings.footer.source.url} target="_blank" rel="noopener noreferrer"
-                        className="text-white/80 hover:text-white transition-colors duration-300">
+                        className="text-gb-fg2 hover:text-gb-fg0 transition-colors duration-300">
                         {strings.footer.source.url_attr}
                     </a>
                 </div>

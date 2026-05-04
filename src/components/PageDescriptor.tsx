@@ -4,9 +4,9 @@ export default function PageDescriptor({ title, description, noBottomPadding }: 
             {title}
         </h1>
         <div className="animate-fade-in" >
-            <div className="w-24 h-px bg-white" />
+            <div className="w-24 h-px bg-gb-orange" />
         </div>
-        <p className={`text-white text-lg text-center max-w-2xl mx-auto font-montserrat leading-relaxed ${!noBottomPadding ? 'mb-16' : ''}`}>
+        <p className={`text-gb-fg2 text-lg text-center max-w-2xl mx-auto font-montserrat leading-relaxed ${!noBottomPadding ? 'mb-16' : ''}`}>
             {description}
         </p>
     </div>;

@@ -143,7 +143,7 @@ export const timeline: TTimelineEntry[] = [
         isoDate: "2025-08-20",
         title: "A New Beginning",
         description:
-            "Transferred to the University of Maryland, College Park as a sophomore, where I built connections with faculty and peers and began research in AI/ML.",
+            "Transferred to the University of Maryland, College Park as a sophomore, continuing to build open source software and explore systems programming.",
     },
     // {
     //     displayDate: "October 2025",
@@ -510,7 +510,7 @@ export const strings = {
     timeline: timeline,
     pages: {
         home: {
-            tagline: "Compilers • Computer Architecture • Open Source",
+            tagline: "Open Source • Software • Systems",
             scroll_text: "More to see below",
             subtitles: [
                 "Hobbyist Developer",
@@ -525,7 +525,7 @@ export const strings = {
             ],
             about: {
                 content:
-                    "I'm Jiaming, a university student and hobbyist programmer passionate about low-level systems. I spend a lot of time making hobbyist open source projects and generally just fool around with systems. I research AI & ML, and tinker with compiler design. Outside of code, I enjoy hiking, photography, and movies.",
+                    "I'm Jiaming, a hobbyist programmer and open source contributor. I build software across systems, tools, and languages — from CPU rasterizers and programming languages to desktop apps and developer utilities. Most of my work is libre and lives on GitHub. Outside of code, I enjoy hiking, photography, and movies.",
                 toolkit_title: "I Use:",
                 technologies: [
                     technologies.c,

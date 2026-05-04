@@ -1,105 +1,175 @@
-import { strings } from "../data/shared.ts";
-import Scaffold from "../components/Scaffold.tsx";
+import { strings, featuredProjects, projects, timeline } from "../data/shared.ts";
 import SEO from "../components/SEO.tsx";
-import WarpTunnelBg from "../components/WarpTunnelBg";
-import profilePic from "../assets/images/profile_image.webp";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { SiGithub, SiLinkedin } from "react-icons/si";
-import AttentionButton from "../components/AttentionButton";
+import { MdOutlineArrowOutward } from "react-icons/md";
+import { useState } from "react";
 
-export default function HomePage({ scaffoldProps = {} }) {
-    const [scrollY, setScrollY] = useState(0);
-    useEffect(() => {
-        if (window.scrollY > 0) {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-        const handleScroll = () => {
-            setScrollY(window.scrollY);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-    const navigate = useNavigate();
-    return (
-        <Scaffold {...scaffoldProps} skipFooter={true}>
-            <SEO title="Home" description={strings.pages.home.about.content} />
-            <div className="relative h-[100dvh] overflow-hidden bg-black flex items-center justify-center px-4 sm:px-8 md:px-16 pt-16">
-                <WarpTunnelBg scrollY={scrollY} />
-                <div className="flex flex-col md:flex-row items-center gap-8 z-10 max-w-4xl mx-auto">
-                    <img
-                        src={profilePic}
-                        alt="Profile"
-                        className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 object-cover"
-                        draggable={false}
-                    />
-                    <div className="flex flex-col gap-4 text-center md:text-left">
-                        <h1
-                            className="font-bold text-4xl md:text-6xl lg:text-7xl font-playfair whitespace-nowrap leading-loose"
-                            style={{
-                                background:
-                                    "linear-gradient(to bottom, #ffffff, #a0a0a0)",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                            }}
-                        >
-                            {strings.name}
-                        </h1>
-                        <p className="text-white text-lg md:text-xl font-montserrat">
-                            {strings.pages.home.tagline}
-                        </p>
-                        <hr className="border-white/30 my-2 w-2/3 mx-auto md:w-full md:mx-0" />
-                        <p className="text-white text-base md:text-lg font-light leading-relaxed font-montserrat max-w-md">
-                            {strings.pages.home.about.content}
-                        </p>
-                        <p className="text-white text-base md:text-lg font-light font-montserrat mt-4">
-                            Currently building{" "}
-                            <a
-                                href="https://drosk.net/"
-                                className="font-bold underline hover:no-underline font-playfair"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Drosk
-                            </a>
-                            .
-                        </p>
-                        <hr className="border-white/30 my-2 w-2/3 mx-auto md:w-full md:mx-0" />
-                        <div className="flex gap-4 mt-4 justify-center md:justify-start">
-                            <AttentionButton
-                                onClick={() => navigate("/projects")}
-                                noUnderline={true}
-                                className="px-6 py-3 text-white font-semibold border-b-2 border-white hover:border-b-4 transition group-hover:scale-100"
-                            >
-                                View Projects
-                            </AttentionButton>
-                            <AttentionButton
-                                onClick={() => navigate("/contact")}
-                                noUnderline={true}
-                                className="px-6 py-3 text-white font-semibold border-b-2 border-white hover:border-b-4 transition group-hover:scale-100"
-                            >
-                                Contact Me
-                            </AttentionButton>
-                        </div>
-                        <div className="flex gap-4 mt-2 justify-center md:justify-start">
-                            <a
-                                href={strings.links.github}
-                                aria-label={strings.links.github_aria}
-                                className="text-white hover:text-gray-300 transition"
-                            >
-                                <SiGithub size={24} />
-                            </a>
-                            <a
-                                href={strings.links.linkedin}
-                                aria-label={strings.links.linkedin_aria}
-                                className="text-white hover:text-gray-300 transition"
-                            >
-                                <SiLinkedin size={24} />
-                            </a>
-                        </div>
-                    </div>
-                </div>
+function NameCard() {
+  return (
+    <div className="flex flex-col items-end gap-3">
+      <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl font-sans text-fg0 tracking-tight">
+        {strings.name}
+      </h1>
+      <p className="text-fg3 text-xs font-sans uppercase tracking-[0.2em]">
+        {strings.pages.home.tagline}
+      </p>
+      <div className="flex gap-5 mt-3">
+        <a href={strings.links.github} aria-label={strings.links.github_aria} className="text-fg4 hover:text-fg0 transition duration-300">
+          <SiGithub size={18} />
+        </a>
+        <a href={strings.links.linkedin} aria-label={strings.links.linkedin_aria} className="text-fg4 hover:text-fg0 transition duration-300">
+          <SiLinkedin size={18} />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function ProjectRow({ proj }: { proj: typeof projects[0] }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="border-b border-bg2">
+      <button
+        onClick={() => setOpen(!open)}
+        className="group w-full flex items-center justify-between gap-4 py-4 hover:border-fg3 transition duration-300 text-left"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+          <span className="text-fg text-sm sm:text-base font-sans font-semibold">{proj.title}</span>
+          <span className="text-fg4 text-xs font-sans">{proj.technologies.map(t => t.name).join(" · ")}</span>
+        </div>
+        <MdOutlineArrowOutward
+          size={12}
+          className={`shrink-0 transition duration-300 ${open ? "text-fg3 rotate-90" : "text-bg0 group-hover:text-fg3"}`}
+        />
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          open ? "max-h-96 opacity-100 pb-6" : "max-h-0 opacity-0"
+        }`}
+      >
+        <p className="text-fg3 text-sm font-sans leading-relaxed mb-4 max-w-lg">
+          {proj.description}
+        </p>
+        <div className="flex items-center gap-4">
+          <span className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm ${
+            proj.state === "active"
+              ? "bg-green-dim/30 text-green"
+              : proj.state === "finished"
+              ? "bg-blue-dim/30 text-blue"
+              : "bg-gray/20 text-fg4"
+          }`}>
+            {proj.state}
+          </span>
+          <a
+            href={proj.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-fg3 hover:text-fg text-xs font-sans transition duration-300"
+          >
+            visit <MdOutlineArrowOutward size={10} />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ContentSections() {
+  const allProjects = [...featuredProjects, ...projects.filter(p => !p.featured)];
+
+  return (
+    <div className="flex flex-col gap-24">
+      <section>
+        <p className="text-fg2 text-base sm:text-lg font-sans leading-relaxed max-w-xl">
+          {strings.pages.home.about.content}
+        </p>
+      </section>
+
+      <section>
+        <h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-8">Projects</h2>
+        <div className="flex flex-col max-w-2xl">
+          {allProjects.map((proj) => (
+            <ProjectRow key={proj.title} proj={proj} />
+          ))}
+        </div>
+        <div className="mt-8">
+          <a
+            href={strings.links.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-fg4 hover:text-fg2 text-xs font-sans transition duration-300"
+          >
+            all projects <MdOutlineArrowOutward size={10} />
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-8">Timeline</h2>
+        <div className="flex flex-col gap-5 max-w-2xl">
+          {timeline.map((entry) => (
+            <div key={entry.isoDate} className="flex flex-col sm:flex-row gap-1 sm:gap-4 items-baseline">
+              <span className="text-fg4 text-xs font-sans w-24 shrink-0">{entry.displayDate}</span>
+              <span className="text-fg text-sm font-sans font-medium">{entry.title}</span>
             </div>
-        </Scaffold>
-    );
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-8">Contact</h2>
+        <div className="flex flex-col gap-2">
+          <a href="mailto:jackm@exoad.net" className="text-fg hover:text-fg0 text-base font-sans transition duration-300">
+            jackm@exoad.net
+          </a>
+          <a href="mailto:jmeng2@terpmail.umd.edu" className="text-fg hover:text-fg0 text-base font-sans transition duration-300">
+            jmeng2@terpmail.umd.edu
+          </a>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <>
+      <SEO title="Home" description={strings.pages.home.about.content} />
+
+      {/* Mobile / small screens: stacked layout */}
+      <div className="lg:hidden">
+        <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-bg0 px-6">
+          <NameCard />
+        </div>
+        <div className="bg-bg0 px-6 sm:px-12 md:px-24 pb-20 max-w-3xl mx-auto">
+          <ContentSections />
+        </div>
+        <footer className="bg-bg0 border-t border-bg2 py-8 px-6">
+          <div className="max-w-3xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <span className="text-fg4 text-[10px] font-sans">{strings.footer.legals}</span>
+            <a href={strings.footer.source.url} target="_blank" rel="noopener noreferrer" className="text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300">
+              {strings.footer.source.url_attr}
+            </a>
+          </div>
+        </footer>
+      </div>
+
+      {/* Large screens: side-by-side with sticky name */}
+      <div className="hidden lg:flex min-h-[100dvh] bg-bg0">
+        <div className="w-[42%] sticky top-0 h-screen flex flex-col items-end justify-center px-12 xl:px-20">
+          <NameCard />
+        </div>
+        <div className="w-[58%] px-12 xl:px-20 py-[20vh]">
+          <ContentSections />
+          <footer className="mt-24 pt-6 border-t border-bg2 flex justify-between items-center">
+            <span className="text-fg4 text-[10px] font-sans">{strings.footer.legals}</span>
+            <a href={strings.footer.source.url} target="_blank" rel="noopener noreferrer" className="text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300">
+              {strings.footer.source.url_attr}
+            </a>
+          </footer>
+        </div>
+      </div>
+    </>
+  );
 }

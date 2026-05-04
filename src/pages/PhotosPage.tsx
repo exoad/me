@@ -74,7 +74,7 @@ export default function PhotosPage({ scaffoldProps = {} }) {
         description={strings.pages.photos.description}
         url="https://exoad.net/photos"
       />
-      <main className="min-h-screen flex flex-col items-center bg-black">
+      <main className="min-h-screen flex flex-col items-center bg-gb-bg0-hard">
         <PageDescriptor title={strings.pages.photos.title} description={strings.pages.photos.description} />
         <div className="flex flex-col gap-10 mb-16 w-full px-4" style={{ maxWidth: "min(100%, 690px)" }}>
           {processedPhotos.map((photo) => (
@@ -106,17 +106,17 @@ export default function PhotosPage({ scaffoldProps = {} }) {
                       </button>
                     </div>
                   ) : (
-                    <div className="photo-aspect-ratio-container bg-gray-00 flex items-center justify-center rounded-xl">
+                    <div className="photo-aspect-ratio-container bg-gb-bg1 flex items-center justify-center rounded-xl">
                       <div className="loading-spinner"></div>
                     </div>
                   )}
                   <div
-                    className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent opacity-100 flex flex-col justify-end p-[1rem]"
+                    className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gb-bg0/70 to-transparent opacity-100 flex flex-col justify-end p-[1rem]"
                   >
                     {photo.caption && (
-                      <h3 className="text-lg md:text-2xl font-playfair text-white">{photo.caption}</h3>
+                      <h3 className="text-lg md:text-2xl font-playfair text-gb-fg0">{photo.caption}</h3>
                     )}
-                    <div className="flex justify-between text-sm text-white font-montserrat">
+                    <div className="flex justify-between text-sm text-gb-fg1 font-montserrat">
                       <span>{photo.location}</span>
                       <span>{formatDate(photo.date)}</span>
                     </div>

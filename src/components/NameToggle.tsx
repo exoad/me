@@ -11,7 +11,7 @@ export default function NameToggle({ names }: Readonly<NameToggleProps>) {
 
     return (
         <button
-            className="text-white text-lg md:text-xl font-bold font-playfair cursor-pointer hover:scale-105 transition-transform duration-300 bg-transparent border-none"
+            className="text-gb-fg0 text-lg md:text-xl font-bold font-playfair cursor-pointer hover:scale-105 transition-transform duration-300 bg-transparent border-none"
             style={{
                 textShadow: `2px 2px ${names[nameIndex][1]}`,
                 paddingBottom: '0.25rem'

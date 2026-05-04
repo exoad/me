@@ -69,7 +69,7 @@ export default function Hero({
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-black px-4 sm:px-8 md:px-16 relative" ref={heroRef}>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gb-bg0-hard px-4 sm:px-8 md:px-16 relative" ref={heroRef}>
             <WarpTunnelBg scrollY={scrollY} />
             <div className="flex flex-col items-center justify-center gap-6 z-10 max-w-3xl mx-auto">
                 <div className="relative mb-1">
@@ -84,7 +84,7 @@ export default function Hero({
                             id="logo-image"
                             decoding="sync"
                         />
-                        <div className="logo-overlay-fade-out absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black pointer-events-none" />
+                        <div className="logo-overlay-fade-out absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gb-bg0-hard pointer-events-none" />
                     </div>
                 </div>
                 <Column gap={6} className="ease-in-out">
@@ -92,17 +92,17 @@ export default function Hero({
                         className={`relative inline-block font-bold text-center font-playfair text-5xl md:text-7xl ${heroVisible ? 'animate-fade-in-up' : 'opacity-0 scale-90'}`}
                         style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 0}ms` : '0ms' }}
                     >
-                        <span className="relative text-white">{name}</span>
+                        <span className="relative text-gb-fg0">{name}</span>
                     </h1>
                     <p
-                        className={`text-white px-6 sm:px-0 text-base md:text-lg text-center mx-auto font-montserrat ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
+                        className={`text-gb-fg1 px-6 sm:px-0 text-base md:text-lg text-center mx-auto font-montserrat ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
                         style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 1}ms` : '0ms' }}
                     >
                         {tagline}
                     </p>
                 </Column>
                 <div
-                    className={`w-20 h-px bg-white/70 my-1 ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
+                    className={`w-20 h-px bg-gb-fg3 my-1 ${heroVisible ? 'animate-fade-in-up' : 'opacity-0'}`}
                     style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 2}ms` : '0ms' }}
                 />
                 <div
@@ -114,7 +114,7 @@ export default function Hero({
                         {_scrollerTotal.map((item, index) => (
                             <div
                                 key={`${item}-${index}`}
-                                className="text-white text-base md:text-lg text-center h-[2rem] leading-[2rem]"
+                                className="text-gb-fg1 text-base md:text-lg text-center h-[2rem] leading-[2rem]"
                             >
                                 {item}
                             </div>
@@ -148,7 +148,7 @@ export default function Hero({
                         aria-label={strings.links.github_aria}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-white hover:text-white transition-all duration-300 inline-block hover:scale-110">
+                        className="text-gb-fg2 hover:text-gb-fg0 transition-all duration-300 inline-block hover:scale-110">
                         <SiGithub size={24} />
                     </a>
                     <a
@@ -156,7 +156,7 @@ export default function Hero({
                         aria-label={strings.links.linkedin_aria}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-white hover:text-white transition-all duration-300 inline-block hover:scale-110">
+                        className="text-gb-fg2 hover:text-gb-fg0 transition-all duration-300 inline-block hover:scale-110">
                         <SiLinkedin size={24} />
                     </a>
                 </div>
@@ -165,11 +165,11 @@ export default function Hero({
                         }`}
                     style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 5}ms` : '0ms' }}
                 >
-                    <p className="text-white/60 text-xs font-montserrat">
+                    <p className="text-gb-fg4 text-xs font-montserrat">
                         {scrollText}
                     </p>
                     <div className="h-6 w-5 flex justify-center">
-                        <FiChevronDown className="absolute text-white/70" size={16} />
+                        <FiChevronDown className="absolute text-gb-fg3" size={16} />
                     </div>
                 </div>
             </div>

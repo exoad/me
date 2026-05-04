@@ -22,7 +22,7 @@ export default function AttentionButton({
         <button
             aria-label={ariaLabel}
             onClick={onClick}
-            className={`relative flex flex-col items-center justify-center text-white py-2 px-2 delay-150 duration-700 group ${noUnderline ? '' : 'border-b-1 border-b-white'} ${className}`}
+            className={`relative flex flex-col items-center justify-center text-gb-fg1 py-2 px-2 delay-150 duration-700 group ${noUnderline ? '' : 'border-b-1 border-b-gb-orange'} ${className}`}
             style={style}
         >
             {!useChildStyle ? <span className="relative z-10 font-montserrat text-base font-semibold tracking-wide transition-transform duration-300 group-hover:scale-105">
