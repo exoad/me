@@ -7,10 +7,10 @@ import { useState } from "react";
 function NameCard() {
   return (
     <div className="flex flex-col items-end gap-3">
-      <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl font-sans text-fg0 tracking-tight">
+      <h1 className="font-bold text-4xl sm:text-5xl md:text-6xl font-playfair text-fg0 tracking-tight">
         {strings.name}
       </h1>
-      <p className="text-fg3 text-xs font-sans uppercase tracking-[0.2em]">
+      <p className="text-fg3 text-xs font-montserrat uppercase tracking-[0.2em]">
         {strings.pages.home.tagline}
       </p>
       <div className="flex gap-5 mt-3">

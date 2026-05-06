@@ -47,7 +47,7 @@ export default function AboutPage({ scaffoldProps = {} }) {
                     <PageDescriptor noBottomPadding title={strings.pages.about.title} description={strings.pages.about.description} />
                 </Column>
                 <div className="mb-16 mt-8 text-center max-w-lg">
-                    <h2 className="text-gb-fg0 text-lg font-semibold mb-4 font-montserrat">{strings.pages.about.currently.title}
+                    <h2 className="text-gb-fg0 text-2xl font-semibold mb-4 font-playfair">{strings.pages.about.currently.title}
                     </h2>
                     <p className="text-gb-fg3 text-base md:text-lg font-light leading-relaxed font-montserrat">{strings.pages.about.currently.content}
                     </p>

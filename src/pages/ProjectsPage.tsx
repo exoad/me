@@ -60,11 +60,11 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
         <ScaffoldContent useDefaultLayout className="w-full overflow-x-hidden">
             <Column gap={12} crossAxisAlignment="start" className="px-4 sm:px-8 md:px-12">
                 <Column gap={4} className="text-center w-full mb-8 px-4">
-                    <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-[9rem] font-extrabold text-gb-fg4/30 uppercase tracking-widest leading-tight">
+                    <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-[9rem] font-extrabold text-gb-fg4/30 uppercase tracking-widest leading-tight font-playfair">
                         {strings.pages.projects.title.prompt}
                     </h2>
 
-                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gb-fg0 leading-snu" >
+                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gb-fg0 leading-snu font-playfair">
                         {strings.pages.projects.title.figure}
                     </h3>
 
