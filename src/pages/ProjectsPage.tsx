@@ -60,11 +60,11 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
         <ScaffoldContent useDefaultLayout className="w-full overflow-x-hidden">
             <Column gap={12} crossAxisAlignment="start" className="px-4 sm:px-8 md:px-12">
                 <Column gap={4} className="text-center w-full mb-8 px-4">
-                    <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-[9rem] font-extrabold text-gb-fg4/30 uppercase tracking-widest leading-tight font-playfair">
+                    <h2 className="text-4xl sm:text-5xl md:text-7xl lg:text-[9rem] font-extrabold text-gb-fg4/30 uppercase tracking-widest leading-tight font-sans">
                         {strings.pages.projects.title.prompt}
                     </h2>
 
-                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gb-fg0 leading-snu font-playfair">
+                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gb-fg0 leading-snu font-sans">
                         {strings.pages.projects.title.figure}
                     </h3>
 
@@ -131,7 +131,7 @@ export default function ProjectsPage({ scaffoldProps = {} }) {
                                 <div className="py-5">
                                     <div className="flex items-center justify-between mb-2">
                                         <h3
-                                            className="text-xl sm:text-2xl lg:text-3xl font-bold font-playfair break-words text-gb-fg0"
+                                            className="text-xl sm:text-2xl lg:text-3xl font-bold font-sans break-words text-gb-fg0"
                                             style={{ textShadow: `2px 2px ${hexToRgba(proj.color, 0.7)}` }}
                                         >
                                             {proj.title}

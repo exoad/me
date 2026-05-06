@@ -47,9 +47,9 @@ export default function AboutPage({ scaffoldProps = {} }) {
                     <PageDescriptor noBottomPadding title={strings.pages.about.title} description={strings.pages.about.description} />
                 </Column>
                 <div className="mb-16 mt-8 text-center max-w-lg">
-                    <h2 className="text-gb-fg0 text-2xl font-semibold mb-4 font-playfair">{strings.pages.about.currently.title}
+                    <h2 className="text-gb-fg0 text-2xl font-semibold mb-4 font-sans">{strings.pages.about.currently.title}
                     </h2>
-                    <p className="text-gb-fg3 text-base md:text-lg font-light leading-relaxed font-montserrat">{strings.pages.about.currently.content}
+                    <p className="text-gb-fg3 text-base md:text-lg font-light leading-relaxed font-sans">{strings.pages.about.currently.content}
                     </p>
                 </div>
                 <div className="max-w-8xl">
@@ -76,9 +76,9 @@ export default function AboutPage({ scaffoldProps = {} }) {
                                         ></div>
 
                                         <div className="w-full max-w-lg ml-[22dvw] sm:ml-26 pr-2">
-                                            <div className="text-gb-fg4 text-xs font-montserrat uppercase tracking-wide mb-2">{item.displayDate}</div>
-                                            <h3 className="text-gb-fg0 text-xl font-bold font-playfair mb-2">{item.title}</h3>
-                                            <p className="text-gb-fg2 text-sm font-montserrat leading-relaxed">{item.description}</p>
+                                            <div className="text-gb-fg4 text-xs font-sans uppercase tracking-wide mb-2">{item.displayDate}</div>
+                                            <h3 className="text-gb-fg0 text-xl font-bold font-sans mb-2">{item.title}</h3>
+                                            <p className="text-gb-fg2 text-sm font-sans leading-relaxed">{item.description}</p>
                                         </div>
                                     </div>
                                 );

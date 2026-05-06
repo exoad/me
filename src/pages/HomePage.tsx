@@ -7,10 +7,10 @@ import { useState } from "react";
 function NameCard() {
 	return (
 		<div className="flex flex-col items-end gap-3">
-			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl font-playfair text-fg0 tracking-tight">
+			<h1 className="font-bold text-4xl sm:text-5xl md:text-6xl font-sans text-fg0 tracking-tight">
 				{strings.name}
 			</h1>
-			<p className="text-fg3 text-xs font-montserrat uppercase tracking-[0.2em]">
+			<p className="text-fg3 text-xs font-sans uppercase tracking-[0.2em]">
 				{strings.pages.home.tagline}
 			</p>
 			<div className="flex gap-5 mt-3">
@@ -91,39 +91,34 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 
 function DroskTeaser() {
 	return (
-		<div className="relative overflow-hidden rounded-lg border border-yellow/30 bg-gradient-to-br from-bg1 to-bg0 p-6 sm:p-8">
-			<div className="absolute top-0 right-0 w-32 h-32 bg-yellow/5 rounded-full blur-3xl" />
-			<div className="relative z-10">
-				<div className="flex items-center gap-2 mb-3">
-					<span className="px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-yellow/20 text-yellow rounded-sm">
-						In Development
-					</span>
-				</div>
-				<h3 className="text-3xl sm:text-4xl font-black font-playfair text-fg0 mb-3">
-					Drosk
-				</h3>
-				<p className="text-fg3 text-sm font-sans leading-relaxed mb-4 max-w-lg">
-					A modular AI-native workflow engine. Built from the ground up with a
-					custom component system that bridges local LLMs with structured
-					automation. Privacy-first, offline-capable AI tooling for the future
-					of personal computing.
-				</p>
-				<div className="flex items-center gap-4 text-xs text-fg4 font-sans">
-					<span>TypeScript</span>
-					<span>•</span>
-					<span>React</span>
-					<span>•</span>
-					<span>Kotlin</span>
-					<span>•</span>
-					<span>Python</span>
-				</div>
+		<div className="border-b border-bg2 pb-6">
+			<div className="flex items-center gap-2 mb-2">
+				<span className="px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-yellow/20 text-yellow rounded-sm">
+					In Development
+				</span>
+			</div>
+			<h3 className="text-xl sm:text-2xl font-bold font-sans text-fg0 mb-2">
+				Drosk
+			</h3>
+			<p className="text-fg3 text-sm font-sans leading-relaxed mb-3 max-w-lg">
+				A modular AI-native workflow engine. Built from the ground up with a
+				custom component system that bridges local LLMs with structured
+				automation. Privacy-first, offline-capable AI tooling.
+			</p>
+			<div className="flex items-center gap-2 text-xs text-fg4 font-sans">
+				<span>TypeScript</span>
+				<span>·</span>
+				<span>React</span>
+				<span>·</span>
+				<span>Kotlin</span>
+				<span>·</span>
+				<span>Python</span>
 			</div>
 		</div>
 	);
 }
 
 function ContentSections() {
-	const droskProject = projects.find((p) => p.title === "Drosk");
 	const biboProject = projects.find((p) => p.title === "bibo");
 	const otherFeatured = featuredProjects.filter(
 		(p) => p.title !== "Drosk" && p.title !== "bibo",
@@ -154,15 +149,15 @@ function ContentSections() {
 					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
 						Active Project
 					</h2>
-					<div className="border-l-2 border-green pl-4">
+					<div className="border-b border-bg2 pb-6">
 						<div className="flex items-center gap-2 mb-2">
-							<span className="text-fg0 text-2xl font-playfair font-black">
-								{biboProject.title}
-							</span>
 							<span className="px-1.5 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-green/20 text-green rounded-sm">
 								{biboProject.state}
 							</span>
 						</div>
+						<h3 className="text-xl sm:text-2xl font-bold font-sans text-fg0 mb-2">
+							{biboProject.title}
+						</h3>
 						<p className="text-fg3 text-sm font-sans leading-relaxed mb-3 max-w-lg">
 							{biboProject.description}
 						</p>
