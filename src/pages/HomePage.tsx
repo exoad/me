@@ -7,7 +7,7 @@ import { useState } from "react";
 function NameCard() {
 	return (
 		<div className="flex flex-col items-end gap-3">
-			<h1 className="font-bold text-4xl sm:text-5xl md:text-6xl font-sans text-fg0 tracking-tight">
+			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl font-playfair text-fg0 tracking-tight">
 				{strings.name}
 			</h1>
 			<p className="text-fg3 text-xs font-sans uppercase tracking-[0.2em]">
@@ -91,30 +91,19 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 
 function DroskTeaser() {
 	return (
-		<div className="border-b border-bg2 pb-6">
+		<a href="https://drosk.net" target="_blank" rel="noopener noreferrer" className="block border-b border-bg2 pb-6 group">
 			<div className="flex items-center gap-2 mb-2">
 				<span className="px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-yellow/20 text-yellow rounded-sm">
 					In Development
 				</span>
 			</div>
-			<h3 className="text-xl sm:text-2xl font-bold font-sans text-fg0 mb-2">
+			<h3 className="text-2xl sm:text-3xl font-bold font-playfair text-fg0 mb-2 group-hover:text-fg2 transition-colors">
 				Drosk
 			</h3>
-			<p className="text-fg3 text-sm font-sans leading-relaxed mb-3 max-w-lg">
-				A modular AI-native workflow engine. Built from the ground up with a
-				custom component system that bridges local LLMs with structured
-				automation. Privacy-first, offline-capable AI tooling.
+			<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg">
+				An AI-native workflow engine bridging local LLMs with structured automation.
 			</p>
-			<div className="flex items-center gap-2 text-xs text-fg4 font-sans">
-				<span>TypeScript</span>
-				<span>·</span>
-				<span>React</span>
-				<span>·</span>
-				<span>Kotlin</span>
-				<span>·</span>
-				<span>Python</span>
-			</div>
-		</div>
+		</a>
 	);
 }
 
@@ -155,7 +144,7 @@ function ContentSections() {
 								{biboProject.state}
 							</span>
 						</div>
-						<h3 className="text-xl sm:text-2xl font-bold font-sans text-fg0 mb-2">
+						<h3 className="text-2xl sm:text-3xl font-bold font-playfair text-fg0 mb-2">
 							{biboProject.title}
 						</h3>
 						<p className="text-fg3 text-sm font-sans leading-relaxed mb-3 max-w-lg">
