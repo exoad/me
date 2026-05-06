@@ -218,7 +218,6 @@ function ContentSections() {
 						jmeng2@terpmail.umd.edu
 					</a>
 				</div>
-				<div className="border-b border-bg2 mt-6" />
 			</section>
 		</div>
 	);
