@@ -1,31 +1,33 @@
 @font-face {
-    font-family: "Inter";
-    src: url("./inter/InterVariable.woff2") format("woff2");
-    font-weight: 100 900;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Inter";
+	src: url("./inter/InterVariable.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: "Inter";
-    src: url("./inter/InterVariable-Italic.woff2") format("woff2");
-    font-weight: 100 900;
-    font-style: italic;
-    font-display: swap;
+	font-family: "Inter";
+	src: url("./inter/InterVariable-Italic.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: italic;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: "Playfair Display";
-    src: url("./playfairdisplay/PlayfairDisplay-VariableFont_wght.woff2") format("woff2");
-    font-weight: 400 900;
-    font-style: normal;
-    font-display: swap;
+	font-family: "Playfair Display";
+	src: url("./playfairdisplay/PlayfairDisplay-VariableFont_wght.woff2")
+		format("woff2");
+	font-weight: 400 900;
+	font-style: normal;
+	font-display: swap;
 }
 
 @font-face {
-    font-family: "Playfair Display";
-    src: url("./playfairdisplay/PlayfairDisplay-Italic-VariableFont_wght.woff2") format("woff2");
-    font-weight: 400 900;
-    font-style: italic;
-    font-display: swap;
+	font-family: "Playfair Display";
+	src: url("./playfairdisplay/PlayfairDisplay-Italic-VariableFont_wght.woff2")
+		format("woff2");
+	font-weight: 400 900;
+	font-style: italic;
+	font-display: swap;
 }

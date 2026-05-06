@@ -102,7 +102,7 @@ function DroskTeaser() {
 					In Development
 				</span>
 			</div>
-			<h3 className="text-2xl sm:text-3xl font-bold font-playfair text-fg0 mb-2 group-hover:text-fg2 transition-colors">
+			<h3 className="text-2xl sm:text-3xl font-bold font-sans text-fg0 mb-2 group-hover:text-fg2 transition-colors">
 				Drosk
 			</h3>
 			<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg">
@@ -126,7 +126,18 @@ function ContentSections() {
 		<div className="flex flex-col gap-24">
 			<section>
 				<p className="text-fg2 text-base sm:text-lg font-sans leading-relaxed max-w-xl">
-					I'm Jiaming, a hobbyist programmer and open source contributor. I build software across systems, tools, and languages — from CPU rasterizers and programming languages to desktop apps and developer utilities. Most of my work is libre and lives on GitHub. Outside of code, I enjoy hiking, <a href="/photos" className="underline underline-offset-4 decoration-fg4 hover:decoration-fg2 transition-colors">photography</a>, and movies.
+					I'm Jiaming, a hobbyist programmer and open source contributor. I
+					build software across systems, tools, and languages — from CPU
+					rasterizers and programming languages to desktop apps and developer
+					utilities. Most of my work is libre and lives on GitHub. Outside of
+					code, I enjoy hiking,{" "}
+					<a
+						href="/photos"
+						className="underline underline-offset-4 decoration-fg4 hover:decoration-fg2 transition-colors"
+					>
+						photography
+					</a>
+					, and movies.
 				</p>
 			</section>
 
@@ -150,7 +161,7 @@ function ContentSections() {
 								{biboProject.state}
 							</span>
 						</div>
-						<h3 className="text-2xl sm:text-3xl font-bold font-playfair text-fg0 mb-2">
+						<h3 className="text-2xl sm:text-3xl font-bold font-sans text-fg0 mb-2">
 							{biboProject.title}
 						</h3>
 						<p className="text-fg3 text-sm font-sans leading-relaxed mb-3 max-w-lg">
