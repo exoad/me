@@ -95,7 +95,7 @@ function DroskTeaser() {
 			href="https://drosk.net"
 			target="_blank"
 			rel="noopener noreferrer"
-			className="block border-b border-bg2 pb-6 group"
+			className="block group"
 		>
 			<div className="flex items-center gap-2 mb-2">
 				<span className="px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-yellow/20 text-yellow rounded-sm">
@@ -142,40 +142,40 @@ function ContentSections() {
 			</section>
 
 			{/* Drosk Teaser - Prominent */}
-			<section>
+			<section className="max-w-2xl">
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
 					Current Focus
 				</h2>
 				<DroskTeaser />
+				<div className="border-b border-bg2 mt-6" />
 			</section>
 
 			{/* bibo - Special mention */}
 			{biboProject && (
-				<section>
+				<section className="max-w-2xl">
 					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
 						Active Project
 					</h2>
-					<div className="border-b border-bg2 pb-6">
-						<div className="flex items-center gap-2 mb-2">
-							<span className="px-1.5 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-green/20 text-green rounded-sm">
-								{biboProject.state}
-							</span>
-						</div>
-						<h3 className="text-2xl sm:text-3xl font-bold font-sans text-fg0 mb-2">
-							{biboProject.title}
-						</h3>
-						<p className="text-fg3 text-sm font-sans leading-relaxed mb-3 max-w-lg">
-							{biboProject.description}
-						</p>
-						<a
-							href={biboProject.link}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center gap-1 text-fg4 hover:text-fg2 text-xs font-sans transition duration-300"
-						>
-							view project <MdOutlineArrowOutward size={10} />
-						</a>
+					<div className="flex items-center gap-2 mb-2">
+						<span className="px-1.5 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-green/20 text-green rounded-sm">
+							{biboProject.state}
+						</span>
 					</div>
+					<h3 className="text-2xl sm:text-3xl font-bold font-sans text-fg0 mb-2">
+						{biboProject.title}
+					</h3>
+					<p className="text-fg3 text-sm font-sans leading-relaxed mb-3 max-w-lg">
+						{biboProject.description}
+					</p>
+					<a
+						href={biboProject.link}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="inline-flex items-center gap-1 text-fg4 hover:text-fg2 text-xs font-sans transition duration-300"
+					>
+						view project <MdOutlineArrowOutward size={10} />
+					</a>
+					<div className="border-b border-bg2 mt-6" />
 				</section>
 			)}
 
@@ -200,7 +200,7 @@ function ContentSections() {
 				</div>
 			</section>
 
-			<section>
+			<section className="max-w-2xl">
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-8">
 					Contact
 				</h2>
@@ -218,6 +218,7 @@ function ContentSections() {
 						jmeng2@terpmail.umd.edu
 					</a>
 				</div>
+				<div className="border-b border-bg2 mt-6" />
 			</section>
 		</div>
 	);
