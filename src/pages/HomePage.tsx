@@ -1,5 +1,6 @@
 import { strings, featuredProjects, projects } from "../data/shared.ts";
 import SEO from "../components/SEO.tsx";
+import PageLoadAnimation from "../components/PageLoadAnimation.tsx";
 import { SiGithub, SiLinkedin } from "react-icons/si";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { useState } from "react";
@@ -225,7 +226,7 @@ function ContentSections() {
 
 export default function HomePage() {
 	return (
-		<>
+		<PageLoadAnimation>
 			<SEO title="Home" description={strings.pages.home.about.content} />
 
 			{/* Mobile / small screens: stacked layout */}
@@ -275,6 +276,6 @@ export default function HomePage() {
 					</footer>
 				</div>
 			</div>
-		</>
+		</PageLoadAnimation>
 	);
 }
