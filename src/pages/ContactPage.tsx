@@ -3,6 +3,7 @@ import Scaffold, { ScaffoldContent } from '../components/Scaffold';
 import SEO from '../components/SEO';
 import { strings } from '../data/shared.ts';
 import { Column } from '../components/FlexLayouter.tsx';
+import CopyEmailButton from '../components/CopyEmailButton.tsx';
 
 
 export default function ContactPage({ scaffoldProps = {} }) {
@@ -72,17 +73,22 @@ interface ContactLinkProps {
 }
 
 function ContactLink({ href, label, value, subtitle = "" }: ContactLinkProps) {
+    const isEmail = href.startsWith("mailto:");
+    
     return (
         <Column className="items-center md:items-start">
-            <a
-                href={href}
-                target={href.startsWith("http") ? "_blank" : undefined}
-                rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 text-gb-fg1 font-montserrat transition-colors duration-200"
-            >
-                <span className="font-bold font-playfair text-xl">{label}</span>
-                <span className="text-gb-fg3" >{value}</span>
-            </a>
+            <div className="flex items-center gap-2">
+                <a
+                    href={href}
+                    target={href.startsWith("http") ? "_blank" : undefined}
+                    rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 text-gb-fg1 font-montserrat transition-colors duration-200 group"
+                >
+                    <span className="font-bold font-playfair text-xl">{label}</span>
+                    <span className="text-gb-fg3 group-hover:text-gb-fg2 transition-colors duration-200">{value}</span>
+                </a>
+                {isEmail && <CopyEmailButton email={value} />}
+            </div>
             {subtitle && (
                 <span className="text-xs italic text-gb-fg4 font-montserrat mt-1">
                     {subtitle}
