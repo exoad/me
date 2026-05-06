@@ -1,5 +1,6 @@
 import { strings, featuredProjects, projects } from "../data/shared.ts";
 import SEO from "../components/SEO.tsx";
+import InkDrop from "../components/InkDrop.tsx";
 import { SiGithub, SiLinkedin } from "react-icons/si";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { useState } from "react";
@@ -227,6 +228,7 @@ export default function HomePage() {
 	return (
 		<>
 			<SEO title="Home" description={strings.pages.home.about.content} />
+			<InkDrop />
 
 			{/* Mobile / small screens: stacked layout */}
 			<div className="lg:hidden">
