@@ -95,17 +95,17 @@ function DroskTeaser() {
 			href="https://drosk.net"
 			target="_blank"
 			rel="noopener noreferrer"
-			className="block group"
+			className="block group transition-all duration-300 hover:opacity-70"
 		>
 			<div className="flex items-center gap-2 mb-2">
-				<span className="px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-yellow/20 text-yellow rounded-sm">
+				<span className="px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-yellow/20 text-yellow rounded-sm transition-colors duration-300 group-hover:bg-yellow/30">
 					In Development
 				</span>
 			</div>
-			<h3 className="text-2xl sm:text-3xl font-bold font-sans text-fg0 mb-2 group-hover:text-fg2 transition-colors">
+			<h3 className="text-2xl sm:text-3xl font-bold font-sans text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
 				Drosk
 			</h3>
-			<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg">
+			<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
 				An AI-native workflow engine bridging local LLMs with structured
 				automation.
 			</p>
