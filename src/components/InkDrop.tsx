@@ -65,30 +65,30 @@ export default function InkDrop() {
   return (
     <>
       {/* Top ink drop */}
-      <div 
-        className={`fixed top-0 left-1/2 -translate-x-1/2 pointer-events-none z-50 transition-all duration-700 ease-out ${
-          showTopDrop ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
+      <div
+        className={`fixed top-0 left-1/2 -translate-x-1/2 pointer-events-none z-50 transition-all duration-500 ease-out ${
+          showTopDrop ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
         }`}
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(40, 40, 40, 0.15) 0%, transparent 70%)',
-          width: '300px',
-          height: '120px',
-          filter: 'blur(20px)',
-          transform: `translateX(-50%) translateY(${showTopDrop ? '0' : '-20px'})`,
+          background: 'radial-gradient(ellipse at center, rgba(60, 56, 54, 0.6) 0%, rgba(60, 56, 54, 0.2) 40%, transparent 70%)',
+          width: '600px',
+          height: '200px',
+          filter: 'blur(8px)',
+          transform: `translateX(-50%) translateY(${showTopDrop ? '-20px' : '-60px'})`,
         }}
       />
-      
+
       {/* Bottom ink drop */}
-      <div 
-        className={`fixed bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-50 transition-all duration-700 ease-out ${
-          showBottomDrop ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
+      <div
+        className={`fixed bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-50 transition-all duration-500 ease-out ${
+          showBottomDrop ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
         }`}
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(40, 40, 40, 0.15) 0%, transparent 70%)',
-          width: '300px',
-          height: '120px',
-          filter: 'blur(20px)',
-          transform: `translateX(-50%) translateY(${showBottomDrop ? '0' : '20px'})`,
+          background: 'radial-gradient(ellipse at center, rgba(60, 56, 54, 0.6) 0%, rgba(60, 56, 54, 0.2) 40%, transparent 70%)',
+          width: '600px',
+          height: '200px',
+          filter: 'blur(8px)',
+          transform: `translateX(-50%) translateY(${showBottomDrop ? '20px' : '60px'})`,
         }}
       />
     </>
