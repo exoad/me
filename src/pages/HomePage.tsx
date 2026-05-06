@@ -91,7 +91,12 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 
 function DroskTeaser() {
 	return (
-		<a href="https://drosk.net" target="_blank" rel="noopener noreferrer" className="block border-b border-bg2 pb-6 group">
+		<a
+			href="https://drosk.net"
+			target="_blank"
+			rel="noopener noreferrer"
+			className="block border-b border-bg2 pb-6 group"
+		>
 			<div className="flex items-center gap-2 mb-2">
 				<span className="px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-yellow/20 text-yellow rounded-sm">
 					In Development
@@ -101,7 +106,8 @@ function DroskTeaser() {
 				Drosk
 			</h3>
 			<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg">
-				An AI-native workflow engine bridging local LLMs with structured automation.
+				An AI-native workflow engine bridging local LLMs with structured
+				automation.
 			</p>
 		</a>
 	);
@@ -120,7 +126,7 @@ function ContentSections() {
 		<div className="flex flex-col gap-24">
 			<section>
 				<p className="text-fg2 text-base sm:text-lg font-sans leading-relaxed max-w-xl">
-					{strings.pages.home.about.content}
+					I'm Jiaming, a hobbyist programmer and open source contributor. I build software across systems, tools, and languages — from CPU rasterizers and programming languages to desktop apps and developer utilities. Most of my work is libre and lives on GitHub. Outside of code, I enjoy hiking, <a href="/photos" className="underline underline-offset-4 decoration-fg4 hover:decoration-fg2 transition-colors">photography</a>, and movies.
 				</p>
 			</section>
 
