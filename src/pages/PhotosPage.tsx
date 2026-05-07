@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from "react";
 import { photos } from "../data/photos";
 import SEO from '../components/SEO';
 import { strings } from '../data/shared.ts';
@@ -13,20 +13,50 @@ function formatDate(dateStr: string) {
   });
 }
 
+// Intersection Observer hook for lazy loading
+function useInView(threshold = 0.1) {
+  const [isInView, setIsInView] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.unobserve(element);
+        }
+      },
+      { threshold, rootMargin: '100px' }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, isInView };
+}
+
 export default function PhotosPage() {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   const [hoveredPhoto, setHoveredPhoto] = useState<string | null>(null);
+  const [visiblePhotos, setVisiblePhotos] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    // Use Lenis for smooth scroll to top if available, otherwise instant
     if (window.scrollY > 0) {
       window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, []);
 
-  const handleImageLoad = (id: string) => {
+  const handleImageLoad = useCallback((id: string) => {
     setLoadedImages(prev => ({ ...prev, [id]: true }));
-  };
+  }, []);
+
+  const handlePhotoVisible = useCallback((id: string) => {
+    setVisiblePhotos(prev => new Set(prev).add(id));
+  }, []);
 
   // Split photos into columns for masonry-like effect
   const leftColumn = photos.filter((_, i) => i % 2 === 0);
@@ -36,61 +66,82 @@ export default function PhotosPage() {
     const photoId = `photo-${index}`;
     const isLoaded = loadedImages[photoId];
     const isHovered = hoveredPhoto === photoId;
+    const { ref, isInView } = useInView(0.1);
+
+    useEffect(() => {
+      if (isInView) {
+        handlePhotoVisible(photoId);
+      }
+    }, [isInView, photoId]);
+
+    const shouldLoad = visiblePhotos.has(photoId);
 
     return (
       <div 
+        ref={ref}
         className="group relative mb-4"
         onMouseEnter={() => setHoveredPhoto(photoId)}
         onMouseLeave={() => setHoveredPhoto(null)}
       >
         {/* Image container with art frame style */}
         <div className="relative overflow-hidden bg-bg1 border border-bg2 hover:border-fg4 transition-colors duration-500">
-          {/* Loading state with smooth wave animation */}
-          {!isLoaded && (
+          {/* Loading state */}
+          {!isLoaded && shouldLoad && (
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-bg0">
-              <div className="flex items-center gap-[2px] h-8">
-                <div className="w-1.5 h-full bg-red animate-wave-scale" style={{ animationDelay: '0ms' }} />
-                <div className="w-1.5 h-full bg-green animate-wave-scale" style={{ animationDelay: '80ms' }} />
-                <div className="w-1.5 h-full bg-yellow animate-wave-scale" style={{ animationDelay: '160ms' }} />
-                <div className="w-1.5 h-full bg-blue animate-wave-scale" style={{ animationDelay: '240ms' }} />
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-6 bg-red/60" />
+                <div className="w-1.5 h-6 bg-green/60" />
+                <div className="w-1.5 h-6 bg-yellow/60" />
+                <div className="w-1.5 h-6 bg-blue/60" />
               </div>
             </div>
           )}
           
-          {/* Image */}
-          <button
-            onClick={() => window.open(photo.src, '_blank')}
-            className="w-full block relative"
-            aria-label={`View larger image of ${photo.alt}`}
-          >
-            <img
-              src={photo.thumbnailSrc}
-              alt={photo.alt}
-              className={`w-full h-auto object-cover transition-all duration-700 ease-out ${
-                isLoaded ? 'opacity-100' : 'opacity-0'
-              } ${isHovered ? 'scale-[1.03]' : 'scale-100'}`}
-              onLoad={() => handleImageLoad(photoId)}
-              decoding="async"
-              loading="lazy"
-            />
-            
-            {/* Hover overlay with info */}
-            <div className={`absolute inset-0 bg-bg0/80 flex flex-col justify-end p-4 transition-opacity duration-300 ${
-              isHovered ? 'opacity-100' : 'opacity-0'
-            }`}>
-              <div className="flex items-end justify-between">
-                <div>
-                  {photo.caption && (
-                    <h3 className="text-sm font-sans font-medium text-fg0 mb-1">{photo.caption}</h3>
-                  )}
-                  <div className="text-xs text-fg3 font-sans">
-                    {photo.location} · {formatDate(photo.date)}
+          {/* Image - only render when in viewport */}
+          {shouldLoad ? (
+            <button
+              onClick={() => window.open(photo.src, '_blank')}
+              className="w-full block relative"
+              aria-label={`View larger image of ${photo.alt}`}
+            >
+              <img
+                src={photo.thumbnailSrc}
+                alt={photo.alt}
+                className={`w-full h-auto object-cover transition-opacity duration-500 ${
+                  isLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+                onLoad={() => handleImageLoad(photoId)}
+                decoding="async"
+                loading="lazy"
+                style={{ 
+                  transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                  transition: 'transform 0.5s ease-out'
+                }}
+              />
+              
+              {/* Hover overlay with info */}
+              <div 
+                className={`absolute inset-0 bg-bg0/80 flex flex-col justify-end p-4 transition-opacity duration-300 ${
+                  isHovered ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                <div className="flex items-end justify-between">
+                  <div>
+                    {photo.caption && (
+                      <h3 className="text-sm font-sans font-medium text-fg0 mb-1">{photo.caption}</h3>
+                    )}
+                    <div className="text-xs text-fg3 font-sans">
+                      {photo.location} · {formatDate(photo.date)}
+                    </div>
                   </div>
+                  <MdOutlineArrowOutward size={18} className="text-fg0 flex-shrink-0 ml-2" />
                 </div>
-                <MdOutlineArrowOutward size={18} className="text-fg0 flex-shrink-0 ml-2" />
               </div>
-            </div>
-          </button>
+            </button>
+          ) : (
+            /* Placeholder when not in view */
+            <div className="w-full aspect-video bg-bg1" />
+          )}
         </div>
       </div>
     );

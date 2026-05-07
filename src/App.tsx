@@ -29,18 +29,30 @@ function LoadingScreen({ onFadeComplete }: { onFadeComplete: () => void }) {
 	}, [onFadeComplete]);
 
 	return (
-		<div 
+		<div
 			className="fixed inset-0 z-50 bg-bg0 flex flex-col items-center justify-center gap-8"
-			style={{ 
+			style={{
 				opacity,
-				transition: `opacity ${FADE_OUT_TIME}ms ease-out`
+				transition: `opacity ${FADE_OUT_TIME}ms ease-out`,
 			}}
 		>
 			<div className="flex items-center gap-1 h-16">
-				<div className="w-2 h-10 bg-red animate-pulse" style={{ animationDelay: '0ms', animationDuration: '1.2s' }} />
-				<div className="w-2 h-10 bg-green animate-pulse" style={{ animationDelay: '0.3s', animationDuration: '1.2s' }} />
-				<div className="w-2 h-10 bg-yellow animate-pulse" style={{ animationDelay: '0.6s', animationDuration: '1.2s' }} />
-				<div className="w-2 h-10 bg-blue animate-pulse" style={{ animationDelay: '0.9s', animationDuration: '1.2s' }} />
+				<div
+					className="w-2 h-10 bg-red animate-pulse"
+					style={{ animationDelay: "0ms", animationDuration: "1.2s" }}
+				/>
+				<div
+					className="w-2 h-10 bg-green animate-pulse"
+					style={{ animationDelay: "0.3s", animationDuration: "1.2s" }}
+				/>
+				<div
+					className="w-2 h-10 bg-yellow animate-pulse"
+					style={{ animationDelay: "0.6s", animationDuration: "1.2s" }}
+				/>
+				<div
+					className="w-2 h-10 bg-blue animate-pulse"
+					style={{ animationDelay: "0.9s", animationDuration: "1.2s" }}
+				/>
 			</div>
 			<span className="text-fg4/40 text-[10px] font-sans tracking-[0.5em] uppercase">
 				Loading
@@ -76,8 +88,8 @@ function AppContent() {
 					opacity: showContent ? 1 : 0,
 					transform: showContent ? "translateY(0)" : "translateY(20px)",
 					transitionDuration: `${CONTENT_FADE_TIME}ms`,
-					transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
-					willChange: showContent ? 'auto' : 'opacity, transform',
+					transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+					willChange: showContent ? "auto" : "opacity, transform",
 				}}
 			>
 				<Routes>
