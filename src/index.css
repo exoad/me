@@ -228,3 +228,27 @@ body {
 .animate-page-enter {
   animation: pageEnterSlow 4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* Shimmer effect over the color bar */
+@keyframes shimmer {
+  0% {
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(251, 241, 199, 0.3) 50%, 
+      transparent 100%
+    );
+    transform: translateX(-100%);
+  }
+  100% {
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(251, 241, 199, 0.3) 50%, 
+      transparent 100%
+    );
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+}
