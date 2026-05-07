@@ -181,3 +181,50 @@ body {
   width: 200%;
   background-size: 50% 100%;
 }
+
+/* All Gruvbox colors scrolling through the bar - slower */
+@keyframes colorScrollAll {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-color-scroll {
+  animation: colorScrollAll 8s linear infinite;
+  width: 400%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    #cc241d 0%, #cc241d 8.33%,    /* red */
+    #98971a 8.33%, #98971a 16.66%, /* green */
+    #d79921 16.66%, #d79921 25%,   /* yellow */
+    #458588 25%, #458588 33.33%,   /* blue */
+    #b16286 33.33%, #b16286 41.66%, /* purple */
+    #689d6a 41.66%, #689d6a 50%,   /* aqua */
+    #d65d0e 50%, #d65d0e 58.33%,   /* orange */
+    #928374 58.33%, #928374 66.66%, /* gray */
+    #cc241d 66.66%, #cc241d 75%,   /* red */
+    #98971a 75%, #98971a 83.33%,   /* green */
+    #d79921 83.33%, #d79921 91.66%, /* yellow */
+    #458588 91.66%, #458588 100%   /* blue */
+  );
+  background-size: 25% 100%;
+}
+
+/* Slower page enter animation */
+@keyframes pageEnterSlow {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnterSlow 4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
