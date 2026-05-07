@@ -4,19 +4,28 @@ import Lenis from "lenis";
 import App from "./App";
 import "./index.css";
 
+// Initialize Lenis with performance-optimized settings
 const lenis = new Lenis({
-  lerp: 0.1,
+  lerp: 0.08,
   smoothWheel: true,
-  wheelMultiplier: 1,
+  wheelMultiplier: 0.8,
+  touchMultiplier: 1.5,
   infinite: false,
-  syncTouch: true,
 });
 
+// Use requestAnimationFrame with proper cleanup
+let rafId: number;
 function raf(time: number) {
   lenis.raf(time);
-  requestAnimationFrame(raf);
+  rafId = requestAnimationFrame(raf);
 }
-requestAnimationFrame(raf);
+rafId = requestAnimationFrame(raf);
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+  cancelAnimationFrame(rafId);
+  lenis.destroy();
+});
 
 const rootDiv = document.getElementById("root");
 

@@ -325,3 +325,26 @@ body {
   transform: translateZ(0);
   backface-visibility: hidden;
 }
+
+/* Optimized wave animation - reduced GPU load */
+@keyframes waveScaleOptimized {
+  0%, 100% {
+    transform: scaleY(0.6);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-wave-scale {
+  animation: waveScaleOptimized 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .animate-wave-scale {
+    animation: none;
+    transform: scaleY(1);
+  }
+}
