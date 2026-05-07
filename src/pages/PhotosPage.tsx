@@ -1,9 +1,9 @@
-import { useMemo, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { photos } from "../data/photos";
 import SEO from '../components/SEO';
 import PageLoadAnimation from '../components/PageLoadAnimation';
 import { strings } from '../data/shared.ts';
-import { MdOutlineArrowOutward, MdArrowBack } from "react-icons/md";
+import { MdOutlineArrowOutward } from "react-icons/md";
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
@@ -15,8 +15,7 @@ function formatDate(dateStr: string) {
 }
 
 export default function PhotosPage() {
-  const [visiblePhotos, setVisiblePhotos] = useState<Record<string, boolean>>({});
-  const photoRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (window.scrollY > 0) {
@@ -24,48 +23,9 @@ export default function PhotosPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (photos.length > 0) {
-      const initialVisible = photos.slice(0, 2).reduce((acc, _, index) => {
-        acc[`photo-${index}`] = true;
-        return acc;
-      }, {} as Record<string, boolean>);
-      setVisiblePhotos(initialVisible);
-    }
-  }, []);
-
-  useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: '200px',
-      threshold: 0.01
-    };
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('data-photo-id');
-          if (id) {
-            setVisiblePhotos(prev => ({ ...prev, [id]: true }));
-            observer.unobserve(entry.target);
-          }
-        }
-      });
-    }, options);
-
-    for (const [_, ref] of Object.entries(photoRefs.current)) {
-      if (ref) {
-        observer.observe(ref);
-      }
-    }
-    return () => observer.disconnect();
-  }, []);
-
-  const processedPhotos = useMemo(() => {
-    return photos.map((photo, index) => ({
-      ...photo,
-      id: `photo-${index}`
-    }));
-  }, []);
+  const handleImageLoad = (id: string) => {
+    setLoadedImages(prev => ({ ...prev, [id]: true }));
+  };
 
   return (
     <PageLoadAnimation>
@@ -76,49 +36,56 @@ export default function PhotosPage() {
       />
       
       <div className="min-h-screen bg-bg0">
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-bg0/90 backdrop-blur-sm border-b border-bg2">
-          <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
+        {/* Simple header */}
+        <header className="border-b border-bg2">
+          <div className="max-w-2xl mx-auto px-6 py-6">
             <a 
               href="/" 
-              className="flex items-center gap-2 text-fg3 hover:text-fg0 transition-colors duration-300 text-sm font-sans"
+              className="text-fg4 hover:text-fg0 transition-colors duration-300 text-xs font-sans uppercase tracking-widest"
             >
-              <MdArrowBack size={18} />
-              <span>Back</span>
+              ← Back Home
             </a>
-            <span className="text-fg0 font-playfair text-lg">Photos</span>
-            <div className="w-16"></div>
           </div>
         </header>
 
         {/* Main content */}
-        <main className="pt-24 pb-20 px-6">
+        <main className="py-12 px-6">
           <div className="max-w-2xl mx-auto">
-            {/* Title section */}
-            <div className="mb-12" style={{ opacity: 0, animation: "fadeIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards" }}>
-              <h1 className="text-3xl sm:text-4xl font-bold font-playfair text-fg0 mb-3">
+            {/* Title */}
+            <div className="mb-10">
+              <h1 className="text-2xl sm:text-3xl font-bold font-playfair text-fg0 mb-2">
                 {strings.pages.photos.title}
               </h1>
-              <p className="text-fg3 text-sm font-sans leading-relaxed">
+              <p className="text-fg3 text-sm font-sans">
                 {strings.pages.photos.description}
               </p>
             </div>
 
-            {/* Photos grid */}
-            <div className="flex flex-col gap-8">
-              {processedPhotos.map((photo, index) => (
-                <div
-                  key={photo.id}
-                  ref={el => { photoRefs.current[photo.id] = el; }}
-                  data-photo-id={photo.id}
-                  className="group"
-                  style={{ 
-                    opacity: 0, 
-                    animation: `fadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) ${0.4 + index * 0.1}s forwards` 
-                  }}
-                >
-                  <div className="relative overflow-hidden border border-bg2 hover:border-fg3 transition-colors duration-500">
-                    {visiblePhotos[photo.id] ? (
+            {/* Photos */}
+            <div className="flex flex-col gap-10">
+              {photos.map((photo, index) => {
+                const photoId = `photo-${index}`;
+                const isLoaded = loadedImages[photoId];
+                
+                return (
+                  <div key={photoId} className="group">
+                    {/* Image container */}
+                    <div className="relative border border-bg2 overflow-hidden bg-bg1">
+                      {/* Loading state */}
+                      {!isLoaded && (
+                        <div className="absolute inset-0 flex items-center justify-center z-10">
+                          <div className="w-32 h-[2px] bg-bg2 overflow-hidden">
+                            <div 
+                              className="h-full bg-fg3"
+                              style={{
+                                animation: "loadingBar 1s ease-in-out infinite",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Actual image */}
                       <button
                         onClick={() => window.open(photo.src, '_blank')}
                         className="w-full block relative"
@@ -127,41 +94,44 @@ export default function PhotosPage() {
                         <img
                           src={photo.thumbnailSrc}
                           alt={photo.alt}
-                          className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                          className={`w-full h-auto object-cover transition-all duration-700 ${
+                            isLoaded ? 'opacity-100' : 'opacity-0'
+                          }`}
+                          onLoad={() => handleImageLoad(photoId)}
                           decoding="async"
                           loading={index < 2 ? "eager" : "lazy"}
                         />
-                        <div className="absolute inset-0 bg-bg0/0 group-hover:bg-bg0/10 transition-colors duration-500"></div>
-                        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <MdOutlineArrowOutward size={20} className="text-fg0" />
+                        
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 bg-bg0/0 group-hover:bg-bg0/20 transition-colors duration-500 flex items-center justify-center">
+                          <MdOutlineArrowOutward 
+                            size={24} 
+                            className="text-fg0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-90 group-hover:scale-100" 
+                          />
                         </div>
                       </button>
-                    ) : (
-                      <div className="aspect-video bg-bg1 flex items-center justify-center">
-                        <div className="w-6 h-6 border-2 border-fg4 border-t-fg0 rounded-full animate-spin"></div>
+                    </div>
+                    
+                    {/* Metadata */}
+                    <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                      {photo.caption && (
+                        <h3 className="text-sm font-sans font-medium text-fg0">{photo.caption}</h3>
+                      )}
+                      <div className="flex items-center gap-2 text-xs text-fg4 font-sans">
+                        <span>{photo.location}</span>
+                        <span>·</span>
+                        <span>{formatDate(photo.date)}</span>
                       </div>
-                    )}
-                  </div>
-                  
-                  {/* Photo metadata */}
-                  <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                    {photo.caption && (
-                      <h3 className="text-sm font-sans font-medium text-fg0">{photo.caption}</h3>
-                    )}
-                    <div className="flex items-center gap-3 text-xs text-fg4 font-sans">
-                      <span>{photo.location}</span>
-                      <span className="text-bg2">·</span>
-                      <span>{formatDate(photo.date)}</span>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-bg2 py-8 px-6">
+        <footer className="border-t border-bg2 py-8 px-6 mt-12">
           <div className="max-w-2xl mx-auto flex justify-between items-center">
             <span className="text-fg4 text-[10px] font-sans">
               {strings.footer.legals}

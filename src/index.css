@@ -63,3 +63,16 @@ body {
     font-family: "Inter", system-ui, sans-serif !important;
     font-weight: 700;
 }
+
+/* Loading bar animation */
+@keyframes loadingBar {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
