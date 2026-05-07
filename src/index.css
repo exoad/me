@@ -270,3 +270,22 @@ body {
   height: 48px;
   transform-origin: center;
 }
+
+/* Smoother wave animation for loading indicator */
+@keyframes waveScaleSmooth {
+  0%, 100% {
+    transform: scaleY(0.4) scaleX(0.9);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scaleY(1) scaleX(1);
+    opacity: 1;
+  }
+}
+
+.animate-wave-scale {
+  animation: waveScaleSmooth 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  height: 48px;
+  transform-origin: center;
+  will-change: transform, opacity;
+}

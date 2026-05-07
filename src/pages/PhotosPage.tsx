@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { photos } from "../data/photos";
 import SEO from '../components/SEO';
-import PageLoadAnimation from '../components/PageLoadAnimation';
 import { strings } from '../data/shared.ts';
 import { MdOutlineArrowOutward } from "react-icons/md";
 
@@ -45,14 +44,14 @@ export default function PhotosPage() {
       >
         {/* Image container with art frame style */}
         <div className="relative overflow-hidden bg-bg1 border border-bg2 hover:border-fg4 transition-colors duration-500">
-          {/* Loading state with multi-color bar */}
+          {/* Loading state with smooth wave animation */}
           {!isLoaded && (
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-bg0">
-              <div className="w-24 h-[2px] flex overflow-hidden">
-                <div className="flex-1 bg-red animate-loading-segment" style={{ animationDelay: '0ms' }} />
-                <div className="flex-1 bg-green animate-loading-segment" style={{ animationDelay: '100ms' }} />
-                <div className="flex-1 bg-blue animate-loading-segment" style={{ animationDelay: '200ms' }} />
-                <div className="flex-1 bg-yellow animate-loading-segment" style={{ animationDelay: '300ms' }} />
+              <div className="flex items-center gap-[2px] h-8">
+                <div className="w-1.5 h-full bg-red animate-wave-scale" style={{ animationDelay: '0ms' }} />
+                <div className="w-1.5 h-full bg-green animate-wave-scale" style={{ animationDelay: '80ms' }} />
+                <div className="w-1.5 h-full bg-yellow animate-wave-scale" style={{ animationDelay: '160ms' }} />
+                <div className="w-1.5 h-full bg-blue animate-wave-scale" style={{ animationDelay: '240ms' }} />
               </div>
             </div>
           )}
@@ -67,7 +66,7 @@ export default function PhotosPage() {
               src={photo.thumbnailSrc}
               alt={photo.alt}
               className={`w-full h-auto object-cover transition-all duration-700 ease-out ${
-                isLoaded ? 'opacity-100 grayscale-0' : 'opacity-0'
+                isLoaded ? 'opacity-100' : 'opacity-0'
               } ${isHovered ? 'scale-[1.03]' : 'scale-100'}`}
               onLoad={() => handleImageLoad(photoId)}
               decoding="async"
@@ -97,7 +96,7 @@ export default function PhotosPage() {
   };
 
   return (
-    <PageLoadAnimation>
+    <>
       <SEO
         title="Photos"
         description={strings.pages.photos.description}
@@ -163,6 +162,6 @@ export default function PhotosPage() {
           </div>
         </footer>
       </div>
-    </PageLoadAnimation>
+    </>
   );
 }
