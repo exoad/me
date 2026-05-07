@@ -18,17 +18,16 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
 
 	return (
 		<div className="min-h-screen bg-bg0 flex flex-col items-center justify-center gap-8">
-			{/* Static color bar - all colors already visible, just the shimmer moves */}
-			<div className="w-64 h-[2px] relative overflow-hidden">
-				{/* Background with all Gruvbox colors */}
-				<div 
-					className="absolute inset-0"
-					style={{
-						background: 'linear-gradient(90deg, #cc241d 0%, #98971a 14%, #d79921 28%, #458588 42%, #b16286 56%, #689d6a 70%, #d65d0e 84%, #928374 100%)'
-					}}
-				/>
-				{/* Shimmer overlay that moves */}
-				<div className="absolute inset-0 animate-shimmer" />
+			{/* Color blocks - separated, not blended */}
+			<div className="flex gap-[2px] w-64 h-[2px]">
+				<div className="flex-1 bg-red h-full" />
+				<div className="flex-1 bg-green h-full" />
+				<div className="flex-1 bg-yellow h-full" />
+				<div className="flex-1 bg-blue h-full" />
+				<div className="flex-1 bg-purple h-full" />
+				<div className="flex-1 bg-aqua h-full" />
+				<div className="flex-1 bg-orange h-full" />
+				<div className="flex-1 bg-gray h-full" />
 			</div>
 
 			<span className="text-fg4/40 text-[10px] font-sans tracking-[0.5em] uppercase">
