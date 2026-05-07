@@ -7,14 +7,14 @@ import { useState } from "react";
 
 function NameCard() {
 	return (
-		<div className="flex flex-col items-end gap-3">
+		<div className="flex flex-col items-end gap-3" style={{ opacity: 0, animation: "scaleIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards" }}>
 			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl font-playfair text-fg0 tracking-tight">
 				{strings.name}
 			</h1>
-			<p className="text-fg3 text-xs font-sans uppercase tracking-[0.2em]">
+			<p className="text-fg3 text-xs font-sans uppercase tracking-[0.2em]" style={{ opacity: 0, animation: "fadeIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards" }}>
 				{strings.pages.home.tagline}
 			</p>
-			<div className="flex gap-5 mt-3">
+			<div className="flex gap-5 mt-3" style={{ opacity: 0, animation: "fadeIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards" }}>
 				<a
 					href={strings.links.github}
 					aria-label={strings.links.github_aria}

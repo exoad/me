@@ -27,19 +27,17 @@ export default function PageLoadAnimation({
 					backgroundColor: "#1d2021",
 					opacity: isLoaded ? 0 : 1,
 					pointerEvents: isLoaded ? "none" : "auto",
-					transition: "opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1)",
+					transition: "opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1)",
 					zIndex: 9999,
 					willChange: "opacity",
 				}}
 			/>
-			{/* Content that fades in */}
+			{/* Content container */}
 			<div
 				style={{
 					opacity: isLoaded ? 1 : 0,
-					transform: isLoaded ? "translateY(0)" : "translateY(20px)",
-					transition:
-						"opacity 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s, transform 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s",
-					willChange: "opacity, transform",
+					transition: "opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s",
+					willChange: "opacity",
 				}}
 			>
 				{children}
