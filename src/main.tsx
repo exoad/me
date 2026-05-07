@@ -5,9 +5,11 @@ import App from "./App";
 import "./index.css";
 
 const lenis = new Lenis({
-  lerp: 0.08,
+  lerp: 0.1,
   smoothWheel: true,
-  wheelMultiplier: 0.9,
+  wheelMultiplier: 1,
+  infinite: false,
+  syncTouch: true,
 });
 
 function raf(time: number) {
