@@ -9,15 +9,16 @@ function LoadingFallback() {
   const [progress, setProgress] = useState(0);
   
   useEffect(() => {
-    const duration = 3500; // 3.5 seconds - slower loading
-    const interval = 20;
+    const duration = 5000; // 5 seconds - premium, unhurried loading
+    const interval = 16; // 60fps
     const steps = duration / interval;
     let currentStep = 0;
     
     const timer = setInterval(() => {
       currentStep++;
       const t = currentStep / steps;
-      const eased = 1 - Math.pow(1 - t, 3);
+      // Very smooth ease-out
+      const eased = 1 - Math.pow(1 - t, 4);
       setProgress(Math.min(eased * 100, 100));
       
       if (currentStep >= steps) {
@@ -29,40 +30,40 @@ function LoadingFallback() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg0 flex flex-col items-center justify-center gap-8">
-      {/* Animated loading segments with scale effect */}
-      <div className="flex items-center gap-1">
+    <div className="min-h-screen bg-bg0 flex flex-col items-center justify-center gap-10">
+      {/* Premium loading bars - subtle, calm breathing */}
+      <div className="flex items-end gap-2 h-16">
         <div 
-          className="w-3 h-12 bg-red transition-transform duration-500 ease-out"
+          className="w-2 bg-red/80 transition-all duration-700 ease-in-out"
           style={{ 
-            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin(progress * 0.15) * 0.25})`,
-            opacity: 0.4 + (progress / 100) * 0.6
+            height: `${20 + (progress * 0.6) + Math.sin(progress * 0.08) * 8}%`,
+            opacity: 0.5 + (progress / 200)
           }}
         />
         <div 
-          className="w-3 h-12 bg-green transition-transform duration-500 ease-out"
+          className="w-2 bg-green/80 transition-all duration-700 ease-in-out"
           style={{ 
-            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin((progress + 20) * 0.15) * 0.25})`,
-            opacity: 0.4 + (progress / 100) * 0.6
+            height: `${20 + (progress * 0.6) + Math.sin((progress + 25) * 0.08) * 8}%`,
+            opacity: 0.5 + (progress / 200)
           }}
         />
         <div 
-          className="w-3 h-12 bg-blue transition-transform duration-500 ease-out"
+          className="w-2 bg-blue/80 transition-all duration-700 ease-in-out"
           style={{ 
-            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin((progress + 40) * 0.15) * 0.25})`,
-            opacity: 0.4 + (progress / 100) * 0.6
+            height: `${20 + (progress * 0.6) + Math.sin((progress + 50) * 0.08) * 8}%`,
+            opacity: 0.5 + (progress / 200)
           }}
         />
         <div 
-          className="w-3 h-12 bg-yellow transition-transform duration-500 ease-out"
+          className="w-2 bg-yellow/80 transition-all duration-700 ease-in-out"
           style={{ 
-            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin((progress + 60) * 0.15) * 0.25})`,
-            opacity: 0.4 + (progress / 100) * 0.6
+            height: `${20 + (progress * 0.6) + Math.sin((progress + 75) * 0.08) * 8}%`,
+            opacity: 0.5 + (progress / 200)
           }}
         />
       </div>
       
-      <span className="text-fg4 text-xs font-sans tracking-[0.3em] uppercase">
+      <span className="text-fg4/60 text-[10px] font-sans tracking-[0.4em] uppercase">
         Loading
       </span>
     </div>
