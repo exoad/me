@@ -9,14 +9,13 @@ function LoadingFallback() {
   const [progress, setProgress] = useState(0);
   
   useEffect(() => {
-    const duration = 1750; // 1.75 seconds
-    const interval = 20; // Update every 20ms
+    const duration = 3500; // 3.5 seconds - slower loading
+    const interval = 20;
     const steps = duration / interval;
     let currentStep = 0;
     
     const timer = setInterval(() => {
       currentStep++;
-      // Ease out cubic
       const t = currentStep / steps;
       const eased = 1 - Math.pow(1 - t, 3);
       setProgress(Math.min(eased * 100, 100));
@@ -34,30 +33,30 @@ function LoadingFallback() {
       {/* Animated loading segments with scale effect */}
       <div className="flex items-center gap-1">
         <div 
-          className="w-3 h-12 bg-red transition-transform duration-300 ease-out"
+          className="w-3 h-12 bg-red transition-transform duration-500 ease-out"
           style={{ 
-            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin(progress * 0.2) * 0.2})`,
+            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin(progress * 0.15) * 0.25})`,
             opacity: 0.4 + (progress / 100) * 0.6
           }}
         />
         <div 
-          className="w-3 h-12 bg-green transition-transform duration-300 ease-out"
+          className="w-3 h-12 bg-green transition-transform duration-500 ease-out"
           style={{ 
-            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin((progress + 15) * 0.2) * 0.2})`,
+            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin((progress + 20) * 0.15) * 0.25})`,
             opacity: 0.4 + (progress / 100) * 0.6
           }}
         />
         <div 
-          className="w-3 h-12 bg-blue transition-transform duration-300 ease-out"
+          className="w-3 h-12 bg-blue transition-transform duration-500 ease-out"
           style={{ 
-            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin((progress + 30) * 0.2) * 0.2})`,
+            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin((progress + 40) * 0.15) * 0.25})`,
             opacity: 0.4 + (progress / 100) * 0.6
           }}
         />
         <div 
-          className="w-3 h-12 bg-yellow transition-transform duration-300 ease-out"
+          className="w-3 h-12 bg-yellow transition-transform duration-500 ease-out"
           style={{ 
-            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin((progress + 45) * 0.2) * 0.2})`,
+            transform: `scaleY(${0.3 + (progress / 100) * 0.7 + Math.sin((progress + 60) * 0.15) * 0.25})`,
             opacity: 0.4 + (progress / 100) * 0.6
           }}
         />

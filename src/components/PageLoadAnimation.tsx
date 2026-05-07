@@ -10,23 +10,24 @@ export default function PageLoadAnimation({
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
-		// Force a reflow to ensure animation plays
-		const raf1 = requestAnimationFrame(() => {
-			const raf2 = requestAnimationFrame(() => {
+		// Slower fade in - wait a bit then animate
+		const timeout = setTimeout(() => {
+			const raf = requestAnimationFrame(() => {
 				setIsVisible(true);
 			});
-			return () => cancelAnimationFrame(raf2);
-		});
+			return () => cancelAnimationFrame(raf);
+		}, 200);
 		
-		return () => cancelAnimationFrame(raf1);
+		return () => clearTimeout(timeout);
 	}, []);
 
 	return (
 		<div
-			className="transition-all duration-1000 ease-out"
+			className="transition-all ease-out"
 			style={{
 				opacity: isVisible ? 1 : 0,
-				transform: isVisible ? "translateY(0)" : "translateY(16px)",
+				transform: isVisible ? "translateY(0)" : "translateY(24px)",
+				transitionDuration: "1.8s",
 				transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
 			}}
 		>
