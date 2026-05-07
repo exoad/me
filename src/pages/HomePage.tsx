@@ -5,10 +5,18 @@ import { MdOutlineArrowOutward } from "react-icons/md";
 import { useState } from "react";
 
 function NameCard() {
+	// Gruvbox colors for each letter
+	const colors = ['text-red', 'text-green', 'text-yellow', 'text-blue', 'text-purple', 'text-aqua', 'text-orange', 'text-gray', 'text-red', 'text-green', 'text-yellow'];
+	const name = strings.name;
+	
 	return (
 		<div className="flex flex-col items-end gap-3">
-			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl font-playfair text-fg0 tracking-tight">
-				{strings.name}
+			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl font-playfair tracking-tight">
+				{name.split('').map((char, i) => (
+					<span key={i} className={char === ' ' ? '' : colors[i % colors.length]}>
+						{char === ' ' ? '\u00A0' : char}
+					</span>
+					))}
 			</h1>
 			<p className="text-fg3 text-xs font-sans uppercase tracking-[0.2em]">
 				{strings.pages.home.tagline}
