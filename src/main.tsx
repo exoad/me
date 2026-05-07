@@ -16,6 +16,9 @@ const lenis = new Lenis({
   infinite: false,
 });
 
+// Expose lenis globally so pages can control it
+(window as any).lenis = lenis;
+
 // RAF loop with proper error handling
 let rafId: number;
 let isActive = true;

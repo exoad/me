@@ -13,49 +13,77 @@ function formatDate(dateStr: string) {
   });
 }
 
-// Intersection Observer hook for lazy loading
-function useInView(threshold = 0.1) {
-  const [isInView, setIsInView] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+// Track visible photos with ability to unload
+function usePhotoVisibility() {
+  const [visiblePhotos, setVisiblePhotos] = useState<Set<string>>(new Set());
+  const observersRef = useRef<Map<string, IntersectionObserver>>(new Map());
 
-  useEffect(() => {
-    const element = ref.current;
+  const observePhoto = useCallback((id: string, element: HTMLElement | null) => {
     if (!element) return;
+
+    // Disconnect existing observer for this photo if any
+    const existingObserver = observersRef.current.get(id);
+    if (existingObserver) {
+      existingObserver.disconnect();
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observer.unobserve(element);
-        }
+        setVisiblePhotos(prev => {
+          const next = new Set(prev);
+          if (entry.isIntersecting) {
+            next.add(id);
+          } else {
+            // Only unload if it's been loaded before and is now far off-screen
+            if (entry.boundingClientRect.top > window.innerHeight * 2 || 
+                entry.boundingClientRect.bottom < -window.innerHeight * 2) {
+              next.delete(id);
+            }
+          }
+          return next;
+        });
       },
-      { threshold, rootMargin: '100px' }
+      { threshold: 0, rootMargin: '200px' }
     );
 
     observer.observe(element);
-    return () => observer.disconnect();
-  }, [threshold]);
+    observersRef.current.set(id, observer);
+  }, []);
 
-  return { ref, isInView };
+  const cleanup = useCallback(() => {
+    observersRef.current.forEach(observer => observer.disconnect());
+    observersRef.current.clear();
+  }, []);
+
+  return { visiblePhotos, observePhoto, cleanup };
 }
 
 export default function PhotosPage() {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   const [hoveredPhoto, setHoveredPhoto] = useState<string | null>(null);
-  const [visiblePhotos, setVisiblePhotos] = useState<Set<string>>(new Set());
+  const { visiblePhotos, observePhoto, cleanup } = usePhotoVisibility();
+  const photoRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
+  // Disable Lenis smooth scroll on this page
   useEffect(() => {
-    if (window.scrollY > 0) {
-      window.scrollTo({ top: 0, behavior: 'auto' });
+    // Disable smooth scroll - use native scrolling
+    document.documentElement.style.scrollBehavior = 'auto';
+    
+    // Stop Lenis if it exists
+    const lenisInstance = (window as any).lenis;
+    if (lenisInstance) {
+      lenisInstance.destroy();
     }
-  }, []);
+
+    return () => {
+      cleanup();
+      // Re-enable smooth scroll when leaving
+      document.documentElement.style.scrollBehavior = '';
+    };
+  }, [cleanup]);
 
   const handleImageLoad = useCallback((id: string) => {
     setLoadedImages(prev => ({ ...prev, [id]: true }));
-  }, []);
-
-  const handlePhotoVisible = useCallback((id: string) => {
-    setVisiblePhotos(prev => new Set(prev).add(id));
   }, []);
 
   // Split photos into columns for masonry-like effect
@@ -64,29 +92,25 @@ export default function PhotosPage() {
 
   const PhotoCard = ({ photo, index }: { photo: typeof photos[0], index: number }) => {
     const photoId = `photo-${index}`;
+    const isVisible = visiblePhotos.has(photoId);
     const isLoaded = loadedImages[photoId];
     const isHovered = hoveredPhoto === photoId;
-    const { ref, isInView } = useInView(0.1);
 
     useEffect(() => {
-      if (isInView) {
-        handlePhotoVisible(photoId);
-      }
-    }, [isInView, photoId]);
-
-    const shouldLoad = visiblePhotos.has(photoId);
+      observePhoto(photoId, photoRefs.current[photoId]);
+    }, [photoId]);
 
     return (
       <div 
-        ref={ref}
+        ref={el => { photoRefs.current[photoId] = el; }}
         className="group relative mb-4"
         onMouseEnter={() => setHoveredPhoto(photoId)}
         onMouseLeave={() => setHoveredPhoto(null)}
       >
         {/* Image container with art frame style */}
         <div className="relative overflow-hidden bg-bg1 border border-bg2 hover:border-fg4 transition-colors duration-500">
-          {/* Loading state */}
-          {!isLoaded && shouldLoad && (
+          {/* Loading state - only show when visible but not loaded */}
+          {isVisible && !isLoaded && (
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-bg0">
               <div className="flex items-center gap-1">
                 <div className="w-1.5 h-6 bg-red/60" />
@@ -97,8 +121,8 @@ export default function PhotosPage() {
             </div>
           )}
           
-          {/* Image - only render when in viewport */}
-          {shouldLoad ? (
+          {/* Image - only render when visible */}
+          {isVisible ? (
             <button
               onClick={() => window.open(photo.src, '_blank')}
               className="w-full block relative"
@@ -112,7 +136,7 @@ export default function PhotosPage() {
                 }`}
                 onLoad={() => handleImageLoad(photoId)}
                 decoding="async"
-                loading="lazy"
+                loading="eager"
                 style={{ 
                   transform: isHovered ? 'scale(1.02)' : 'scale(1)',
                   transition: 'transform 0.5s ease-out'
@@ -140,7 +164,9 @@ export default function PhotosPage() {
             </button>
           ) : (
             /* Placeholder when not in view */
-            <div className="w-full aspect-video bg-bg1" />
+            <div className="w-full aspect-video bg-bg1 flex items-center justify-center">
+              <div className="w-1.5 h-6 bg-fg4/20" />
+            </div>
           )}
         </div>
       </div>
