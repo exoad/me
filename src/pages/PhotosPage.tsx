@@ -64,22 +64,10 @@ export default function PhotosPage() {
   const { visiblePhotos, observePhoto, cleanup } = usePhotoVisibility();
   const photoRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Disable Lenis smooth scroll on this page
+  // Reset scroll position
   useEffect(() => {
-    // Disable smooth scroll - use native scrolling
-    document.documentElement.style.scrollBehavior = 'auto';
-    
-    // Stop Lenis if it exists
-    const lenisInstance = (window as any).lenis;
-    if (lenisInstance) {
-      lenisInstance.destroy();
-    }
-
-    return () => {
-      cleanup();
-      // Re-enable smooth scroll when leaving
-      document.documentElement.style.scrollBehavior = '';
-    };
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    return () => cleanup();
   }, [cleanup]);
 
   const handleImageLoad = useCallback((id: string) => {

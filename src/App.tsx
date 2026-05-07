@@ -1,5 +1,6 @@
 import { Suspense, lazy, useState, useEffect, useCallback } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { useLenis } from "./hooks/useLenis";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -64,6 +65,11 @@ function LoadingScreen({ onFadeComplete }: { onFadeComplete: () => void }) {
 function AppContent() {
 	const [showLoading, setShowLoading] = useState(true);
 	const [showContent, setShowContent] = useState(false);
+	const location = useLocation();
+
+	// Enable Lenis only on home page, disable on photos page
+	const enableLenis = location.pathname === "/";
+	useLenis(enableLenis);
 
 	useEffect(() => {
 		const contentTimer = setTimeout(() => {
