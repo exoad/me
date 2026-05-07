@@ -5,24 +5,25 @@ interface PageLoadAnimationProps {
 }
 
 export default function PageLoadAnimation({ children }: PageLoadAnimationProps) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Small delay to ensure DOM is ready
+    // Use a single timeout for smoother, non-flickery animation
     const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 50);
+      setIsLoaded(true);
+    }, 150);
 
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <div
-      className={`transition-all duration-1000 ease-out ${
-        isVisible 
-          ? 'opacity-100 translate-y-0' 
-          : 'opacity-0 translate-y-4'
-      }`}
+      style={{
+        opacity: isLoaded ? 1 : 0,
+        transform: isLoaded ? 'translateY(0)' : 'translateY(12px)',
+        transition: 'opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+        willChange: 'opacity, transform',
+      }}
     >
       {children}
     </div>
