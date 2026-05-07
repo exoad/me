@@ -35,12 +35,12 @@ function LoadingScreen({ onFadeComplete }: { onFadeComplete: () => void }) {
 			className="fixed inset-0 z-50 bg-bg0 flex flex-col items-center justify-center gap-8 transition-opacity duration-[800ms] ease-out"
 			style={{ opacity }}
 		>
-			{/* Core Gruvbox colors only - red, green, yellow, blue */}
-			<div className="flex items-center gap-[4px] h-16">
-				<div className="w-3 bg-red animate-wave-scale" style={{ animationDelay: '0ms' }} />
-				<div className="w-3 bg-green animate-wave-scale" style={{ animationDelay: '120ms' }} />
-				<div className="w-3 bg-yellow animate-wave-scale" style={{ animationDelay: '240ms' }} />
-				<div className="w-3 bg-blue animate-wave-scale" style={{ animationDelay: '360ms' }} />
+			{/* Core Gruvbox colors - always visible, no background gap */}
+			<div className="flex items-center h-16">
+				<div className="w-3 h-12 bg-red origin-bottom animate-wave-scale" />
+				<div className="w-3 h-12 bg-green origin-bottom animate-wave-scale" style={{ animationDelay: '120ms' }} />
+				<div className="w-3 h-12 bg-yellow origin-bottom animate-wave-scale" style={{ animationDelay: '240ms' }} />
+				<div className="w-3 h-12 bg-blue origin-bottom animate-wave-scale" style={{ animationDelay: '360ms' }} />
 			</div>
 
 			<span className="text-fg4/40 text-[10px] font-sans tracking-[0.5em] uppercase">
