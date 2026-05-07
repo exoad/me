@@ -7,17 +7,15 @@ const PhotosPage = lazy(() => import('./pages/PhotosPage'));
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-bg0 flex flex-col items-center justify-center gap-4">
-      {/* Minimal loading bar using Gruvbox colors */}
-      <div className="w-48 h-[2px] bg-bg2 overflow-hidden">
-        <div 
-          className="h-full bg-fg0 animate-loading-bar"
-          style={{
-            animation: "loadingBar 1.5s ease-in-out infinite",
-          }}
-        />
+    <div className="min-h-screen bg-bg0 flex flex-col items-center justify-center gap-6">
+      {/* Multi-color loading bar using Gruvbox primary colors */}
+      <div className="w-56 h-[3px] flex overflow-hidden">
+        <div className="flex-1 bg-red animate-loading-segment" style={{ animationDelay: '0ms' }} />
+        <div className="flex-1 bg-green animate-loading-segment" style={{ animationDelay: '150ms' }} />
+        <div className="flex-1 bg-blue animate-loading-segment" style={{ animationDelay: '300ms' }} />
+        <div className="flex-1 bg-yellow animate-loading-segment" style={{ animationDelay: '450ms' }} />
       </div>
-      <span className="text-fg4 text-xs font-sans tracking-widest uppercase">Loading</span>
+      <span className="text-fg4 text-xs font-sans tracking-[0.3em] uppercase">Loading</span>
     </div>
   );
 }

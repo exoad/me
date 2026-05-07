@@ -16,6 +16,7 @@ function formatDate(dateStr: string) {
 
 export default function PhotosPage() {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [hoveredPhoto, setHoveredPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     if (window.scrollY > 0) {
@@ -27,6 +28,74 @@ export default function PhotosPage() {
     setLoadedImages(prev => ({ ...prev, [id]: true }));
   };
 
+  // Split photos into columns for masonry-like effect
+  const leftColumn = photos.filter((_, i) => i % 2 === 0);
+  const rightColumn = photos.filter((_, i) => i % 2 === 1);
+
+  const PhotoCard = ({ photo, index }: { photo: typeof photos[0], index: number }) => {
+    const photoId = `photo-${index}`;
+    const isLoaded = loadedImages[photoId];
+    const isHovered = hoveredPhoto === photoId;
+
+    return (
+      <div 
+        className="group relative mb-4"
+        onMouseEnter={() => setHoveredPhoto(photoId)}
+        onMouseLeave={() => setHoveredPhoto(null)}
+      >
+        {/* Image container with art frame style */}
+        <div className="relative overflow-hidden bg-bg1 border border-bg2 hover:border-fg4 transition-colors duration-500">
+          {/* Loading state with multi-color bar */}
+          {!isLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 bg-bg0">
+              <div className="w-24 h-[2px] flex overflow-hidden">
+                <div className="flex-1 bg-red animate-loading-segment" style={{ animationDelay: '0ms' }} />
+                <div className="flex-1 bg-green animate-loading-segment" style={{ animationDelay: '100ms' }} />
+                <div className="flex-1 bg-blue animate-loading-segment" style={{ animationDelay: '200ms' }} />
+                <div className="flex-1 bg-yellow animate-loading-segment" style={{ animationDelay: '300ms' }} />
+              </div>
+            </div>
+          )}
+          
+          {/* Image */}
+          <button
+            onClick={() => window.open(photo.src, '_blank')}
+            className="w-full block relative"
+            aria-label={`View larger image of ${photo.alt}`}
+          >
+            <img
+              src={photo.thumbnailSrc}
+              alt={photo.alt}
+              className={`w-full h-auto object-cover transition-all duration-700 ease-out ${
+                isLoaded ? 'opacity-100 grayscale-0' : 'opacity-0'
+              } ${isHovered ? 'scale-[1.03]' : 'scale-100'}`}
+              onLoad={() => handleImageLoad(photoId)}
+              decoding="async"
+              loading="lazy"
+            />
+            
+            {/* Hover overlay with info */}
+            <div className={`absolute inset-0 bg-bg0/80 flex flex-col justify-end p-4 transition-opacity duration-300 ${
+              isHovered ? 'opacity-100' : 'opacity-0'
+            }`}>
+              <div className="flex items-end justify-between">
+                <div>
+                  {photo.caption && (
+                    <h3 className="text-sm font-sans font-medium text-fg0 mb-1">{photo.caption}</h3>
+                  )}
+                  <div className="text-xs text-fg3 font-sans">
+                    {photo.location} · {formatDate(photo.date)}
+                  </div>
+                </div>
+                <MdOutlineArrowOutward size={18} className="text-fg0 flex-shrink-0 ml-2" />
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <PageLoadAnimation>
       <SEO
@@ -36,111 +105,60 @@ export default function PhotosPage() {
       />
       
       <div className="min-h-screen bg-bg0">
-        {/* Simple header */}
+        {/* Minimal header */}
         <header className="border-b border-bg2">
-          <div className="max-w-2xl mx-auto px-6 py-6">
+          <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
             <a 
               href="/" 
               className="text-fg4 hover:text-fg0 transition-colors duration-300 text-xs font-sans uppercase tracking-widest"
             >
-              ← Back Home
+              ← Back
             </a>
+            <h1 className="text-lg font-playfair text-fg0">Photos</h1>
+            <div className="w-16"></div>
           </div>
         </header>
 
-        {/* Main content */}
+        {/* Art grid layout */}
         <main className="py-12 px-6">
-          <div className="max-w-2xl mx-auto">
-            {/* Title */}
-            <div className="mb-10">
-              <h1 className="text-2xl sm:text-3xl font-bold font-playfair text-fg0 mb-2">
-                {strings.pages.photos.title}
-              </h1>
-              <p className="text-fg3 text-sm font-sans">
+          <div className="max-w-6xl mx-auto">
+            {/* Intro */}
+            <div className="mb-12 max-w-xl">
+              <p className="text-fg3 text-sm font-sans leading-relaxed">
                 {strings.pages.photos.description}
               </p>
             </div>
 
-            {/* Photos */}
-            <div className="flex flex-col gap-10">
-              {photos.map((photo, index) => {
-                const photoId = `photo-${index}`;
-                const isLoaded = loadedImages[photoId];
-                
-                return (
-                  <div key={photoId} className="group">
-                    {/* Image container */}
-                    <div className="relative border border-bg2 overflow-hidden bg-bg1">
-                      {/* Loading state */}
-                      {!isLoaded && (
-                        <div className="absolute inset-0 flex items-center justify-center z-10">
-                          <div className="w-32 h-[2px] bg-bg2 overflow-hidden">
-                            <div 
-                              className="h-full bg-fg3"
-                              style={{
-                                animation: "loadingBar 1s ease-in-out infinite",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Actual image */}
-                      <button
-                        onClick={() => window.open(photo.src, '_blank')}
-                        className="w-full block relative"
-                        aria-label={`View larger image of ${photo.alt}`}
-                      >
-                        <img
-                          src={photo.thumbnailSrc}
-                          alt={photo.alt}
-                          className={`w-full h-auto object-cover transition-all duration-700 ${
-                            isLoaded ? 'opacity-100' : 'opacity-0'
-                          }`}
-                          onLoad={() => handleImageLoad(photoId)}
-                          decoding="async"
-                          loading={index < 2 ? "eager" : "lazy"}
-                        />
-                        
-                        {/* Hover overlay */}
-                        <div className="absolute inset-0 bg-bg0/0 group-hover:bg-bg0/20 transition-colors duration-500 flex items-center justify-center">
-                          <MdOutlineArrowOutward 
-                            size={24} 
-                            className="text-fg0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-90 group-hover:scale-100" 
-                          />
-                        </div>
-                      </button>
-                    </div>
-                    
-                    {/* Metadata */}
-                    <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                      {photo.caption && (
-                        <h3 className="text-sm font-sans font-medium text-fg0">{photo.caption}</h3>
-                      )}
-                      <div className="flex items-center gap-2 text-xs text-fg4 font-sans">
-                        <span>{photo.location}</span>
-                        <span>·</span>
-                        <span>{formatDate(photo.date)}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+            {/* Two-column masonry grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Left column */}
+              <div className="flex flex-col gap-4">
+                {leftColumn.map((photo, i) => (
+                  <PhotoCard key={`left-${i}`} photo={photo} index={i * 2} />
+                ))}
+              </div>
+              
+              {/* Right column - offset for masonry effect */}
+              <div className="flex flex-col gap-4 md:mt-12">
+                {rightColumn.map((photo, i) => (
+                  <PhotoCard key={`right-${i}`} photo={photo} index={i * 2 + 1} />
+                ))}
+              </div>
             </div>
           </div>
         </main>
 
-        {/* Footer */}
-        <footer className="border-t border-bg2 py-8 px-6 mt-12">
-          <div className="max-w-2xl mx-auto flex justify-between items-center">
+        {/* Minimal footer */}
+        <footer className="border-t border-bg2 py-8 px-6">
+          <div className="max-w-6xl mx-auto flex justify-between items-center">
             <span className="text-fg4 text-[10px] font-sans">
               {strings.footer.legals}
             </span>
             <a
               href="/"
-              className="text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300"
+              className="text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300 uppercase tracking-wider"
             >
-              Back to home
+              Home
             </a>
           </div>
         </footer>

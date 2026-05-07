@@ -76,3 +76,19 @@ body {
     transform: translateX(100%);
   }
 }
+
+/* Multi-segment loading bar animation */
+@keyframes loadingSegment {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scaleY(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.animate-loading-segment {
+  animation: loadingSegment 1.2s ease-in-out infinite;
+}
