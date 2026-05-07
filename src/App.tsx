@@ -6,7 +6,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const PhotosPage = lazy(() => import('./pages/PhotosPage'));
 
 // Minimum loading time in milliseconds
-const MIN_LOADING_TIME = 6000;
+const MIN_LOADING_TIME = 2500;
 
 function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0);
@@ -20,7 +20,7 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       const elapsed = Date.now() - startTime;
       const rawProgress = Math.min(elapsed / duration, 1);
       // Ease out
-      const eased = 1 - Math.pow(1 - rawProgress, 3);
+      const eased = 1 - (1 - rawProgress) ** 3;
       setProgress(eased * 100);
       
       if (elapsed >= duration) {
