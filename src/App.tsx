@@ -35,16 +35,12 @@ function LoadingScreen({ onFadeComplete }: { onFadeComplete: () => void }) {
 			className="fixed inset-0 z-50 bg-bg0 flex flex-col items-center justify-center gap-8 transition-opacity duration-[800ms] ease-out"
 			style={{ opacity }}
 		>
-			{/* Color blocks with wave scale animation */}
-			<div className="flex items-center gap-[3px] h-16">
-				<div className="w-2 bg-red animate-wave-scale" style={{ animationDelay: '0ms' }} />
-				<div className="w-2 bg-green animate-wave-scale" style={{ animationDelay: '100ms' }} />
-				<div className="w-2 bg-yellow animate-wave-scale" style={{ animationDelay: '200ms' }} />
-				<div className="w-2 bg-blue animate-wave-scale" style={{ animationDelay: '300ms' }} />
-				<div className="w-2 bg-purple animate-wave-scale" style={{ animationDelay: '400ms' }} />
-				<div className="w-2 bg-aqua animate-wave-scale" style={{ animationDelay: '500ms' }} />
-				<div className="w-2 bg-orange animate-wave-scale" style={{ animationDelay: '600ms' }} />
-				<div className="w-2 bg-gray animate-wave-scale" style={{ animationDelay: '700ms' }} />
+			{/* Core Gruvbox colors only - red, green, yellow, blue */}
+			<div className="flex items-center gap-[4px] h-16">
+				<div className="w-3 bg-red animate-wave-scale" style={{ animationDelay: '0ms' }} />
+				<div className="w-3 bg-green animate-wave-scale" style={{ animationDelay: '120ms' }} />
+				<div className="w-3 bg-yellow animate-wave-scale" style={{ animationDelay: '240ms' }} />
+				<div className="w-3 bg-blue animate-wave-scale" style={{ animationDelay: '360ms' }} />
 			</div>
 
 			<span className="text-fg4/40 text-[10px] font-sans tracking-[0.5em] uppercase">
