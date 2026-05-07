@@ -4,25 +4,45 @@ import Lenis from "lenis";
 import App from "./App";
 import "./index.css";
 
-// Initialize Lenis with performance-optimized settings
+// Initialize Lenis with optimized settings for performance
 const lenis = new Lenis({
-  lerp: 0.08,
+  duration: 1.2,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  orientation: 'vertical',
+  gestureOrientation: 'vertical',
   smoothWheel: true,
-  wheelMultiplier: 0.8,
-  touchMultiplier: 1.5,
+  wheelMultiplier: 1,
+  touchMultiplier: 2,
   infinite: false,
 });
 
-// Use requestAnimationFrame with proper cleanup
+// RAF loop with proper error handling
 let rafId: number;
+let isActive = true;
+
 function raf(time: number) {
+  if (!isActive) return;
   lenis.raf(time);
   rafId = requestAnimationFrame(raf);
 }
+
+// Start the loop
 rafId = requestAnimationFrame(raf);
+
+// Handle visibility change - pause when tab is hidden
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    isActive = false;
+    cancelAnimationFrame(rafId);
+  } else {
+    isActive = true;
+    rafId = requestAnimationFrame(raf);
+  }
+});
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {
+  isActive = false;
   cancelAnimationFrame(rafId);
   lenis.destroy();
 });
