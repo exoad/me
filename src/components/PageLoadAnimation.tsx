@@ -7,24 +7,27 @@ interface PageLoadAnimationProps {
 export default function PageLoadAnimation({
 	children,
 }: PageLoadAnimationProps) {
-	const [isLoaded, setIsLoaded] = useState(false);
+	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
-		// Start animation after a brief delay to prevent flicker
-		const timer = setTimeout(() => {
-			setIsLoaded(true);
-		}, 50);
-
-		return () => clearTimeout(timer);
+		// Force a reflow to ensure animation plays
+		const raf1 = requestAnimationFrame(() => {
+			const raf2 = requestAnimationFrame(() => {
+				setIsVisible(true);
+			});
+			return () => cancelAnimationFrame(raf2);
+		});
+		
+		return () => cancelAnimationFrame(raf1);
 	}, []);
 
 	return (
 		<div
+			className="transition-all duration-1000 ease-out"
 			style={{
-				opacity: isLoaded ? 1 : 0,
-				transform: isLoaded ? "translateY(0)" : "translateY(8px)",
-				transition: "opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)",
-				willChange: "opacity, transform",
+				opacity: isVisible ? 1 : 0,
+				transform: isVisible ? "translateY(0)" : "translateY(16px)",
+				transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
 			}}
 		>
 			{children}
