@@ -10,25 +10,40 @@ export default function PageLoadAnimation({
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
-		// Use a single timeout for smoother, non-flickery animation
 		const timer = setTimeout(() => {
 			setIsLoaded(true);
-		}, 150);
+		}, 100);
 
 		return () => clearTimeout(timer);
 	}, []);
 
 	return (
-		<div
-			style={{
-				opacity: isLoaded ? 1 : 0,
-				transform: isLoaded ? "translateY(0)" : "translateY(12px)",
-				transition:
-					"opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1)",
-				willChange: "opacity, transform",
-			}}
-		>
-			{children}
-		</div>
+		<>
+			{/* Black overlay that fades out */}
+			<div
+				style={{
+					position: "fixed",
+					inset: 0,
+					backgroundColor: "#1d2021",
+					opacity: isLoaded ? 0 : 1,
+					pointerEvents: isLoaded ? "none" : "auto",
+					transition: "opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1)",
+					zIndex: 9999,
+					willChange: "opacity",
+				}}
+			/>
+			{/* Content that fades in */}
+			<div
+				style={{
+					opacity: isLoaded ? 1 : 0,
+					transform: isLoaded ? "translateY(0)" : "translateY(20px)",
+					transition:
+						"opacity 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s, transform 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s",
+					willChange: "opacity, transform",
+				}}
+			>
+				{children}
+			</div>
+		</>
 	);
 }
