@@ -18,16 +18,16 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
 
 	return (
 		<div className="min-h-screen bg-bg0 flex flex-col items-center justify-center gap-8">
-			{/* Color blocks - separated, not blended */}
-			<div className="flex gap-[2px] w-64 h-[2px]">
-				<div className="flex-1 bg-red h-full" />
-				<div className="flex-1 bg-green h-full" />
-				<div className="flex-1 bg-yellow h-full" />
-				<div className="flex-1 bg-blue h-full" />
-				<div className="flex-1 bg-purple h-full" />
-				<div className="flex-1 bg-aqua h-full" />
-				<div className="flex-1 bg-orange h-full" />
-				<div className="flex-1 bg-gray h-full" />
+			{/* Color blocks with wave scale animation */}
+			<div className="flex items-center gap-[3px] h-16">
+				<div className="w-2 bg-red animate-wave-scale" style={{ animationDelay: '0ms' }} />
+				<div className="w-2 bg-green animate-wave-scale" style={{ animationDelay: '100ms' }} />
+				<div className="w-2 bg-yellow animate-wave-scale" style={{ animationDelay: '200ms' }} />
+				<div className="w-2 bg-blue animate-wave-scale" style={{ animationDelay: '300ms' }} />
+				<div className="w-2 bg-purple animate-wave-scale" style={{ animationDelay: '400ms' }} />
+				<div className="w-2 bg-aqua animate-wave-scale" style={{ animationDelay: '500ms' }} />
+				<div className="w-2 bg-orange animate-wave-scale" style={{ animationDelay: '600ms' }} />
+				<div className="w-2 bg-gray animate-wave-scale" style={{ animationDelay: '700ms' }} />
 			</div>
 
 			<span className="text-fg4/40 text-[10px] font-sans tracking-[0.5em] uppercase">

@@ -252,3 +252,21 @@ body {
 .animate-shimmer {
   animation: shimmer 2s ease-in-out infinite;
 }
+
+/* Wave scale animation for loading bars */
+@keyframes waveScale {
+  0%, 100% {
+    transform: scaleY(0.3) scaleX(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleY(1) scaleX(1);
+    opacity: 1;
+  }
+}
+
+.animate-wave-scale {
+  animation: waveScale 1.2s ease-in-out infinite;
+  height: 48px;
+  transform-origin: center;
+}
