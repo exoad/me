@@ -12,16 +12,12 @@ const CONTENT_FADE_TIME = 1500;
 
 function LoadingScreen({ onFadeComplete }: { onFadeComplete: () => void }) {
 	const [opacity, setOpacity] = useState(1);
-	const [isFading, setIsFading] = useState(false);
 
 	useEffect(() => {
-		// Start fade out after loading time
 		const fadeTimer = setTimeout(() => {
-			setIsFading(true);
 			setOpacity(0);
 		}, LOADING_TIME);
 
-		// Complete after fade out finishes
 		const completeTimer = setTimeout(() => {
 			onFadeComplete();
 		}, LOADING_TIME + FADE_OUT_TIME);
@@ -32,36 +28,19 @@ function LoadingScreen({ onFadeComplete }: { onFadeComplete: () => void }) {
 		};
 	}, [onFadeComplete]);
 
-	// Stop animations when fading out to save performance
-	if (isFading) {
-		return (
-			<div 
-				className="fixed inset-0 z-50 bg-bg0 flex flex-col items-center justify-center gap-8 pointer-events-none"
-				style={{ opacity, transition: `opacity ${FADE_OUT_TIME}ms ease-out` }}
-			>
-				<div className="flex items-center h-16">
-					<div className="w-3 h-12 bg-red" />
-					<div className="w-3 h-12 bg-green" />
-					<div className="w-3 h-12 bg-yellow" />
-					<div className="w-3 h-12 bg-blue" />
-				</div>
-				<span className="text-fg4/40 text-[10px] font-sans tracking-[0.5em] uppercase">
-					Loading
-				</span>
-			</div>
-		);
-	}
-
 	return (
 		<div 
 			className="fixed inset-0 z-50 bg-bg0 flex flex-col items-center justify-center gap-8"
-			style={{ opacity }}
+			style={{ 
+				opacity,
+				transition: `opacity ${FADE_OUT_TIME}ms ease-out`
+			}}
 		>
-			<div className="flex items-center h-16">
-				<div className="w-3 h-12 bg-red origin-bottom animate-wave-scale" />
-				<div className="w-3 h-12 bg-green origin-bottom animate-wave-scale" style={{ animationDelay: '120ms' }} />
-				<div className="w-3 h-12 bg-yellow origin-bottom animate-wave-scale" style={{ animationDelay: '240ms' }} />
-				<div className="w-3 h-12 bg-blue origin-bottom animate-wave-scale" style={{ animationDelay: '360ms' }} />
+			<div className="flex items-center gap-1 h-16">
+				<div className="w-2 h-10 bg-red animate-pulse" style={{ animationDelay: '0ms', animationDuration: '1.2s' }} />
+				<div className="w-2 h-10 bg-green animate-pulse" style={{ animationDelay: '0.3s', animationDuration: '1.2s' }} />
+				<div className="w-2 h-10 bg-yellow animate-pulse" style={{ animationDelay: '0.6s', animationDuration: '1.2s' }} />
+				<div className="w-2 h-10 bg-blue animate-pulse" style={{ animationDelay: '0.9s', animationDuration: '1.2s' }} />
 			</div>
 			<span className="text-fg4/40 text-[10px] font-sans tracking-[0.5em] uppercase">
 				Loading

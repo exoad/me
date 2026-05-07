@@ -18,8 +18,9 @@ export default function PhotosPage() {
   const [hoveredPhoto, setHoveredPhoto] = useState<string | null>(null);
 
   useEffect(() => {
+    // Use Lenis for smooth scroll to top if available, otherwise instant
     if (window.scrollY > 0) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, []);
 
