@@ -151,3 +151,33 @@ body {
 .animate-page-enter {
   animation: pageEnter 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* Scrolling color bar - colors flow through like a marquee */
+@keyframes colorScroll {
+  0% {
+    background: linear-gradient(90deg, 
+      #cc241d 0%, #cc241d 20%,
+      #98971a 20%, #98971a 40%,
+      #458588 40%, #458588 60%,
+      #d79921 60%, #d79921 80%,
+      #cc241d 80%, #cc241d 100%
+    );
+    transform: translateX(-100%);
+  }
+  100% {
+    background: linear-gradient(90deg, 
+      #cc241d 0%, #cc241d 20%,
+      #98971a 20%, #98971a 40%,
+      #458588 40%, #458588 60%,
+      #d79921 60%, #d79921 80%,
+      #cc241d 80%, #cc241d 100%
+    );
+    transform: translateX(100%);
+  }
+}
+
+.animate-color-scroll {
+  animation: colorScroll 4s linear infinite;
+  width: 200%;
+  background-size: 50% 100%;
+}
