@@ -95,31 +95,37 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 	);
 }
 
-function DroskTeaser() {
+function FeaturedTeaser({ proj }: { proj: (typeof projects)[0] }) {
 	return (
 		<a
-			href="https://drosk.net"
+			href={proj.link}
 			target="_blank"
 			rel="noopener noreferrer"
 			className="block group transition-all duration-300 hover:opacity-70"
 		>
 			<div className="flex items-center gap-2 mb-2">
-				<span className="px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest bg-yellow/20 text-yellow rounded-sm transition-colors duration-300 group-hover:bg-yellow/30">
-					In Development
+				<span className={`px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest rounded-sm transition-colors duration-300 ${
+					proj.state === "active"
+						? "bg-yellow/20 text-yellow group-hover:bg-yellow/30"
+						: proj.state === "finished"
+							? "bg-blue/20 text-blue group-hover:bg-blue/30"
+							: "bg-gray/20 text-fg4 group-hover:bg-gray/30"
+				}`}>
+					{proj.state === "active" ? "In Development" : proj.state === "finished" ? "Completed" : "Archived"}
 				</span>
 			</div>
 			<h3 className="text-2xl sm:text-3xl font-bold font-sans text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
-				Drosk
+				{proj.title}
 			</h3>
 			<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
-				An AI-native workflow engine bridging local LLMs with structured
-				automation.
+				{proj.description}
 			</p>
 		</a>
 	);
 }
 
 function ContentSections() {
+	const droskProject = projects.find((p) => p.title === "Drosk");
 	const biboProject = projects.find((p) => p.title === "bibo");
 	const otherFeatured = featuredProjects.filter(
 		(p) => p.title !== "Drosk" && p.title !== "bibo",
@@ -132,11 +138,12 @@ function ContentSections() {
 		<div className="flex flex-col gap-24">
 			<section>
 				<p className="text-fg2 text-base sm:text-lg font-sans leading-relaxed max-w-xl">
-					I'm Jiaming, a hobbyist programmer and open source contributor. I
-					build software across systems, tools, and languages — from CPU
-					rasterizers and programming languages to desktop apps and developer
-					utilities. Most of my work is libre and lives on GitHub. Outside of
-					code, I enjoy hiking,{" "}
+					I build software because I believe the best tools respect their users —
+					local-first, deterministic, and free from surveillance. From custom
+					audio engines and CPU rasterizers to file automation and programming
+					languages, I work across the stack to make things that work reliably
+					and stay yours. Most of my work is open source. Outside of code, I
+					enjoy hiking,{" "}
 					<a
 						href="/photos"
 						className="underline underline-offset-4 decoration-fg4 hover:decoration-fg2 transition-colors"
@@ -147,14 +154,15 @@ function ContentSections() {
 				</p>
 			</section>
 
-			{/* Drosk Teaser - Prominent */}
-			<section className="max-w-2xl">
-				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
-					Current Focus
-				</h2>
-				<DroskTeaser />
-				<div className="border-b border-bg2 mt-6" />
-			</section>
+			{droskProject && (
+				<section className="max-w-2xl">
+					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
+						Current Focus
+					</h2>
+					<FeaturedTeaser proj={droskProject} />
+					<div className="border-b border-bg2 mt-6" />
+				</section>
+			)}
 
 			{/* bibo - Special mention */}
 			{biboProject && (

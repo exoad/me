@@ -177,6 +177,16 @@ import moriLogo from "../assets/images/projects_logos/mori.webp";
 
 export const projects: TProject[] = [
     {
+        title: "Drosk",
+        description:
+            "A local-first, cross-platform desktop app that automatically organizes files using deterministic rules you control. No subscriptions, no cloud, no AI execution — just reliable automation that respects your privacy. Built with Flutter, Go, and a custom DSL.",
+        color: "#458588",
+        link: "https://drosk.net",
+        technologies: [technologies.flutter, technologies.c],
+        featured: true,
+        state: "active",
+    },
+    {
         title: "Kira",
         description:
             "A modern object oriented programming language focused on simplicity and maintainability.",
@@ -190,7 +200,7 @@ export const projects: TProject[] = [
     {
         title: "Halcyon",
         description:
-            "A desktop audio player with a modern UI supporting for over 20 audio formats supported across all major operating systems.",
+            "An open-source desktop audio player with a custom audio engine and graphics library, supporting 20+ formats across all major OSes. Built to prove that libre software can compete with proprietary alternatives on both beauty and performance.",
         color: "#4ecdc4",
         link: "https://exoad.github.io/Halcyon.github/",
         technologies: [technologies.c, technologies.java, technologies.opengl],
@@ -260,11 +270,11 @@ export const projects: TProject[] = [
     {
         title: "OnTheFly",
         description:
-            "A cross-platform background utility that uses your custom rules to automatically organize files in real time as they arrive.",
+            "A cross-platform background utility that uses your custom rules to automatically organize files in real time as they arrive. The spiritual predecessor to Drosk.",
         color: "#ff6b6b",
         link: "https://github.com/exoad/on_the_fly",
         technologies: [technologies.flutter, technologies.python],
-        featured: true,
+        featured: false,
         demoImage:
             "https://github.com/exoad/on_the_fly/raw/master/repo/sc_1.png?raw=true",
         logo: ontheflyProjectLogo,
@@ -510,22 +520,22 @@ export const strings = {
     timeline: timeline,
     pages: {
         home: {
-            tagline: "Open Source • Software • Systems",
+            tagline: "Builder • Systems • Local-First",
             scroll_text: "More to see below",
             subtitles: [
-                "Hobbyist Developer",
-                "Full-time University Student",
-                "Open-Source Enthusiast",
-                "AI/ML Researcher",
-                "Libre design Advocate",
+                "Systems Builder",
+                "Open-Source Contributor",
+                "Local-First Advocate",
+                "University Student",
+                "Deterministic Software",
+                "Privacy-Respecting Design",
                 "Part-time Upsolver",
-                "Design Minimalist",
                 "Casual Photographer",
                 "Avid Movie Watcher",
             ],
             about: {
                 content:
-                    "I'm Jiaming, a hobbyist programmer and open source contributor. I build software across systems, tools, and languages — from CPU rasterizers and programming languages to desktop apps and developer utilities. Most of my work is libre and lives on GitHub. Outside of code, I enjoy hiking, photography, and movies.",
+                    "I build software because I believe the best tools respect their users — local-first, deterministic, and free from surveillance. From custom audio engines and CPU rasterizers to file automation and programming languages, I work across the stack to make things that work reliably and stay yours. Most of my work is open source. Outside of code, I enjoy hiking, photography, and movies.",
                 toolkit_title: "I Use:",
                 technologies: [
                     technologies.c,
@@ -546,7 +556,7 @@ export const strings = {
             currently: {
                 title: "Currently",
                 content:
-                    "2nd year Undergraduate student at the University of Maryland - College Park.",
+                    "2nd year CS student at the University of Maryland - College Park. Building Drosk, a local-first file automation tool, while contributing to open source and exploring systems programming.",
             },
         },
         projects: {
