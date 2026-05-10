@@ -1,6 +1,6 @@
 import { strings, featuredProjects, projects } from "../data/shared.ts";
 import SEO from "../components/SEO.tsx";
-import { SiGithub, SiLinkedin } from "react-icons/si";
+import { SiGithub, SiLinkedin, SiX } from "react-icons/si";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { useState } from "react";
 
@@ -33,6 +33,13 @@ function NameCard() {
 					className="text-fg4 hover:text-fg0 transition duration-300"
 				>
 					<SiLinkedin size={18} />
+				</a>
+				<a
+					href={strings.links.x}
+					aria-label={strings.links.x_aria}
+					className="text-fg4 hover:text-fg0 transition duration-300"
+				>
+					<SiX size={18} />
 				</a>
 			</div>
 		</div>

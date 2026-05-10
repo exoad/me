@@ -495,6 +495,8 @@ export const strings = {
         github_aria: "My GitHub Profile",
         linkedin: "https://www.linkedin.com/in/jack-meng/",
         linkedin_aria: "My LinkedIn Profile",
+        x: "https://x.com/exoad_",
+        x_aria: "My X Profile",
     },
     navigation: {
         home: "HOME",
