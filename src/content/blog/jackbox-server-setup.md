@@ -97,7 +97,11 @@ Ampere generation means solid software support across every inference framework 
 
 300W TDP
 
-Custom mod where someone took an SXM2 server module and mounted it onto a PCIe board with a blower cooler. Volta architecture from 2017 means it misses some newer software features like FlashAttention-2, but at **~$23/GB of VRAM** it's the cheapest high-bandwidth memory you can get your hands on.
+I originally ordered two of these. Both shipped from China. One made it through customs. The other did not.
+
+After weeks of waiting for a second unit that never arrived, I pivoted and picked up the RTX 3080 above instead. In hindsight, the mixed setup worked out better — the Ampere card handles newer model architectures while the V100 brings raw memory bandwidth at an unbeatable price per gigabyte.
+
+This one is a custom mod where someone took an SXM2 server module and mounted it onto a PCIe board with a blower cooler. Volta architecture from 2017 means it misses some newer software features like FlashAttention-2, but at **~$23/GB of VRAM** it's the cheapest high-bandwidth memory you can get your hands on.
 
 The HBM2 memory bandwidth actually beats some modern RTX cards in raw throughput. For batched inference workloads that are memory-bandwidth-bound rather than compute-bound, this card punches well above its price point.
 
