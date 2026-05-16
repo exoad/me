@@ -17,7 +17,7 @@ Some general things I learned while putting this together:
 - **CPU** — barely matters for inference unless you're offloading layers to system RAM. X3D chips are good enough for single channel memory setups.
 - **GPUs** — blower cards are better than open-air for density. They run louder and hotter but you can stack more of them. Consumer RTX cards have big transient power spikes so leave headroom in your PSU budget.
 - **Motherboard** — slower PCIe lanes (x4, x1) don't really hurt inference performance once the model is loaded. On AM5, only use two RAM slots (A2+B2). Populating all four tanks your memory speed.
-- **Power supply** — do not cheap out on this. Keep total system draw under 60% of rated wattage. Get fully modular. Never mix cables between different PSUs. You can use multiple lower wattage PSUs with a splitter if needed, but never plug a component with cables from different PSUs. Gold, Platinum, Titanium are efficiency ratings — stick with Gold or better.
+- **Power supply** — do not cheap out on this. Keep total system draw under 60% of rated wattage. Get fully modular. Never mix cables between different PSUs. You can use multiple lower wattage PSUs with a [splitter](https://www.amazon.com/Qaoquda-Power-Supply-Adapter-Motherboard/dp/B08XP78NCR?s=electronics) if needed, but never plug a component with cables from different PSUs. Gold, Platinum, Titanium are efficiency ratings — stick with Gold or better.
 
 ---
 
@@ -31,7 +31,7 @@ This setup is for inference only, not training. The only metric I optimized for 
 
 ### CPU
 
-**AMD Ryzen 5 7500X3D** · $299 (Microcenter bundle)
+**AMD Ryzen 5 7500X3D** · $299 ([Microcenter bundle](https://www.microcenter.com/product/5007290/amd-ryzen-5-7500x3d,-msi-b850m-vc-pro-wifi-am5,-gskill-flare-x5-series-16gb-ddr5-6000,-computer-build-bundle))
 
 65W TDP, 6 cores / 12 threads, 96MB L3 cache. The bundle comes with single channel RAM but the huge L3 cache on X3D chips makes up for it. The iGPU is useful for debugging when all discrete GPUs are in headless compute mode.
 
@@ -43,7 +43,7 @@ One came with the CPU bundle, bought the other separately. RAM prices are awful 
 
 ### GPU 1
 
-**NVIDIA RTX 3080 20GB GDDR6X** · $599 (eBay)
+**NVIDIA RTX 3080 20GB GDDR6X** · $599 ([eBay](https://ebay.us/m/3dkNgJ))
 
 2U blower card from China. **320W TDP** with transient spikes up to **450–500W**.
 Ampere generation.
@@ -51,7 +51,7 @@ Solid card for mid-size models.
 
 ### GPU 2
 
-**NVIDIA Tesla V100 SXM2+PCIe 32GB HBM2** · $750 (eBay)
+**NVIDIA Tesla V100 SXM2+PCIe 32GB HBM2** · $750 ([eBay](https://ebay.us/m/WXVkux))
 
 Custom mod where someone took an SXM2 server module and put it on a PCIe board with a blower cooler.
 Volta architecture from 2017 so it misses some newer software features, but at **~$23/GB of VRAM** it's the cheapest high-bandwidth memory you can get.
@@ -59,7 +59,7 @@ HBM2 bandwidth actually beats some modern RTX cards.
 
 ### Motherboard
 
-**MSI B850 Gaming Plus** · $150 (Amazon)
+**MSI B850 Gaming Plus** · $150 ([Amazon](https://www.amazon.com/B850-Gaming-Plus-V1-Motherboard/dp/B0FBT9DYSB))
 
 Can fit three GPUs which leaves room for one more.
 
@@ -69,13 +69,13 @@ Two 1TB NVMe SSDs I already had, plus a used 4TB enterprise HDD for ~$65.
 
 ### Power Supply
 
-**Montech Century II 1200W 80+ Gold** · $120
+**Montech Century II 1200W 80+ Gold** · $120 ([Amazon](https://www.amazon.com/MONTECH-Century-II-High-End-Cybenetics/dp/B0F3XV451X?s=electronics))
 
 Fully modular. Enough headroom for current setup plus one more GPU.
 
 ### Case
 
-**Corsair 5000D RS** · $100–120
+**Corsair 5000D RS** · $100–120 ([Amazon](https://www.amazon.com/CORSAIR-Frame-Modular-Airflow-Mid-Tower/dp/B0F3XMTVLV?s=electronics))
 
 Five preinstalled 140mm fans, eight expansion slots, fits E-ATX.
 Massive upgrade from the old Q300L.
@@ -98,7 +98,7 @@ There's room for one more GPU. Here's what I'm looking at, ordered by how likely
 4. **Tesla A100 80GB** ($6-7k) - needs custom SXM4 mounting and cooling, technically best $/GB
 5. **RTX 6000 Blackwell 96GB** ($8.8-10k) - the dream
 
-For the PSU, I'd go with a Seasonic PRIME PX-1600 ($410, 12 year warranty) or the Noctua Edition TX-1600 ($660) if I want to go all in on silence.
+For the PSU, I'd go with a [Seasonic PRIME PX-1600](https://www.amazon.com/Seasonic-PX-1600-Platinum-Warranty-SSR-1600PD2/dp/B0C57132H5) ($410, 12 year warranty) or the [Noctua Edition TX-1600](https://www.amazon.com/Seasonic-TX-1600-Noctua-Ultra-Quiet-Efficiency/dp/B0DMW5F3GG/) ($660) if I want to go all in on silence.
 
 ---
 
