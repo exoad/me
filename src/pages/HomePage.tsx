@@ -2,7 +2,8 @@ import { strings, featuredProjects, projects } from "../data/shared.ts";
 import SEO from "../components/SEO.tsx";
 import { SiGithub, SiLinkedin, SiX } from "react-icons/si";
 import { MdOutlineArrowOutward } from "react-icons/md";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { BlogPostData, loadAllBlogPosts } from "../utils/markdown";
 
 function NameCard() {
 	// Core Gruvbox colors: red, green, yellow, blue - randomly selected on load
@@ -140,6 +141,11 @@ function ContentSections() {
 	const allOtherProjects = projects.filter(
 		(p) => !p.featured && p.title !== "Drosk" && p.title !== "bibo",
 	);
+	const [latestPosts, setLatestPosts] = useState<BlogPostData[]>([]);
+
+	useEffect(() => {
+		loadAllBlogPosts().then(posts => setLatestPosts(posts)).catch(() => {});
+	}, []);
 
 	return (
 		<div className="flex flex-col gap-24">
@@ -199,6 +205,52 @@ function ContentSections() {
 					<div className="border-b border-bg2 mt-6" />
 				</section>
 			)}
+
+			<section className="max-w-2xl">
+				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
+					Blog
+				</h2>
+				<a
+					href="/blog"
+					className="block group transition-all duration-300 hover:opacity-70"
+				>
+					<h3 className="text-2xl sm:text-3xl font-bold font-sans text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
+						{strings.pages.blog.title}
+					</h3>
+					<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
+						{strings.pages.blog.description}
+					</p>
+				</a>
+				{latestPosts.length > 0 && (
+					<div className="mt-6 flex flex-col gap-4">
+						{latestPosts.slice(0, 2).map((post) => (
+							<a
+								key={post.slug}
+								href={"/blog/" + post.slug}
+								className="group transition-all duration-300"
+							>
+								<div className="flex items-center gap-2 mb-1">
+									<span className="text-fg4 text-xs font-sans">{post.date}</span>
+									<span className="text-fg4/50 text-xs">&middot;</span>
+									<span className="text-fg4 text-xs font-sans">
+										{post.tags.map((t: string) => "#" + t).join(" ")}
+									</span>
+								</div>
+								<h4 className="text-base font-sans text-fg2 group-hover:text-fg0 transition-colors duration-300">
+									{post.title}
+								</h4>
+							</a>
+						))}
+						<a
+							href="/blog"
+							className="inline-flex items-center gap-1 text-fg4 hover:text-fg2 text-xs font-sans transition duration-300"
+						>
+							view all posts <MdOutlineArrowOutward size={10} />
+						</a>
+					</div>
+				)}
+				<div className="border-b border-bg2 mt-6" />
+			</section>
 
 			<section>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-8">

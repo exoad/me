@@ -13,7 +13,6 @@ function formatDate(dateStr: string) {
   });
 }
 
-// Track visible photos with ability to unload
 function usePhotoVisibility() {
   const [visiblePhotos, setVisiblePhotos] = useState<Set<string>>(new Set());
   const observersRef = useRef<Map<string, IntersectionObserver>>(new Map());
@@ -21,7 +20,6 @@ function usePhotoVisibility() {
   const observePhoto = useCallback((id: string, element: HTMLElement | null) => {
     if (!element) return;
 
-    // Disconnect existing observer for this photo if any
     const existingObserver = observersRef.current.get(id);
     if (existingObserver) {
       existingObserver.disconnect();
@@ -34,7 +32,6 @@ function usePhotoVisibility() {
           if (entry.isIntersecting) {
             next.add(id);
           } else {
-            // Only unload if it's been loaded before and is now far off-screen
             if (entry.boundingClientRect.top > window.innerHeight * 2 || 
                 entry.boundingClientRect.bottom < -window.innerHeight * 2) {
               next.delete(id);
@@ -64,7 +61,6 @@ export default function PhotosPage() {
   const { visiblePhotos, observePhoto, cleanup } = usePhotoVisibility();
   const photoRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // Reset scroll position
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
     return () => cleanup();
@@ -74,7 +70,6 @@ export default function PhotosPage() {
     setLoadedImages(prev => ({ ...prev, [id]: true }));
   }, []);
 
-  // Split photos into columns for masonry-like effect
   const leftColumn = photos.filter((_, i) => i % 2 === 0);
   const rightColumn = photos.filter((_, i) => i % 2 === 1);
 
@@ -95,9 +90,7 @@ export default function PhotosPage() {
         onMouseEnter={() => setHoveredPhoto(photoId)}
         onMouseLeave={() => setHoveredPhoto(null)}
       >
-        {/* Image container with art frame style */}
         <div className="relative overflow-hidden bg-bg1 border border-bg2 hover:border-fg4 transition-colors duration-500">
-          {/* Loading state - only show when visible but not loaded */}
           {isVisible && !isLoaded && (
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-bg0">
               <div className="flex items-center gap-1">
@@ -108,8 +101,7 @@ export default function PhotosPage() {
               </div>
             </div>
           )}
-          
-          {/* Image - only render when visible */}
+
           {isVisible ? (
             <button
               onClick={() => window.open(photo.src, '_blank')}
@@ -130,8 +122,7 @@ export default function PhotosPage() {
                   transition: 'transform 0.5s ease-out'
                 }}
               />
-              
-              {/* Hover overlay with info */}
+
               <div 
                 className={`absolute inset-0 bg-bg0/80 flex flex-col justify-end p-4 transition-opacity duration-300 ${
                   isHovered ? 'opacity-100' : 'opacity-0'
@@ -151,7 +142,6 @@ export default function PhotosPage() {
               </div>
             </button>
           ) : (
-            /* Placeholder when not in view */
             <div className="w-full aspect-video bg-bg1 flex items-center justify-center">
               <div className="w-1.5 h-6 bg-fg4/20" />
             </div>
@@ -168,42 +158,36 @@ export default function PhotosPage() {
         description={strings.pages.photos.description}
         url="https://exoad.net/photos"
       />
-      
-      <div className="min-h-screen bg-bg0">
-        {/* Minimal header */}
-        <header className="border-b border-bg2">
-          <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-            <a 
-              href="/" 
-              className="text-fg4 hover:text-fg0 transition-colors duration-300 text-xs font-sans uppercase tracking-widest"
-            >
-              ← Back
-            </a>
-            <h1 className="text-lg font-playfair text-fg0">Photos</h1>
-            <div className="w-16"></div>
-          </div>
-        </header>
 
-        {/* Art grid layout */}
+      <div className="min-h-screen bg-bg0">
+        <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between border-b border-bg2">
+          <a 
+            href="/" 
+            className="text-fg4 hover:text-fg0 transition-colors duration-300 text-xs font-sans uppercase tracking-widest"
+          >
+            ← Back
+          </a>
+          <h1 className="text-lg font-playfair text-fg0">Photos</h1>
+          <div className="w-16"></div>
+        </div>
+
         <main className="py-12 px-6">
           <div className="max-w-6xl mx-auto">
-            {/* Intro */}
             <div className="mb-12 max-w-xl">
+              <h2 className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">Gallery</h2>
               <p className="text-fg3 text-sm font-sans leading-relaxed">
                 {strings.pages.photos.description}
               </p>
             </div>
+            <div className="border-b border-bg2 mb-12" />
 
-            {/* Two-column masonry grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Left column */}
               <div className="flex flex-col gap-4">
                 {leftColumn.map((photo, i) => (
                   <PhotoCard key={`left-${i}`} photo={photo} index={i * 2} />
                 ))}
               </div>
-              
-              {/* Right column - offset for masonry effect */}
+
               <div className="flex flex-col gap-4 md:mt-12">
                 {rightColumn.map((photo, i) => (
                   <PhotoCard key={`right-${i}`} photo={photo} index={i * 2 + 1} />
@@ -213,7 +197,6 @@ export default function PhotosPage() {
           </div>
         </main>
 
-        {/* Minimal footer */}
         <footer className="border-t border-bg2 py-8 px-6">
           <div className="max-w-6xl mx-auto flex justify-between items-center">
             <span className="text-fg4 text-[10px] font-sans">

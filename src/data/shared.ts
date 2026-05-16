@@ -20,7 +20,7 @@ import {
     SiSnapchat,
     SiPytorch,
 } from "react-icons/si";
-import type { TProject, TTimelineEntry, TTechnology } from "../types.d.ts";
+import type { TBlogPost, TProject, TTimelineEntry, TTechnology } from "../types.d.ts";
 
 export const technologies: Record<string, TTechnology> = {
     c: { name: "C", icon: SiC, color: "#a8b9cc" },
@@ -476,6 +476,24 @@ export const projects: TProject[] = [
     },
 ];
 
+
+export const blogPosts: TBlogPost[] = [
+    {
+        slug: "jackbox-server-setup",
+        title: "Building the Server That Powers bibo",
+        date: "2026-05-13",
+        displayDate: "May 13, 2026",
+        excerpt:
+            "A deep dive into the hardware setup, cost analysis, and design decisions behind my local LLM inference server — the machine that powers bibo.",
+        description:
+            "My setup is purely meant for running inference and not for any formal workflows (e.g. training) where stability is preferred. In my setup, I prefer effective GB of VRAM per $.",
+        tags: ["LLM", "Hardware", "bibo", "Local AI"],
+        featured: true,
+    },
+];
+
+export const featuredBlogPosts = blogPosts.filter((post) => post.featured);
+
 export const featuredProjects = projects.filter((project) => project.featured);
 
 export const strings = {
@@ -502,6 +520,7 @@ export const strings = {
         home: "HOME",
         about: "ABOUT",
         projects: "PROJECTS",
+        blog: "BLOG",
         photos: "PHOTOS",
         contact: "CONTACT",
         mobile_menu: {
@@ -602,6 +621,14 @@ export const strings = {
             title: "Under Construction",
             description:
                 "This page is being worked on, please check back later! :)",
+        },
+        blog: {
+            title: "Blog",
+            description: "Thoughts, writeups, and technical deep dives.",
+            all_posts: "All Posts",
+            read_more: "Read More",
+            back_to_blog: "Back to Blog",
+            reading_time: "min read",
         },
     },
 };

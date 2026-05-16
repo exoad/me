@@ -5,6 +5,11 @@ import { useLenis } from "./hooks/useLenis";
 const HomePage = lazy(() => import("./pages/HomePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PhotosPage = lazy(() => import("./pages/PhotosPage"));
+const BlogListPage = lazy(() => import("./pages/BlogListPage"));
+const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
+const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
 
 // Timing in milliseconds
 const LOADING_TIME = 1800;
@@ -98,11 +103,18 @@ function AppContent() {
 					willChange: showContent ? "auto" : "opacity, transform",
 				}}
 			>
-				<Routes>
-					<Route path="/" element={<HomePage />} />
-					<Route path="/photos" element={<PhotosPage />} />
-					<Route path="*" element={<NotFound />} />
-				</Routes>
+				<Suspense fallback={null}>
+					<Routes>
+						<Route path="/" element={<HomePage />} />
+						<Route path="/projects" element={<ProjectsPage />} />
+						<Route path="/about" element={<AboutPage />} />
+						<Route path="/contacts" element={<ContactPage />} />
+						<Route path="/photos" element={<PhotosPage />} />
+						<Route path="/blog" element={<BlogListPage />} />
+						<Route path="/blog/:slug" element={<BlogPostPage />} />
+						<Route path="*" element={<NotFound />} />
+					</Routes>
+				</Suspense>
 			</div>
 		</>
 	);

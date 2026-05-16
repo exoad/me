@@ -13,6 +13,7 @@ export default function MenuBar() {
                     { path: '/', label: strings.navigation.home },
                     // { path: '/about', label: strings.navigation.about },
                     { path: '/projects', label: strings.navigation.projects },
+                    { path: '/blog', label: strings.navigation.blog },
                     { path: '/photos', label: strings.navigation.photos },
                     { path: '/contacts', label: strings.navigation.contact }
                 ]} onNavigate={(path: string) => {

@@ -40,3 +40,14 @@ export interface TStalkEntry {
     city: string;
     state?: string;
 }
+
+export interface TBlogPost {
+    slug: string;
+    title: string;
+    date: string;
+    displayDate: string;
+    excerpt: string;
+    description: string;
+    tags: string[];
+    featured?: boolean;
+}

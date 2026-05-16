@@ -1,6 +1,7 @@
 @import url("./assets/fonts/fonts.css");
 @import "tailwindcss";
 @import "./styles/gruvbox-theme.css";
+@import "katex/dist/katex.min.css";
 
 /* ============================================
    LEGACY COLOR VARIABLES (for backward compatibility)
@@ -347,4 +348,147 @@ body {
     animation: none;
     transform: scaleY(1);
   }
+}
+
+/* Blog Content Styles */
+.blog-content {
+    color: var(--color-fg2);
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.blog-content h1 {
+    color: var(--color-fg0);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.blog-content h2 {
+    color: var(--color-fg0);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-bg2);
+}
+
+.blog-content h3 {
+    color: var(--color-fg1);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.blog-content h4 {
+    color: var(--color-fg2);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.blog-content p {
+    margin-bottom: 1.25rem;
+    line-height: 1.8;
+}
+
+.blog-content ul, .blog-content ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+}
+
+.blog-content li {
+    margin-bottom: 0.4rem;
+    line-height: 1.7;
+}
+
+.blog-content a {
+    color: var(--color-blue);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.blog-content a:hover {
+    color: var(--color-fg0);
+    text-decoration: underline;
+}
+
+.blog-content blockquote {
+    border-left: 2px solid var(--color-yellow);
+    padding: 0.5rem 1rem;
+    margin: 1.5rem 0;
+    color: var(--color-fg3);
+    background: var(--color-bg1);
+}
+
+.blog-content strong {
+    color: var(--color-blue);
+    font-weight: 600;
+}
+
+.blog-content h1 strong,
+.blog-content h2 strong,
+.blog-content h3 strong {
+    color: var(--color-yellow);
+}
+
+.blog-content blockquote strong {
+    color: var(--color-green);
+}
+
+.blog-content li strong {
+    color: var(--color-blue);
+}
+
+.blog-content em {
+    color: var(--color-fg3);
+}
+
+.blog-content code {
+    background: var(--color-bg1);
+    padding: 0.15rem 0.4rem;
+    font-size: 0.9rem;
+    border-radius: 3px;
+}
+
+.blog-content pre {
+    background: var(--color-bg1);
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    border-radius: 4px;
+}
+
+.blog-content pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.85rem;
+}
+
+.blog-content hr {
+    border: none;
+    border-top: 1px solid var(--color-bg2);
+    margin: 2.5rem 0;
+}
+
+.blog-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem 0;
+}
+
+/* KaTeX overrides for dark theme */
+.blog-content .katex {
+    font-size: 1.1em;
+}
+
+.blog-content .katex-display {
+    margin: 1.25rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
 }

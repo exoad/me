@@ -1,10 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { plugin } from "vite-plugin-markdown";
+
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    plugin({
+      include: 'src/content/blog/**/*.md',
+      mode: ['markdown'],
+    }),
   ],
   build: {
     // cssMinify: 'lightningcss',
