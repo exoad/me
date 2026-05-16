@@ -8,7 +8,7 @@ featured: true
 
 This is the machine that runs bibo. I built it to do local LLM inference without touching any cloud APIs. Here's the full parts list, the reasoning behind each choice, and what I'd do differently.
 
-![GPUs and parts laid out on the table before assembly](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img1.jpg)
+![Front view of the fully assembled server build](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img3.jpeg)
 
 ## Quick Notes
 
@@ -56,6 +56,8 @@ Solid card for mid-size models.
 Custom mod where someone took an SXM2 server module and put it on a PCIe board with a blower cooler.
 Volta architecture from 2017 so it misses some newer software features, but at **~$23/GB of VRAM** it's the cheapest high-bandwidth memory you can get.
 HBM2 bandwidth actually beats some modern RTX cards.
+
+![Both GPUs and parts laid out on the table before assembly](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img1.jpg)
 
 ### Motherboard
 
