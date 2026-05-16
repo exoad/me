@@ -1,4 +1,5 @@
 import { marked, Tokens } from "marked";
+import ICONS from "./icons.json";
 
 export interface TocEntry { id: string; text: string; level: number; }
 
@@ -20,6 +21,10 @@ function slugFromPath(path:string):string{return path.split("/").pop()!.replace(
 function extractAttributes(mod :MarkdownModule):Record<string,unknown>{if(mod.attributes)return mod.attributes;if(mod.frontmatter)return mod.frontmatter;return{}}
 
 function textToSlug(text:string):string{return text.toLowerCase().replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').substring(0,50)}
+
+// Phosphor icon extension: replaces :cpu:, :memory:, etc with inline SVG during build
+const iconExtension={name:'phosphor-icons',level:'inline' as const,start(src:string){return src.indexOf(':')},tokenizer(src:string){const m=/^:(cpu|memory|gpu|storage|psu):/.exec(src);if(m&&ICONS[m[1]]){return{type:'html',raw:m[1]+'-icon',text:ICONS[m[1]]}}},renderer(tok:any){return tok.text||''}}
+marked.use({extensions:[iconExtension]})
 
 // Custom marked renderer that adds id attributes to headings
 // matching the same slug logic used in generateToc

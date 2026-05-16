@@ -65,7 +65,7 @@ Before buying anything, I set some ground rules:
 >
 > **Power draw at full load:** ~$1.40/day on Pepco
 
-### CPU
+### :cpu: CPU
 
 **AMD Ryzen 5 7500X3D** · $299 ([Microcenter bundle](https://www.microcenter.com/product/5007290/amd-ryzen-5-7500x3d,-msi-b850m-vc-pro-wifi-am5,-gskill-flare-x5-series-16gb-ddr5-6000,-computer-build-bundle))
 
@@ -75,13 +75,13 @@ For pure inference workloads the CPU barely matters unless you're offloading lay
 
 The integrated GPU turned out to be genuinely useful: when both discrete GPUs are in headless compute mode, having an iGPU makes physical debugging much less painful.
 
-### RAM
+### :memory: RAM
 
 **2x 16GB G.Skill Flare X5 DDR5-6000** · $169 each
 
 One stick came with the CPU bundle; bought the second separately. On AM5 platforms you want exactly two sticks in slots A2+B2. Populating all four tanks your memory clock speeds significantly.
 
-### GPU 1: RTX 3080 (20GB)
+### :gpu: GPU 1: RTX 3080 (20GB)
 
 **NVIDIA RTX 3080 20GB GDDR6X** · $599 ([eBay](https://ebay.us/m/3dkNgJ))
 
@@ -91,7 +91,7 @@ Chinese-market blower card pulled from a server chassis and resold on eBay. Blow
 
 Ampere generation means solid software support across every inference framework worth using today.
 
-### GPU 2: Tesla V100 (32GB)
+### :gpu: GPU 2: Tesla V100 (32GB)
 
 **NVIDIA Tesla V100 SXM2+PCIe 32GB HBM2** · $750 ([eBay](https://ebay.us/m/WXVkux))
 
@@ -109,11 +109,11 @@ The HBM2 memory bandwidth actually beats some modern RTX cards in raw throughput
 
 Can fit three 2U GPUs, which leaves room for one more. Slower PCIe lanes (x4, x1) don't meaningfully hurt inference performance once the model is loaded into VRAM: the bottleneck is memory bandwidth, not bus speed.
 
-### Storage
+### :storage: Storage
 
 Two 1TB NVMe SSDs I already had, plus a used 4TB enterprise HDD (~$65). Model files are large but they're loaded once at startup and cached in VRAM; storage speed barely matters after that.
 
-### Power Supply
+### :psu: Power Supply
 
 **Montech Century II 1200W 80+ Gold** · $120 ([Amazon](https://www.amazon.com/MONTECH-Century-II-High-End-Cybenetics/dp/B0F3XV451X?s=electronics))
 
