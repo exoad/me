@@ -10,6 +10,7 @@ const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
+const BiboPage = lazy(() => import("./pages/BiboPage"));
 
 // Timing in milliseconds
 const LOADING_TIME = 1800;
@@ -109,6 +110,7 @@ function AppContent() {
 						<Route path="/projects" element={<ProjectsPage />} />
 						<Route path="/about" element={<AboutPage />} />
 						<Route path="/contacts" element={<ContactPage />} />
+						<Route path="/bibo" element={<BiboPage />} />
 						<Route path="/photos" element={<PhotosPage />} />
 						<Route path="/blog" element={<BlogListPage />} />
 						<Route path="/blog/:slug" element={<BlogPostPage />} />

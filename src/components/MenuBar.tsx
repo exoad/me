@@ -7,7 +7,7 @@ export default function MenuBar() {
     const navigate = useNavigate();
     return (
         <header className="w-full fixed top-0 z-50 backdrop-blur-md bg-gb-bg0/70 border-b border-gb-bg3/50 brightness-125">
-            <div className="flex justify-between items-center" style={{ padding: '0.25rem 4rem' }}>
+            <div className="flex justify-between items-center px-4 sm:px-8 md:px-16 lg:px-24 py-1">
                 <NameToggle names={strings.header.names_funny} />
                 <Navigation items={[
                     { path: '/', label: strings.navigation.home },

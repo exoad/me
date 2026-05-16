@@ -25,7 +25,7 @@ export default function BlogToc({ entries }: { entries: TocEntry[] }) {
     if (entries.length === 0) return null;
 
     return (
-        <nav className="fixed top-24 left-8 w-48 hidden xl:block z-10">
+        <nav className="fixed top-24 left-4 lg:left-8 w-40 lg:w-48 hidden lg:block z-10">
             <div className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">
                 On this page
             </div>
