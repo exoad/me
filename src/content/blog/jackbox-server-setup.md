@@ -1,107 +1,128 @@
 ---
-title: "Building the Server That Powers bibo"
+title: "Jackbox: A $1,700 Local LLM Inference Server"
 date: "2026-05-13"
-excerpt: "A deep dive into the hardware setup, cost analysis, and design decisions behind my local LLM inference server — the machine that powers bibo."
+excerpt: "How I built a dual-GPU inference server for running local LLMs — the hardware decisions, cost breakdown, and what I learned along the way."
 tags: ["LLM", "Hardware", "bibo", "Local AI"]
 featured: true
 ---
 
-This is the machine that runs bibo. I built it to do local LLM inference without touching any cloud APIs. Here's the full parts list, the reasoning behind each choice, and what I'd do differently.
+I wanted to run large language models locally. No cloud APIs, no per-token pricing, no sending my data to someone else's computer. Just raw compute sitting in my apartment.
 
-![Front view of the fully assembled server build](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img3.jpeg)
+The result is Jackbox — a dual-GPU inference server built for about $1,700. It runs bibo, my personal AI agent, entirely on local hardware. Here's how I put it together and why I made each choice.
 
-## Quick Notes
+![Front view of Jackbox](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img3.jpeg)
 
-Some general things I learned while putting this together:
+## Design Constraints
 
-- **CPU** — barely matters for inference unless you're offloading layers to system RAM. X3D chips are good enough for single channel memory setups.
-- **GPUs** — blower cards are better than open-air for density. They run louder and hotter but you can stack more of them. Consumer RTX cards have big transient power spikes so leave headroom in your PSU budget.
-- **Motherboard** — slower PCIe lanes (x4, x1) don't really hurt inference performance once the model is loaded. On AM5, only use two RAM slots (A2+B2). Populating all four tanks your memory speed.
-- **Power supply** — do not cheap out on this. Keep total system draw under 60% of rated wattage. Get fully modular. Never mix cables between different PSUs. You can use multiple lower wattage PSUs with a [splitter](https://www.amazon.com/Qaoquda-Power-Supply-Adapter-Motherboard/dp/B08XP78NCR?s=electronics) if needed, but never plug a component with cables from different PSUs. Gold, Platinum, Titanium are efficiency ratings — stick with Gold or better.
+Before buying anything, I set some ground rules:
 
-## Current Build
+**Inference only.** This machine doesn't train models. Training needs stability guarantees and ECC memory that would have doubled the budget for marginal benefit in my use case.
 
-This setup is for inference only, not training. The only metric I optimized for was effective GB of VRAM per dollar.
+**Maximize VRAM per dollar.** The single most important metric. More VRAM means bigger models and larger context windows. Everything else — CPU speed, RAM bandwidth, storage IOPS — is secondary.
 
-> **Raw cost:** ~$1,700 (not counting shipping, customs, taxes)
->
-> **Power at full load:** ~$1.40/day on Pepco
+**Leave room to grow.** Whatever platform I chose needed at least one empty slot for a future GPU upgrade without rebuilding from scratch.
+
+These constraints shaped every decision that followed.
+
+## The Build
+
+> **Total cost:** ~$1,700 (excluding shipping and taxes)
+> **Power draw at full load:** ~$1.40/day on Pepco
 
 ### CPU
 
 **AMD Ryzen 5 7500X3D** · $299 ([Microcenter bundle](https://www.microcenter.com/product/5007290/amd-ryzen-5-7500x3d,-msi-b850m-vc-pro-wifi-am5,-gskill-flare-x5-series-16gb-ddr5-6000,-computer-build-bundle))
 
-65W TDP, 6 cores / 12 threads, 96MB L3 cache. The bundle comes with single channel RAM but the huge L3 cache on X3D chips makes up for it. The iGPU is useful for debugging when all discrete GPUs are in headless compute mode.
+65W TDP · 6 cores / 12 threads · 96MB L3 cache
+
+For pure inference workloads the CPU barely matters unless you're offloading layers to system RAM — which you shouldn't be doing if you planned your VRAM budget correctly. I picked this chip because Microcenter bundles it with a motherboard at a steep discount, and the massive L3 cache helps compensate for the single-channel RAM configuration that comes with the bundle.
+
+The integrated GPU turned out to be genuinely useful: when both discrete GPUs are in headless compute mode, having an iGPU makes physical debugging much less painful.
 
 ### RAM
 
 **2x 16GB G.Skill Flare X5 DDR5-6000** · $169 each
 
-One came with the CPU bundle, bought the other separately. RAM prices are awful right now.
+One stick came with the CPU bundle; bought the second separately. On AM5 platforms you want exactly two sticks in slots A2+B2 — populating all four tanks your memory clock speeds significantly. RAM prices are awful right now but there's no way around it.
 
-### GPU 1
+### GPU 1: RTX 3080 (20GB)
 
 **NVIDIA RTX 3080 20GB GDDR6X** · $599 ([eBay](https://ebay.us/m/3dkNgJ))
 
-2U blower card from China. **320W TDP** with transient spikes up to **450–500W**.
-Ampere generation.
-Solid card for mid-size models.
+320W TDP with transient spikes up to **450–500W**
 
-### GPU 2
+This is a Chinese-market blower card pulled from a server chassis and resold on eBay. Blower cards are louder and run hotter than open-air designs, but they exhaust heat out the back of the case instead of recirculating it inside — critical when you're stacking multiple GPUs inches apart.
+
+Ampere generation means solid software support across every inference framework worth using today.
+
+### GPU 2: Tesla V100 (32GB)
 
 **NVIDIA Tesla V100 SXM2+PCIe 32GB HBM2** · $750 ([eBay](https://ebay.us/m/WXVkux))
 
-Custom mod where someone took an SXM2 server module and put it on a PCIe board with a blower cooler.
-Volta architecture from 2017 so it misses some newer software features, but at **~$23/GB of VRAM** it's the cheapest high-bandwidth memory you can get.
-HBM2 bandwidth actually beats some modern RTX cards.
+300W TDP
 
-![Both GPUs and parts laid out on the table before assembly](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img1.jpg)
+This one's interesting. It's a custom mod where someone took an SXM2 server module and mounted it onto a PCIe board with a blower cooler. Volta architecture from 2017 means it misses some newer software features like FlashAttention-2, but at **~$23/GB of VRAM** it's the cheapest high-bandwidth memory you can get your hands on.
+
+The HBM2 memory bandwidth actually beats some modern RTX cards in raw throughput. For batched inference workloads that are memory-bandwidth-bound rather than compute-bound, this card punches well above its price point.
+
+![Both GPUs laid out before assembly](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img1.jpg)
 
 ### Motherboard
 
 **MSI B850 Gaming Plus** · $150 ([Amazon](https://www.amazon.com/B850-Gaming-Plus-V1-Motherboard/dp/B0FBT9DYSB))
 
-Can fit three GPUs which leaves room for one more.
+Can fit three 2U GPUs, which leaves room for one more. Slower PCIe lanes (x4, x1) don't meaningfully hurt inference performance once the model is loaded into VRAM — the bottleneck is memory bandwidth, not bus speed.
 
 ### Storage
 
-Two 1TB NVMe SSDs I already had, plus a used 4TB enterprise HDD for ~$65.
+Two 1TB NVMe SSDs I already had, plus a used 4TB enterprise HDD (~$65). Model files are large but they're loaded once at startup and cached in VRAM; storage speed barely matters after that.
 
 ### Power Supply
 
 **Montech Century II 1200W 80+ Gold** · $120 ([Amazon](https://www.amazon.com/MONTECH-Century-II-High-End-Cybenetics/dp/B0F3XV451X?s=electronics))
 
-Fully modular. Enough headroom for current setup plus one more GPU.
+Fully modular. Enough headroom for the current setup plus one more GPU. A few rules I follow with PSUs: keep total system draw under 60% of rated wattage to handle transient spikes from consumer RTX cards, never mix cables between different PSUs (they're not standardized across brands), and if you need more wattage than a single unit can provide, use multiple lower-wattage PSUs with a [splitter](https://www.amazon.com/Qaoquda-Power-Supply-Adapter-Motherboard/dp/B08XP78NCR?s=electronics) rather than daisy-chaining.
 
 ### Case
 
 **Corsair 5000D RS** · $100–120 ([Amazon](https://www.amazon.com/CORSAIR-Frame-Modular-Airflow-Mid-Tower/dp/B0F3XMTVLV?s=electronics))
 
-Five preinstalled 140mm fans, eight expansion slots, fits E-ATX.
-Massive upgrade from the old Q300L.
+Five preinstalled 140mm fans, eight expansion slots, fits E-ATX. Massive upgrade from the old Q300L — that thing was genuinely a fire hazard with two GPUs crammed inside.
 
 ### Software
 
-Ubuntu 24.04 LTS Server, headless.
+Ubuntu 24.04 LTS Server, headless. Nothing exotic here — just a clean Linux install with NVIDIA container toolkit for Docker-based inference serving.
 
-![The fully assembled server build shot through tempered glass](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img2.jpg)
+![Jackbox through tempered glass](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img2.jpg)
 
-## Future Upgrades
+## What's Next
 
+There's room for one more GPU. Here's what I'm looking at, ordered by how likely I am to actually pull the trigger:
 
+1. **RTX 5000 Blackwell 48GB** ($4–5k) — most modern professional option with full software support
+2. **RTX 4090 48GB Mod** (~$4.5k) — best $/GB sweet spot, but 450W TDP means I'd need to upgrade to a 1500W+ PSU
+3. **Quadro RTX 8000 48GB** ($2–3.5k) — cheapest path to 48GB but Turing is getting old
+4. **Tesla A100 SXM4 80GB** ($6–7k) — technically best $/GB of VRAM, but requires custom mounting and cooling
+5. **RTX 6000 Blackwell 96GB** ($8.8–10k) — the dream card, probably not happening anytime soon
 
-There's room for one more GPU. Here's what I'm looking at, ordered by how likely I am to actually buy one:
+When I do add that third GPU, the PSU will need an upgrade too. Top contenders are the [Seasonic PRIME PX-1600](https://www.amazon.com/Seasonic-PX-1600-Platinum-Warranty-SSR-1600PD2/dp/B0C57132H5) ($410, backed by a ridiculous 12-year warranty) or the [Noctua Edition TX-1600](https://www.amazon.com/Seasonic-TX-1600-Noctua-Ultra-Quiet-Efficiency/dp/B0DMW5F3GG/) ($660) if silence becomes a priority.
 
-1. **RTX 5000 Blackwell 48GB** ($4-5k) - most modern professional option
-2. **RTX 4090 48GB Mod** (~$4.5k) - best $/GB sweet spot, but 450W TDP means I'd need 1500W+ total
-3. **Quadro RTX 8000 48GB** ($2-3.5k) - cheapest way to 48GB but Turing is old
-4. **Tesla A100 80GB** ($6-7k) - needs custom SXM4 mounting and cooling, technically best $/GB
-5. **RTX 6000 Blackwell 96GB** ($8.8-10k) - the dream
+## Lessons Learned
 
-For the PSU, I'd go with a [Seasonic PRIME PX-1600](https://www.amazon.com/Seasonic-PX-1600-Platinum-Warranty-SSR-1600PD2/dp/B0C57132H5) ($410, 12 year warranty) or the [Noctua Edition TX-1600](https://www.amazon.com/Seasonic-TX-1600-Noctua-Ultra-Quiet-Efficiency/dp/B0DMW5F3GG/) ($660) if I want to go all in on silence.
+Some things I'd tell my past self before starting this build:
 
+- **Blower cards over open-air.** For multi-GPU density it's not even close. Yes they're louder and hotter individually, but they don't cook each other.
+- **Don't cheap out on the power supply.** Consumer RTX cards have transient spikes that can trip OCP on underspecced units.
+- **Two RAM sticks max on AM5.** Populating all four slots drops your memory clock significantly.
+- **The Q300L is too small for two GPUs.** It was genuinely a fire hazard and I should have upgraded the case first.
 
-## Previous Parts
+### Previous Parts (Retired)
 
-- **Case:** Cooler Master Q300L ($34). Way too small. Genuinely a fire hazard with two GPUs in it.
-- **PSU:** Rosewill 750W 80+ Gold ($70). Fine for one GPU, not enough for two with transient spikes.
+| Part | Replacement Reason |
+|---|---|
+| Cooler Master Q300L case ($34) | Way too small for dual GPUs |
+| Rosewill Photon Gold PSU ($70)| Not enough wattage headroom |
+
+---
+
+Jackbox isn't done yet — there's still an empty PCIe slot waiting for its third GPU. But right now it runs bibo reliably every day without touching a cloud API, and that was always the point.
