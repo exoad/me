@@ -38,7 +38,7 @@ export default function BlogToc({ entries }: { entries: TocEntry[] }) {
                                 entry.level === 2 ? 'pl-0' : entry.level === 3 ? 'pl-3' : 'pl-6'
                             } ${
                                 activeId === entry.id
-                                    ? 'text-yellow'
+                                    ? 'text-yellow font-bold'
                                     : 'text-fg4'
                             }`}
                             onClick={(e) => {

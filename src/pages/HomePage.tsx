@@ -208,7 +208,7 @@ function ContentSections() {
 
 			<section className="max-w-2xl">
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
-					Blog
+						Writing
 				</h2>
 				<a
 					href="/blog"

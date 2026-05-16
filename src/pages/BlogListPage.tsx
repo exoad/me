@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { strings } from "../data/shared";
 import { BlogPostData, loadAllBlogPosts } from '../utils/markdown';
-import { MdOutlineArrowOutward } from 'react-icons/md';
+import { MdOutlineArrowOutward, MdArrowBack } from 'react-icons/md';
 
 // Loading indicator colors (excluding red) - green, yellow, blue
 const LOADING_COLORS = [
@@ -74,6 +74,12 @@ export default function BlogListPage() {
             />
             <div className="min-h-screen bg-bg0">
                 <div className="max-w-2xl mx-auto px-6 py-12">
+                    {/* Back to home */}
+                    <button onClick={() => navigate('/')} className="flex items-center gap-2 text-fg4 hover:text-yellow transition-colors duration-300 text-sm font-sans mb-12 group">
+                        <MdArrowBack size={16} />
+                        Home
+                    </button>
+
                     {/* Minimal header like landing page */}
                     <div className="mb-16">
                         <h2 className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">Writing</h2>

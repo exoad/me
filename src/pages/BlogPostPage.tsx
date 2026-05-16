@@ -58,6 +58,8 @@ export default function BlogPostPage() {
             <div className="min-h-screen bg-bg0">
                 {/* Flex container: content + sidebar TOC */}
                 <div className="max-w-5xl mx-auto px-6 py-12 lg:flex lg:gap-8">
+                    {/* Sidebar TOC - left side on large screens */}
+                    <BlogToc entries={post.toc} />
                     {/* Main content column */}
                     <article className="max-w-2xl min-w-0 blog-post">
                         {/* Back button */}
@@ -84,9 +86,6 @@ export default function BlogPostPage() {
                             dangerouslySetInnerHTML={{ __html: post.content }}
                         />
                     </article>
-
-                    {/* Sidebar TOC - positioned beside content on large screens */}
-                    <BlogToc entries={post.toc} />
                 </div>
             </div>
         </>
