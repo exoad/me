@@ -427,7 +427,7 @@ body {
 }
 
 .blog-content strong {
-    color: var(--color-blue);
+    color: var(--color-yellow);
     font-weight: 600;
 }
 
