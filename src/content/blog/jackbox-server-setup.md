@@ -8,7 +8,7 @@ featured: true
 
 This is the machine that runs bibo. I built it to do local LLM inference without touching any cloud APIs. Here's the full parts list, the reasoning behind each choice, and what I'd do differently.
 
-![GPUs and parts laid out on the table before assembly](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img1.jpg)
+![GPUs and parts laid out on the table before assembly](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/w=800/blog/server-build/img1.jpg)
 
 ## Quick Notes
 
@@ -26,6 +26,7 @@ Some general things I learned while putting this together:
 This setup is for inference only, not training. The only metric I optimized for was effective GB of VRAM per dollar.
 
 > **Raw cost:** ~$1,700 (not counting shipping, customs, taxes)
+>
 > **Power at full load:** ~$1.40/day on Pepco
 
 ### CPU
@@ -83,7 +84,7 @@ Massive upgrade from the old Q300L.
 
 Ubuntu 24.04 LTS Server, headless.
 
-![The fully assembled server build shot through tempered glass](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img2.jpg)
+![The fully assembled server build shot through tempered glass](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/w=800/blog/server-build/img2.jpg)
 
 ---
 

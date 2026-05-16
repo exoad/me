@@ -477,9 +477,11 @@ body {
 }
 
 .blog-content img {
-    max-width: 100%;
+    max-width: 66%;
     height: auto;
-    margin: 1.5rem 0;
+    margin: 1.5rem auto;
+    display: block;
+    border-radius: 4px;
 }
 
 /* KaTeX overrides for dark theme */
