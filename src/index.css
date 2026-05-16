@@ -370,10 +370,8 @@ body {
     color: var(--color-fg0);
     font-size: 1.5rem;
     font-weight: 600;
-    margin-top: 2.5rem;
+    margin-top: 2rem;
     margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--color-bg2);
 }
 
 .blog-content h3 {
@@ -382,8 +380,8 @@ body {
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    margin-top: 2rem;
-    margin-bottom: 0.25rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.15rem;
 }
 
 .blog-content h4 {
@@ -395,7 +393,7 @@ body {
 }
 
 .blog-content p {
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
     line-height: 1.8;
 }
 
@@ -476,11 +474,11 @@ body {
 .blog-content hr {
     border: none;
     border-top: 1px solid var(--color-bg2);
-    margin: 2.5rem 0;
+    margin: 1.5rem 0;
 }
 
 .blog-content img {
-    max-width: 66%;
+    max-width: 85%;
     height: auto;
     margin: 1.5rem auto;
     display: block;

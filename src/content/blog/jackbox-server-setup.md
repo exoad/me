@@ -19,8 +19,6 @@ Some general things I learned while putting this together:
 - **Motherboard** — slower PCIe lanes (x4, x1) don't really hurt inference performance once the model is loaded. On AM5, only use two RAM slots (A2+B2). Populating all four tanks your memory speed.
 - **Power supply** — do not cheap out on this. Keep total system draw under 60% of rated wattage. Get fully modular. Never mix cables between different PSUs. You can use multiple lower wattage PSUs with a [splitter](https://www.amazon.com/Qaoquda-Power-Supply-Adapter-Motherboard/dp/B08XP78NCR?s=electronics) if needed, but never plug a component with cables from different PSUs. Gold, Platinum, Titanium are efficiency ratings — stick with Gold or better.
 
----
-
 ## Current Build
 
 This setup is for inference only, not training. The only metric I optimized for was effective GB of VRAM per dollar.
@@ -88,9 +86,9 @@ Ubuntu 24.04 LTS Server, headless.
 
 ![The fully assembled server build shot through tempered glass](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img2.jpg)
 
----
-
 ## Future Upgrades
+
+
 
 There's room for one more GPU. Here's what I'm looking at, ordered by how likely I am to actually buy one:
 
@@ -102,7 +100,6 @@ There's room for one more GPU. Here's what I'm looking at, ordered by how likely
 
 For the PSU, I'd go with a [Seasonic PRIME PX-1600](https://www.amazon.com/Seasonic-PX-1600-Platinum-Warranty-SSR-1600PD2/dp/B0C57132H5) ($410, 12 year warranty) or the [Noctua Edition TX-1600](https://www.amazon.com/Seasonic-TX-1600-Noctua-Ultra-Quiet-Efficiency/dp/B0DMW5F3GG/) ($660) if I want to go all in on silence.
 
----
 
 ## Previous Parts
 
