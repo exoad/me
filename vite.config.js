@@ -82,5 +82,5 @@ export default defineConfig({
     cssCodeSplit: true,
     brotliSize: false
   },
-  base: "./",
+  base: "/",
 });
