@@ -12,21 +12,10 @@ This is the machine that runs bibo. I built it to do local LLM inference without
 
 Some general things I learned while putting this together:
 
-### CPU
-
-CPU barely matters for inference unless you're offloading layers to system RAM. X3D chips are good enough for single channel memory setups.
-
-### GPUs
-
-Blower cards are better than open-air for density. They run louder and hotter but you can stack more of them. Consumer RTX cards have big transient power spikes so leave headroom in your PSU budget.
-
-### Motherboard
-
-Slower PCIe lanes (x4, x1) don't really hurt inference performance once the model is loaded. On AM5, only use two RAM slots (A2+B2). Populating all four tanks your memory speed.
-
-### Power supply
-
-Do not cheap out on this. Keep total system draw under 60% of the rated wattage. Get fully modular. Never mix cables between different PSUs. You can use multiple lower wattage PSUs with a splitter if needed, but never plug a component with cables from different PSUs. Gold, Platinum, Titanium are efficiency ratings. Stick with Gold or better.
+- **CPU** — barely matters for inference unless you're offloading layers to system RAM. X3D chips are good enough for single channel memory setups.
+- **GPUs** — blower cards are better than open-air for density. They run louder and hotter but you can stack more of them. Consumer RTX cards have big transient power spikes so leave headroom in your PSU budget.
+- **Motherboard** — slower PCIe lanes (x4, x1) don't really hurt inference performance once the model is loaded. On AM5, only use two RAM slots (A2+B2). Populating all four tanks your memory speed.
+- **Power supply** — do not cheap out on this. Keep total system draw under 60% of rated wattage. Get fully modular. Never mix cables between different PSUs. You can use multiple lower wattage PSUs with a splitter if needed, but never plug a component with cables from different PSUs. Gold, Platinum, Titanium are efficiency ratings — stick with Gold or better.
 
 ---
 
@@ -34,41 +23,59 @@ Do not cheap out on this. Keep total system draw under 60% of the rated wattage.
 
 This setup is for inference only, not training. The only metric I optimized for was effective GB of VRAM per dollar.
 
-**Raw cost:** ~$1,700 (not counting shipping, customs, taxes)
+> **Raw cost:** ~$1,700 (not counting shipping, customs, taxes)
+> **Power at full load:** ~$1.40/day on Pepco
 
-**Power at full load:** ~$1.40/day on Pepco
+### CPU
 
-### CPU: AMD Ryzen 5 7500X3D
+**AMD Ryzen 5 7500X3D** · $299 (Microcenter bundle)
 
-$299 as part of a Microcenter bundle. 65W TDP, 6 cores, 12 threads, 96MB L3 cache. The bundle comes with single channel RAM but the huge L3 cache on X3D chips makes up for it. The iGPU is useful for debugging when all the discrete GPUs are in headless compute mode.
+65W TDP, 6 cores / 12 threads, 96MB L3 cache. The bundle comes with single channel RAM but the huge L3 cache on X3D chips makes up for it. The iGPU is useful for debugging when all discrete GPUs are in headless compute mode.
 
-### RAM: 2x 16GB G.Skill Flare X5 DDR5-6000
+### RAM
 
-$169 each. One came with the CPU bundle, the other bought separately. RAM prices are awful right now.
+**2x 16GB G.Skill Flare X5 DDR5-6000** · $169 each
 
-### GPU 1: NVIDIA RTX 3080 20GB GDDR6X
+One came with the CPU bundle, bought the other separately. RAM prices are awful right now.
 
-$599 from eBay, shipped from China. 2U blower card, 320W TDP with transient spikes up to 450-500W. Ampere generation. Solid card for mid-size models.
+### GPU 1
 
-### GPU 2: NVIDIA Tesla V100 SXM2+PCIe 32GB HBM2
+**NVIDIA RTX 3080 20GB GDDR6X** · $599 (eBay)
 
-$750 from eBay, also from China. This one's interesting. It's a custom mod where someone took an SXM2 server module and put it on a PCIe board with a blower cooler. Volta architecture from 2017 so it misses some newer software features, but at ~$23/GB of VRAM it's the cheapest high-bandwidth memory you can get. The HBM2 bandwidth actually beats some modern RTX cards.
+2U blower card from China. **320W TDP** with transient spikes up to **450–500W**.
+Ampere generation.
+Solid card for mid-size models.
 
-### Motherboard: MSI B850 Gaming Plus
+### GPU 2
 
-$150 from Amazon. Can fit three 2U GPUs which leaves room for one more.
+**NVIDIA Tesla V100 SXM2+PCIe 32GB HBM2** · $750 (eBay)
+
+Custom mod where someone took an SXM2 server module and put it on a PCIe board with a blower cooler.
+Volta architecture from 2017 so it misses some newer software features, but at **~$23/GB of VRAM** it's the cheapest high-bandwidth memory you can get.
+HBM2 bandwidth actually beats some modern RTX cards.
+
+### Motherboard
+
+**MSI B850 Gaming Plus** · $150 (Amazon)
+
+Can fit three GPUs which leaves room for one more.
 
 ### Storage
 
 Two 1TB NVMe SSDs I already had, plus a used 4TB enterprise HDD for ~$65.
 
-### Power Supply: Montech Century II 1200W 80+ Gold
+### Power Supply
 
-$120, fully modular. Enough headroom for the current setup plus one more GPU.
+**Montech Century II 1200W 80+ Gold** · $120
 
-### Case: Corsair 5000D RS
+Fully modular. Enough headroom for current setup plus one more GPU.
 
-$100-120. Five preinstalled 140mm fans, eight expansion slots, fits E-ATX. Massive upgrade from the old Q300L.
+### Case
+
+**Corsair 5000D RS** · $100–120
+
+Five preinstalled 140mm fans, eight expansion slots, fits E-ATX.
+Massive upgrade from the old Q300L.
 
 ### Software
 
