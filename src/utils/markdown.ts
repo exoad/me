@@ -1,4 +1,4 @@
-import { marked } from "marked";
+import { marked, Tokens } from "marked";
 
 export interface TocEntry { id: string; text: string; level: number; }
 
@@ -21,8 +21,27 @@ function extractAttributes(mod :MarkdownModule):Record<string,unknown>{if(mod.at
 
 function textToSlug(text:string):string{return text.toLowerCase().replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').substring(0,50)}
 
+// Custom marked renderer that adds id attributes to headings
+// matching the same slug logic used in generateToc
+const headingCounts=new Map<string,number>();
+
+const renderer={
+heading({tokens,depth}:Tokens.Heading){
+const text=this.parser.parseInline(tokens);
+const baseSlug=textToSlug(text);
+const count=(headingCounts.get(baseSlug)||0)+1;
+headingCounts.set(baseSlug,count);
+const id=count===1?baseSlug:`${baseSlug}-${count-1}`;
+return `<h${depth} id="${id}">${text}</h${depth}>`;
+}
+};
+
+marked.use({renderer});
+
 function generateToc(rawMd:string):TocEntry[]{
 try{
+// Reset heading counts for consistent IDs between TOC and render
+headingCounts.clear();
 const tokens=marked.lexer(rawMd);
 const counts=new Map<string,number>();
 const entries:TocEntry[]=[];
@@ -46,7 +65,12 @@ try{
 var attrs=extractAttributes(mod);
 var slug=slugFromPath(path);
 var rawMd=(mod.markdown||"")as string ;
+// Reset heading counts so render matches TOC IDs
+headingCounts.clear();
 var toc=generateToc(rawMd);
+// generateToc already reset counts, but we clear again before parse
+// so the renderer starts fresh and produces matching IDs
+headingCounts.clear();
 var html=marked.parse(rawMd)as string ;
 posts.push({slug ,title:(attrs.title||slug)as string ,date:(attrs.date||"")as string ,excerpt:(attrs.excerpt||"")as string ,tags:(attrs.tags||[])as any,featured:(attrs.featured as boolean|undefined),content : html,toc});
 }catch(e){console.error("Failed to load blog post:"+path,e);}}
