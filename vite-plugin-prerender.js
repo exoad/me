@@ -46,11 +46,11 @@ function generateBlogHtml(post, baseHtml) {
     `<meta name=\"twitter:title\" content=\"${post.title}\" />`,
     `<meta name=\"twitter:description\" content=\"${post.excerpt}\" />`,
     `<meta name=\"twitter:image\" content=\"${ogImage}\" />`,
-  ].join("\\n  ");
+  ].join("\n  ");
 
   let html = baseHtml;
   html = html.replace("<title>exoad - Jiaming Meng</title>", `<title>${post.title} | exoad</title>`);
-  html = html.replace("</head>", `${ogTags}\\n</head>`);
+  html = html.replace("</head>", `${ogTags}\n</head>`);
   return html;
 }
 
