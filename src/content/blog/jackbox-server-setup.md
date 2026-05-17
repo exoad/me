@@ -1,5 +1,5 @@
 ---
-title: "Jackbox: A $1,700 Local LLM Inference Server"
+title: "Jackbox: A 'budget' 84GB Inference Server"
 date: "2026-05-13"
 excerpt: "Building a cheap 52GB VRAM dual-GPU inference server/"
 tags: ["LLM", "Hardware", "bibo", "Local AI"]
