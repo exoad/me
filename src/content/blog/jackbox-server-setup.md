@@ -124,7 +124,7 @@ Can fit three 2U GPUs, which leaves room for one more. Slower PCIe lanes (x4, x1
 
 **Montech Century II 1200W 80+ Gold** · $120 ([Amazon](https://www.amazon.com/MONTECH-Century-II-High-End-Cybenetics/dp/B0F3XV451X?s=electronics))
 
-Fully modular. Enough headroom for the current setup plus one more GPU. A few rules I follow with PSUs: keep total system draw under 60% of rated wattage to handle transient spikes from consumer RTX cards, never mix cables between different PSUs (they're not standardized across brands), and if you need more wattage than a single unit can provide, use multiple lower-wattage PSUs with a [splitter](https://www.amazon.com/Qaoquda-Power-Supply-Adapter-Motherboard/dp/B08XP78NCR?s=electronics) rather than daisy-chaining.
+Fully modular. Enough headroom for the current setup plus one more GPU.
 
 ### Case
 
@@ -134,7 +134,7 @@ Five preinstalled 140mm fans, eight expansion slots, fits E-ATX. Massive upgrade
 
 > There were also several other fans I had used from my old case for more positive pressure within the case.
 
-The back panel got signed by friends before I closed it up.
+The back panel got signed by Shellers from Startup Shell.
 
 ![Back panel with signatures](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img4.jpeg)
 

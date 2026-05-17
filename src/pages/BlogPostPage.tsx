@@ -62,11 +62,17 @@ export default function BlogPostPage() {
                     <BlogToc entries={post.toc} />
                     {/* Main content column */}
                     <article className="max-w-2xl min-w-0 blog-post">
-                        {/* Back button */}
-                        <button onClick={() => navigate('/blog')} className="flex items-center gap-2 text-fg4 hover:text-yellow transition-colors duration-300 text-sm font-sans mb-12 group">
-                            <MdArrowBack size={16} />
-                            {strings.pages.blog.back_to_blog}
-                        </button>
+                        {/* Back buttons */}
+                        <div className="flex items-center gap-6 mb-12">
+                            <button onClick={() => navigate('/blog')} className="flex items-center gap-2 text-fg4 hover:text-yellow transition-colors duration-300 text-sm font-sans group">
+                                <MdArrowBack size={16} />
+                                {strings.pages.blog.back_to_blog}
+                            </button>
+                            <span className="text-fg4/30 text-xs select-none">|</span>
+                            <button onClick={() => navigate('/')} className="flex items-center gap-2 text-fg4 hover:text-yellow transition-colors duration-300 text-sm font-sans group">
+                                Home
+                            </button>
+                        </div>
 
                         {/* Header */}
                         <header className="mb-12">

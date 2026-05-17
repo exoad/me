@@ -52,6 +52,7 @@ function BlogPostCard({ post, index }: { post: BlogPostData; index: number }) {
 }
 
 export default function BlogListPage() {
+    const navigate = useNavigate();
     const [posts, setPosts] = useState<BlogPostData[]>([]);
     const [loading, setLoading] = useState(true);
 
