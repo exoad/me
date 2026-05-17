@@ -1,7 +1,7 @@
 ---
 title: "Jackbox: A $1,700 Local LLM Inference Server"
 date: "2026-05-13"
-excerpt: "52GB of VRAM across two eBay GPUs. Qwen3.6 at 80-100 tok/s with 180K context. All local, no cloud."
+excerpt: "How I built a dual-GPU inference server for running local LLMs — the hardware decisions, cost breakdown, and what I learned along the way."
 tags: ["LLM", "Hardware", "bibo", "Local AI"]
 featured: true
 ---
