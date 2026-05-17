@@ -4,6 +4,7 @@ date: "2026-05-13"
 excerpt: "Building a local inference server in the DRAM Shortage"
 tags: ["LLM", "Hardware", "bibo", "Local AI"]
 featured: true
+cover_image: "/og-jackbox.jpg"
 ---
 
 I built Jackbox to run large language models locally. No cloud APIs, no per-token pricing. Just raw compute in my apartment.

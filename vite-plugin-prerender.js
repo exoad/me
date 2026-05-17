@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "fs";
-import { resolve, dirname } from "path";
+import { resolve } from "path";
 import matter from "gray-matter";
 
 const BLOG_DIR = resolve("src/content/blog");
@@ -17,6 +17,7 @@ function getBlogPosts() {
         excerpt: data.excerpt || "",
         date: data.date || "",
         tags: data.tags || [],
+cover_image: data.cover_image || null,
       };
     });
   } catch (e) {
@@ -25,26 +26,27 @@ function getBlogPosts() {
   }
 }
 
-function generateBlogHtml(post, baseHtml) {
+function getOgImage(post) {
+  if (post.cover_image) return post.cover_image;
+  return `/og-${post.slug}.jpg`;
+}
 
-function removeDefaultOgTags(html) {
-  // Remove default OG and Twitter tags that will be replaced
-  html = html.replace(/  <meta property="og:type" content="website" \/>\\n/g, '');
-  html = html.replace(/  <meta property="og:title" content="exoad - Jiaming Meng" \/>\\n/g, '');
-  const ogImage = "/og-jackbox.jpg";
+function generateBlogHtml(post, baseHtml) {
+  const ogImage = getOgImage(post);
   const url = `https://exoad.net/blog/${post.slug}`;
 
-  const ogTags = `
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="${post.title}" />
-  <meta property="og:description" content="${post.excerpt}" />
-  <meta property="og:image" content="${ogImage}" />
-  <meta property="og:url" content="${url}" />
-  <meta property="og:site_name" content="exoad" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${post.title}" />
-  <meta name="twitter:description" content="${post.excerpt}" />
-  <meta name="twitter:image" content="${ogImage}" />`
+  const ogTags = [
+    `<meta property=\"og:type\" content=\"article\" />`,
+    `<meta property=\"og:title\" content=\"${post.title}\" />`,
+    `<meta property=\"og:description\" content=\"${post.excerpt}\" />`,
+    `<meta property=\"og:image\" content=\"${ogImage}\" />`,
+    `<meta property=\"og:url\" content=\"${url}\" />`,
+    `<meta property=\"og:site_name\" content=\"exoad\" />`,
+    `<meta name=\"twitter:card\" content=\"summary_large_image\" />`,
+    `<meta name=\"twitter:title\" content=\"${post.title}\" />`,
+    `<meta name=\"twitter:description\" content=\"${post.excerpt}\" />`,
+    `<meta name=\"twitter:image\" content=\"${ogImage}\" />`,
+  ].join("\\n  ");
 
   let html = baseHtml;
   html = html.replace("<title>exoad - Jiaming Meng</title>", `<title>${post.title} | exoad</title>`);
