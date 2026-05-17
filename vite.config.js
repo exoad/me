@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import prerenderPlugin from "./vite-plugin-prerender.js";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { plugin } from "vite-plugin-markdown";
@@ -6,6 +7,7 @@ import { plugin } from "vite-plugin-markdown";
 export default defineConfig({
   plugins: [
     react(),
+    prerenderPlugin(),
     tailwindcss(),
     plugin({
       include: 'src/content/blog/**/*.md',
