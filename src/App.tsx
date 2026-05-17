@@ -12,7 +12,7 @@ function AppContent() {
 	const location = useLocation();
 	return (
 		<Suspense fallback={null}>
-			<ContentFade key={location.pathname}>
+			<ContentFade >
 				<Routes location={location}>
 					<Route path="/" element={<HomePage />} />
 					<Route path="/photos" element={<PhotosPage />} />
