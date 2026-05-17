@@ -27,8 +27,10 @@ cover_image: data.cover_image || null,
 }
 
 function getOgImage(post) {
-  if (post.cover_image) return post.cover_image;
-  return `/og-${post.slug}.jpg`;
+  if (post.cover_image) {
+    return post.cover_image.startsWith('http') ? post.cover_image : `https://exoad.net${post.cover_image}`;
+  }
+  return `https://exoad.net/og-${post.slug}.jpg`;
 }
 
 function generateBlogHtml(post, baseHtml) {

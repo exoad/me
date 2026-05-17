@@ -54,7 +54,7 @@ export default function BlogPostPage() {
 
     return (
         <>
-            <SEO title={post.title} description={post.excerpt} url={`https://exoad.net/blog/${post.slug}`} image="/og-jackbox.jpg" />
+            <SEO title={post.title} description={post.excerpt} url={`https://exoad.net/blog/${post.slug}`} image={`/og-${post.slug}.jpg`} />
             <div className="min-h-screen bg-bg0">
                 {/* Flex container: content + sidebar TOC */}
                 <div className="max-w-5xl mx-auto px-6 py-12 lg:flex lg:gap-8">

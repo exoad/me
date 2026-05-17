@@ -21,6 +21,9 @@ export default function SEO({
 }: SEOProps) {
   const currentUrl = url || window.location.href;
   const siteTitle = title.includes('exoad') ? title : `exoad - Jiaming Meng | ${title}`;
+  const absoluteImage = image
+    ? (image.startsWith('http') ? image : `https://exoad.net${image}`)
+    : undefined;
 
   const schemaPerson = {
     "@context": "https://schema.org",
@@ -77,17 +80,17 @@ export default function SEO({
       <meta property="og:type" content={type} />
       <meta property="og:title" content={siteTitle} />
       <meta property="og:description" content={description} />
-      {image && <meta property="og:image" content={image} />}
+      {absoluteImage && <meta property="og:image" content={absoluteImage} />}
       <meta property="og:url" content={currentUrl} />
       <meta property="og:site_name" content={name} />
 
       {/* Twitter */}
-      {image ? (
+      {absoluteImage ? (
         <>
           <meta name="twitter:card" content='summary_large_image' />
           <meta name='twitter:title' content={siteTitle} />
           <meta name='twitter:description' content={description} />
-          <meta name='twitter:image' content={image} />
+          <meta name='twitter:image' content={absoluteImage} />
         </>
       ) : (
         <>
