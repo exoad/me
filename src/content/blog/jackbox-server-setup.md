@@ -134,6 +134,10 @@ Five preinstalled 140mm fans, eight expansion slots, fits E-ATX. Massive upgrade
 
 > There were also several other fans I had used from my old case for more positive pressure within the case.
 
+The back panel got signed by friends before I closed it up.
+
+![Back panel with signatures](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img4.jpeg)
+
 ### Software
 
 Ubuntu 24.04 LTS Server, headless. 
