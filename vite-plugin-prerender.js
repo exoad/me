@@ -3,7 +3,7 @@ import { resolve } from "path";
 import matter from "gray-matter";
 
 const BLOG_DIR = resolve("src/content/blog");
-const INDEX_HTML = resolve("index.html");
+const INDEX_HTML = resolve("dist/index.html");
 
 function getBlogPosts() {
   try {
