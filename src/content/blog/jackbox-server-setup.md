@@ -1,7 +1,7 @@
 ---
 title: "Jackbox: A 'budget' 84GB Inference Server"
 date: "2026-05-13"
-excerpt: "Building a cheap 52GB VRAM dual-GPU inference server/"
+excerpt: "Building a local inference server in the DRAM Shortage"
 tags: ["LLM", "Hardware", "bibo", "Local AI"]
 featured: true
 ---
@@ -39,7 +39,7 @@ llama-server \
     --cache-type-k q8_0 \
     --cache-type-v q8_0 \
     -ub 8192 \
-    -b 8192\
+    -b 8192 \
     --temp 0.6 \
     --top-p 0.95 \
     --top-k 20 \
