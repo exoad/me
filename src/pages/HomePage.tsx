@@ -148,7 +148,7 @@ function ContentSections() {
 	}, []);
 
 	return (
-		<div className="flex flex-col gap-24">
+		<div className="flex flex-col gap-y-[3.5rem]">
 			<section>
 				<p className="text-fg2 text-base sm:text-lg font-sans leading-relaxed max-w-xl">
 					I build software because I believe the best tools respect their users —
@@ -169,18 +169,18 @@ function ContentSections() {
 
 			{droskProject && (
 				<section className="max-w-2xl">
-					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
+					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Current Focus
 					</h2>
 					<FeaturedTeaser proj={droskProject} />
-					<div className="border-b border-bg2 mt-6" />
+					<div className="border-b border-bg2 mt-4" />
 				</section>
 			)}
 
 			{/* bibo - Special mention */}
 			{biboProject && (
 				<section className="max-w-2xl">
-					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
+					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Active Project
 					</h2>
 					<div className="flex items-center gap-2 mb-2">
@@ -202,12 +202,12 @@ function ContentSections() {
 					>
 						view project <MdOutlineArrowOutward size={10} />
 					</a>
-					<div className="border-b border-bg2 mt-6" />
+					<div className="border-b border-bg2 mt-4" />
 				</section>
 			)}
 
 			<section className="max-w-2xl">
-				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-6">
+				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Writing
 				</h2>
 				<a
@@ -222,7 +222,7 @@ function ContentSections() {
 					</p>
 				</a>
 				{latestPosts.length > 0 && (
-					<div className="mt-6 flex flex-col gap-4">
+					<div className="mt-4 flex flex-col gap-4">
 						{latestPosts.slice(0, 2).map((post) => (
 							<a
 								key={post.slug}
@@ -249,11 +249,11 @@ function ContentSections() {
 						</a>
 					</div>
 				)}
-				<div className="border-b border-bg2 mt-6" />
+				<div className="border-b border-bg2 mt-4" />
 			</section>
 
 			<section>
-				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-8">
+				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Projects
 				</h2>
 				<div className="flex flex-col max-w-2xl">
@@ -261,7 +261,7 @@ function ContentSections() {
 						<ProjectRow key={proj.title} proj={proj} />
 					))}
 				</div>
-				<div className="mt-8">
+				<div className="mt-4">
 					<a
 						href={strings.links.github}
 						target="_blank"
@@ -274,7 +274,7 @@ function ContentSections() {
 			</section>
 
 			<section className="max-w-2xl">
-				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-8">
+				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Contact
 				</h2>
 				<div className="flex flex-col gap-2">

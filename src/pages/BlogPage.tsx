@@ -38,8 +38,8 @@ function BlogPostCard({ post, index }: { post: typeof blogPosts[0]; index: numbe
                 href={`/blog/${post.slug}`}
                 className="block group transition-colors duration-300"
             >
-                <div className="border-b border-bg2 pb-6 group-hover:border-fg3 transition-colors duration-300">
-                    <div className="flex items-center gap-3 mb-3">
+                <div className="border-b border-bg2 pb-4 group-hover:border-fg3 transition-colors duration-300">
+                    <div className="flex items-center gap-3 mb-2">
                         <span className="text-fg4 text-xs font-sans">{post.displayDate}</span>
                         <span className="text-fg4/50 text-xs">·</span>
                         <span className="text-fg4 text-xs font-sans">
@@ -74,25 +74,25 @@ export default function BlogPage() {
                 url="https://exoad.net/blog"
             />
             <ScaffoldContent useDefaultLayout className="w-full overflow-x-hidden">
-                <Column gap={12} crossAxisAlignment="start" className="max-w-3xl px-4 sm:px-8 md:px-12">
-                    <Column gap={4} className="w-full mb-4">
-                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-gb-fg4/30 uppercase tracking-widest font-playfair">
+                <div className="max-w-3xl px-4 sm:px-8 md:px-12 w-full flex flex-col items-start">
+                    <div className="w-full mb-6">
+                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-gb-fg4/30 uppercase tracking-widest font-playfair mb-[0.35rem]">
                             {strings.pages.blog.title}
                         </h2>
                         <p className="text-sm sm:text-base text-fg3 font-sans">
                             {strings.pages.blog.description}
                         </p>
-                    </Column>
-                    <Divider className="w-full" />
-                    <Column gap={0} className="w-full">
+                    </div>
+                    <Divider className="w-full my-4" />
+                    <div className="w-full">
                         {sortedPosts.map((post, index) => (
                             <BlogPostCard key={post.slug} post={post} index={index} />
                         ))}
                         {sortedPosts.length === 0 && (
                             <p className="text-fg4 text-sm font-sans py-8">No posts yet. Check back soon!</p>
                         )}
-                    </Column>
-                </Column>
+                    </div>
+                </div>
             </ScaffoldContent>
         </Scaffold>
     );
