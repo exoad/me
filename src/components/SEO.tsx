@@ -14,7 +14,7 @@ export default function SEO({
   title,
   description,
   keywords,
-  image = '/android-chrome-512x512.png',
+  image,
   url,
   type = 'website',
   name = 'exoad - Jiaming Meng'
@@ -77,15 +77,25 @@ export default function SEO({
       <meta property="og:type" content={type} />
       <meta property="og:title" content={siteTitle} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={image} />
+      {image && <meta property="og:image" content={image} />}
       <meta property="og:url" content={currentUrl} />
       <meta property="og:site_name" content={name} />
 
       {/* Twitter */}
-      <meta name="twitter:card" content="summary" />
-      <meta name="twitter:title" content={siteTitle} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
+      {image ? (
+        <>
+          <meta name="twitter:card" content='summary_large_image' />
+          <meta name='twitter:title' content={siteTitle} />
+          <meta name='twitter:description' content={description} />
+          <meta name='twitter:image' content={image} />
+        </>
+      ) : (
+        <>
+          <meta name='twitter:card' content='summary' />
+          <meta name='twitter:title' content={siteTitle} />
+          <meta name='twitter:description' content={description} />
+        </>
+      )}
 
       {/* Schema.org Structured Data */}
       <script type="application/ld+json">
