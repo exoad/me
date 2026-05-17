@@ -1,14 +1,14 @@
 ---
 title: "Jackbox: A $1,700 Local LLM Inference Server"
 date: "2026-05-13"
-excerpt: "How I built a dual-GPU inference server for running local LLMs — the hardware decisions, cost breakdown, and what I learned along the way."
+excerpt: "Building a cheap 52GB VRAM dual-GPU inference server/"
 tags: ["LLM", "Hardware", "bibo", "Local AI"]
 featured: true
 ---
 
 I built Jackbox to run large language models locally. No cloud APIs, no per-token pricing. Just raw compute in my apartment.
 
-$1,700 total. 52GB of VRAM across two GPUs. It runs bibo, my personal AI agent, every day.
+$1,700 total. 84GB of combined memory (52GB VRAM + 32GB RAM) in this hell of a time to build a PC. 
 
 ![Front view of Jackbox](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img3.jpeg)
 
@@ -29,7 +29,7 @@ sudo sysctl -w vm.nr_hugepages=4096
 llama-server \
     -m ~/Models/Qwen3.6-35B-A3B-UD-Q8_K_XL.gguf \
     --port 6969 --host 0.0.0.0 \
-    -ngl 90 \
+    -ngl 80 \
     --ctx-size 180224 \
     --split-mode layer \
     --main-gpu 0 \
@@ -38,13 +38,13 @@ llama-server \
     --numa distribute \
     --cache-type-k q8_0 \
     --cache-type-v q8_0 \
-    -ub  8192\
--b  8192\
---temp .6\
---top-p .95\
---top-k  20\
---min-p .00\
---repeat-penalty .00
+    -ub 8192 \
+    -b 8192\
+    --temp 0.6 \
+    --top-p 0.95 \
+    --top-k 20 \
+    --min-p 0.0 \
+    --repeat-penalty 1.0 
 ```
 
 Huge pages (`vm.nr_hugepages=4096`) reduce TLB misses during inference. The `tensor-split` distributes model layers across both GPUs proportionally to their VRAM capacity.
@@ -91,21 +91,23 @@ Chinese-market blower card pulled from a server chassis and resold on eBay. Blow
 
 Ampere generation means solid software support across every inference framework worth using today.
 
+> **NOTE:** The RTX 3080's backplate where the extra memory chips are soldered gets extremely hot.
+
 ### GPU 2: Tesla V100 (32GB)
 
 **NVIDIA Tesla V100 SXM2+PCIe 32GB HBM2** · $750 ([eBay](https://ebay.us/m/WXVkux))
 
 300W TDP
 
-I originally ordered two of these. Both shipped from China. One made it through customs. The other did not.
-
-After weeks of waiting for a second unit that never arrived, I pivoted and picked up the RTX 3080 above instead. In hindsight, the mixed setup worked out better — the Ampere card handles newer model architectures while the V100 brings raw memory bandwidth at an unbeatable price per gigabyte.
+I originally ordered two of these. Both shipped from China. One made it through customs. The other did not. Luckily, eBay's MoneyBack gurantee got me my money back.
 
 This one is a custom mod where someone took an SXM2 server module and mounted it onto a PCIe board with a blower cooler. Volta architecture from 2017 means it misses some newer software features like FlashAttention-2, but at **~$23/GB of VRAM** it's the cheapest high-bandwidth memory you can get your hands on.
 
 The HBM2 memory bandwidth actually beats some modern RTX cards in raw throughput. For batched inference workloads that are memory-bandwidth-bound rather than compute-bound, this card punches well above its price point.
 
 ![Both GPUs laid out before assembly](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img1.jpg)
+
+> Note: Even though this is a blower card, the custom modded cooling doesn't seem to expose fan controls.
 
 ### Motherboard
 
@@ -115,7 +117,8 @@ Can fit three 2U GPUs, which leaves room for one more. Slower PCIe lanes (x4, x1
 
 ### Storage
 
-Two 1TB NVMe SSDs I already had, plus a used 4TB enterprise HDD (~$65). Model files are large but they're loaded once at startup and cached in VRAM; storage speed barely matters after that.
+1. 2x 1TB NVME SSDs (Already had)
+2. 1x 4TB HDD $65
 
 ### Power Supply
 
@@ -129,9 +132,11 @@ Fully modular. Enough headroom for the current setup plus one more GPU. A few ru
 
 Five preinstalled 140mm fans, eight expansion slots, fits E-ATX. Massive upgrade from the old Q300L. That thing was genuinely a fire hazard with two GPUs crammed inside.
 
+> There were also several other fans I had used from my old case for more positive pressure within the case.
+
 ### Software
 
-Ubuntu 24.04 LTS Server, headless. Nothing exotic here. Just a clean Linux install with NVIDIA container toolkit for Docker-based inference serving.
+Ubuntu 24.04 LTS Server, headless. 
 
 ![Jackbox through tempered glass](https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/blog/server-build/img2.jpg)
 
@@ -158,11 +163,5 @@ Some things I'd tell my past self before starting this build:
 
 ### Previous Parts (Retired)
 
-| Part | Replacement Reason |
-|---|---|
-| Cooler Master Q300L case ($34) | Way too small for dual GPUs |
-| Rosewill Photon Gold PSU ($70)| Not enough wattage headroom |
-
----
-
-Jackbox is not done yet. There is still an empty PCIe slot waiting for its third GPU. But right now it runs bibo reliably every day without touching a cloud API, and that was always the point.
+- Cooler Master Q300L case ($34) - Way too small for dual GPUs
+- Rosewill Gold PSU 70$ - Not enough wattage overhead for 2 GPUs
