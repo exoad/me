@@ -167,7 +167,7 @@ export default function PhotosPage() {
           >
             ← Back
           </a>
-          <h1 className="text-lg font-playfair text-fg0">Photos</h1>
+          <h1 className="text-lg text-fg0">Photos</h1>
           <div className="w-16"></div>
         </div>
 

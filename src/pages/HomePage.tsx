@@ -13,7 +13,7 @@ function NameCard() {
 
 	return (
 		<div className="flex flex-col items-start lg:items-end gap-3">
-			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl font-playfair text-fg0 tracking-tight">
+			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl text-fg0 tracking-tight">
 				<span className={randomColor}>{name[0]}</span>
 				{name.slice(1)}
 			</h1>
@@ -122,7 +122,7 @@ function FeaturedTeaser({ proj }: { proj: (typeof projects)[0] }) {
 					{proj.state === "active" ? "In Development" : proj.state === "finished" ? "Completed" : "Archived"}
 				</span>
 			</div>
-			<h3 className="text-2xl sm:text-3xl font-bold font-playfair text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
+			<h3 className="text-2xl sm:text-3xl font-bold text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
 				{proj.title}
 			</h3>
 			<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
@@ -188,7 +188,7 @@ function ContentSections() {
 							{biboProject.state}
 						</span>
 					</div>
-					<h3 className="text-2xl sm:text-3xl font-bold font-playfair text-fg0 mb-2">
+					<h3 className="text-2xl sm:text-3xl font-bold text-fg0 mb-2">
 						{biboProject.title}
 					</h3>
 					<p className="text-fg3 text-sm font-sans leading-relaxed mb-3 max-w-lg">
@@ -214,7 +214,7 @@ function ContentSections() {
 					href="/blog"
 					className="block group transition-all duration-300 hover:opacity-70"
 				>
-					<h3 className="text-2xl sm:text-3xl font-bold font-playfair text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
+					<h3 className="text-2xl sm:text-3xl font-bold text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
 						{strings.pages.blog.title}
 					</h3>
 					<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
@@ -236,7 +236,7 @@ function ContentSections() {
 										{post.tags.map((t: string) => "#" + t).join(" ")}
 									</span>
 								</div>
-								<h4 className="text-base font-playfair text-fg2 group-hover:text-fg0 transition-colors duration-300">
+								<h4 className="text-base text-fg2 group-hover:text-fg0 transition-colors duration-300">
 									{post.title}
 								</h4>
 							</a>

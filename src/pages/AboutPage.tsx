@@ -44,7 +44,7 @@ export default function AboutPage() {
                 <div className="max-w-4xl mx-auto px-6 py-12">
                     <div className="mb-12">
                         <h2 className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">About Me</h2>
-                        <h1 className="text-4xl md:text-6xl font-bold font-playfair text-fg0 mb-4">
+                        <h1 className="text-4xl md:text-6xl font-bold text-fg0 mb-4">
                             {strings.pages.about.title}
                         </h1>
                         <p className="text-fg3 text-base md:text-lg font-sans leading-relaxed">

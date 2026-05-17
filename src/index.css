@@ -36,7 +36,6 @@
     --color-orange-dim: #af3a03;
     --color-gray: #928374;
     
-    --font-family-playfair: "Playfair Display", serif;
 }
 
 /* ============================================
@@ -378,7 +377,7 @@ body {
     color: var(--color-fg4);
     font-size: 0.75rem;
     font-weight: 400;
-    font-family: var(--font-family-playfair), ui-serif, Georgia, serif;
+    font-family: "Inter", system-ui, sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     margin-top: 1.25rem;

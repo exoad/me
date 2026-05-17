@@ -84,7 +84,7 @@ export default function About({
                     <PfpDividerLine kindaVisible={kindaVisible} />
                     <div className="flex flex-col items-center gap-4">
                         <h2
-                            className={`text-gb-fg0 text-2xl font-bold font-playfair transition-all duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
+                            className={`text-gb-fg0 text-2xl font-bold transition-all duration-500 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
                             style={{ transitionDelay: kindaVisible ? '250ms' : '0ms' }}
                         >
                             {strings.pages.home.about.toolkit_title}

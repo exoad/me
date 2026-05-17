@@ -39,7 +39,7 @@ export default function Projects({
         <div className="min-h-screen flex items-center justify-center bg-gb-bg0-hard px-4 sm:px-8 md:px-16 py-8" ref={projectsRef}>
             <div className="flex flex-col items-center justify-center gap-6 md:gap-12 w-full max-w-6xl">
                 <h1
-                    className={`text-gb-fg0 text-3xl md:text-5xl lg:text-7xl font-bold font-playfair transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
+                    className={`text-gb-fg0 text-3xl md:text-5xl lg:text-7xl font-bold transition-all duration-1000 ${kindaVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-95'}`}
                     style={{ transitionDelay: kindaVisible ? '100ms' : '0ms' }}
                 >
                     {strings.pages.home.projects_title}
@@ -64,7 +64,7 @@ export default function Projects({
                                     />
                                 )}
                                 <h2
-                                    className="text-gb-fg0 text-[2rem] font-bold text-center font-playfair"
+                                    className="text-gb-fg0 text-[2rem] font-bold text-center"
                                     style={{ textShadow: `2px 2px ${hexToRgba(project.color, 0.7)}` }}
                                 >
                                     {project.title}

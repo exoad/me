@@ -89,7 +89,7 @@ export default function Hero({
                 </div>
                 <Column gap={6} className="ease-in-out">
                     <h1
-                        className={`relative inline-block font-bold text-center font-playfair text-5xl md:text-7xl ${heroVisible ? 'animate-fade-in-up' : 'opacity-0 scale-90'}`}
+                        className={`relative inline-block font-bold text-center text-5xl md:text-7xl ${heroVisible ? 'animate-fade-in-up' : 'opacity-0 scale-90'}`}
                         style={{ animationDelay: heroVisible ? `${BASE_DELAY + STEP_DELAY * 0}ms` : '0ms' }}
                     >
                         <span className="relative text-gb-fg0">{name}</span>

@@ -18,7 +18,7 @@ export default function UnderConstruction({ scaffoldProps = {} }) {
                 <WarpTunnelBg scrollY={1} />
                 <div className={`flex flex-col items-center justify-center gap-16 transition-opacity duration-1000 ${visible ? 'opacity-100' : 'opacity-0'}`}>
                     <MdConstruction className="text-gb-orange text-8xl md:text-9xl" />
-                    <p className="text-gb-fg0 text-xl md:text-5xl font-medium text-center font-playfair "
+                    <p className="text-gb-fg0 text-xl md:text-5xl font-medium text-center "
                     >
                         {strings.pages.under_construction.title}
                     </p>

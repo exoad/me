@@ -36,7 +36,7 @@ function BlogPostCard({ post, index }: { post: BlogPostData; index: number }) {
                         {post.tags.slice(0, 2).map(t => `#${t}`).join(' ')}
                     </span>
                 </div>
-                <h3 className={`text-xl sm:text-2xl font-bold font-playfair ${colorClass} group-hover:text-fg0 transition-colors duration-300 mb-2 whitespace-nowrap overflow-hidden text-ellipsis`}>
+                <h3 className={`text-xl sm:text-2xl font-bold ${colorClass} group-hover:text-fg0 transition-colors duration-300 mb-2 whitespace-nowrap overflow-hidden text-ellipsis`}>
                     {post.title}
                 </h3>
                 <p className="text-fg3 text-sm font-sans leading-relaxed max-w-2xl mb-3">
@@ -84,7 +84,7 @@ export default function BlogListPage() {
                     {/* Minimal header like landing page */}
                     <div className="mb-8">
                         <h2 className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">Writing</h2>
-                        <h1 className="text-4xl md:text-5xl font-bold font-playfair text-fg0 mb-4">
+                        <h1 className="text-4xl md:text-5xl font-bold text-fg0 mb-4">
                             {strings.pages.blog.title}
                         </h1>
                         <p className="text-fg3 text-base font-sans leading-relaxed max-w-xl">

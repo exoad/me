@@ -25,7 +25,7 @@ export default function NotFound({ scaffoldProps = {} }) {
 
                 <Column gap={16} mainAxisAlignment="center" className="transition-opacity duration-1000">
                     <h1
-                        className="text-gb-fg0 text-8xl md:text-9xl font-bold font-playfair"
+                        className="text-gb-fg0 text-8xl md:text-9xl font-bold"
                         style={{ textShadow: '0 0 20px rgba(214,93,14,0.3)' }}
                     >
                         {strings.pages.not_found.super}

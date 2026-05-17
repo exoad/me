@@ -1,6 +1,6 @@
 export default function PageDescriptor({ title, description, noBottomPadding }: Readonly<{ title: string; description: string; noBottomPadding?: boolean; }>) {
     return <div className="flex flex-col items-center gap-8 max-w-3xl px-4 sm:px-6 pt-[6rem]">
-        <h1 className="animate-fade-in text-6xl lg:text-7xl font-bold font-playfair text-center">
+        <h1 className="animate-fade-in text-6xl lg:text-7xl font-bold text-center">
             {title}
         </h1>
         <div className="animate-fade-in" >

@@ -10,7 +10,7 @@ export default function Footer() {
                     {strings.footer.legals}
                 </div>
                 <div className="w-full md:w-1/3 order-1 md:order-2 text-xs">
-                    <div className="font-playfair font-bold">{strings.footer.site}</div>
+                    <div className="font-bold">{strings.footer.site}</div>
                     <div className="pt-1">{strings.footer.pointer}</div>
                 </div>
                 <div className="w-full md:w-1/3 md:text-right order-3 whitespace-nowrap">

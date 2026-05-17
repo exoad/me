@@ -22,7 +22,7 @@ export default function ContactPage() {
                 <div className="max-w-4xl mx-auto px-6 py-12">
                     <div className="mb-12">
                         <h2 className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">Get in Touch</h2>
-                        <h1 className="text-4xl md:text-6xl font-bold font-playfair text-fg0 mb-2 transition-all duration-700">
+                        <h1 className="text-4xl md:text-6xl font-bold text-fg0 mb-2 transition-all duration-700">
                             {strings.pages.contact.title}
                         </h1>
                         <p className="text-fg3 text-base md:text-lg font-sans leading-relaxed mb-4 transition-all duration-700">
@@ -57,7 +57,7 @@ function ResumeBlock() {
             rel="noopener noreferrer"
             className="relative flex items-center justify-center px-6 py-3 text-fg0 font-montserrat font-semibold transition-all duration-700 group"
         >
-            <span className="relative z-10 font-playfair text-[1rem] font-semibold tracking-wide transition-transform duration-300 group-hover:scale-105">
+            <span className="relative z-10 text-[1rem] font-semibold tracking-wide transition-transform duration-300 group-hover:scale-105">
                 {strings.pages.contact.resume.button_label}
             </span>
             <span className="absolute left-0 bottom-0 w-full h-px bg-gb-orange" />
@@ -87,7 +87,7 @@ function ContactLink({ href, label, value, subtitle = "" }: ContactLinkProps) {
                     rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                     className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 text-fg1 font-sans transition-colors duration-200 group"
                 >
-                    <span className="font-bold font-playfair text-xl">{label}</span>
+                    <span className="font-bold text-xl">{label}</span>
                     <span className="text-fg3 group-hover:text-fg2 transition-colors duration-200">{value}</span>
                 </a>
                 {isEmail && <CopyEmailButton email={value} />}
