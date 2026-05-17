@@ -12,7 +12,7 @@ function NameCard() {
 	const name = strings.name;
 
 	return (
-		<div className="flex flex-col items-start sm:items-end gap-3">
+		<div className="flex flex-col items-start lg:items-end gap-3">
 			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl font-playfair text-fg0 tracking-tight">
 				<span className={randomColor}>{name[0]}</span>
 				{name.slice(1)}
@@ -236,7 +236,7 @@ function ContentSections() {
 										{post.tags.map((t: string) => "#" + t).join(" ")}
 									</span>
 								</div>
-								<h4 className="text-base font-sans text-fg2 group-hover:text-fg0 transition-colors duration-300">
+								<h4 className="text-base font-playfair text-fg2 group-hover:text-fg0 transition-colors duration-300">
 									{post.title}
 								</h4>
 							</a>

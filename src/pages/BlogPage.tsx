@@ -46,7 +46,7 @@ function BlogPostCard({ post, index }: { post: typeof blogPosts[0]; index: numbe
                             {post.tags.map(t => `#${t}`).join(' ')}
                         </span>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold font-sans text-fg0 group-hover:text-fg1 transition-colors duration-300 mb-2">
+                    <h3 className="text-xl sm:text-2xl font-bold font-playfair text-fg0 group-hover:text-fg1 transition-colors duration-300 mb-2">
                         {post.title}
                     </h3>
                     <p className="text-fg3 text-sm font-sans leading-relaxed max-w-2xl mb-3">
@@ -75,8 +75,8 @@ export default function BlogPage() {
             />
             <ScaffoldContent useDefaultLayout className="w-full overflow-x-hidden">
                 <Column gap={12} crossAxisAlignment="start" className="max-w-3xl px-4 sm:px-8 md:px-12">
-                    <Column gap={4} className="w-full mb-12">
-                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-gb-fg4/30 uppercase tracking-widest font-sans">
+                    <Column gap={4} className="w-full mb-4">
+                        <h2 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-gb-fg4/30 uppercase tracking-widest font-playfair">
                             {strings.pages.blog.title}
                         </h2>
                         <p className="text-sm sm:text-base text-fg3 font-sans">
