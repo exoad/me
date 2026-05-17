@@ -3,16 +3,11 @@ import '../styles/Animations.css';
 
 interface ContentFadeProps {
     children: ReactNode;
-    delay?: number;
-    duration?: number;
 }
 
-export default function ContentFade({ children, delay = 0, duration = 0.6 }: ContentFadeProps) {
+export default function ContentFade({ children }: ContentFadeProps) {
     return (
-        <div className="content-fade" style={{
-            animationDelay: `${delay}s`,
-            animationDuration: `${duration}s`,
-        }}>
+        <div className="content-fade">
             {children}
         </div>
     );
