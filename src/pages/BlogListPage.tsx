@@ -82,7 +82,7 @@ export default function BlogListPage() {
                     </button>
 
                     {/* Minimal header like landing page */}
-                    <div className="mb-16">
+                    <div className="mb-8">
                         <h2 className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">Writing</h2>
                         <h1 className="text-4xl md:text-5xl font-bold font-playfair text-fg0 mb-4">
                             {strings.pages.blog.title}
