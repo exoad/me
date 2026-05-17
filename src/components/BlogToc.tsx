@@ -26,7 +26,7 @@ export default function BlogToc({ entries }: { entries: TocEntry[] }) {
 
     return (
         <nav className="hidden lg:flex flex-col w-44 shrink-0 pt-24 sticky top-24 self-start z-10">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">
+            <div className="text-xs uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">
                 On this page
             </div>
             <ul className="space-y-1.5">
@@ -34,7 +34,7 @@ export default function BlogToc({ entries }: { entries: TocEntry[] }) {
                     <li key={entry.id}>
                         <a
                             href={`#${entry.id}`}
-                            className={`block text-xs font-sans transition-colors duration-200 hover:text-fg0 ${
+                            className={`block text-base font-sans transition-colors duration-200 hover:text-fg0 ${
                                 entry.level === 2 ? 'pl-0' : entry.level === 3 ? 'pl-3' : 'pl-6'
                             } ${
                                 activeId === entry.id
