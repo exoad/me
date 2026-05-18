@@ -1,0 +1,11 @@
+name = "me"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-05-17"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "guestbook-db"
+database_id = "21d7fc4d-49c7-48f7-a545-08c6e61baed1"
+
+[vars]
+TURNSTILE_SITE_KEY = "0x4AAAAAADRVTMltusSmfuQN"

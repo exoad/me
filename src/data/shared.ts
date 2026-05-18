@@ -523,6 +523,7 @@ export const strings = {
         blog: "BLOG",
         photos: "PHOTOS",
         contact: "CONTACT",
+        guestbook: "GUESTBOOK",
         mobile_menu: {
             title: "Menu",
         },
@@ -630,5 +631,17 @@ export const strings = {
             back_to_blog: "Back to Blog",
             reading_time: "min read",
         },
-    },
-};
+        guestbook: {
+            title: "Guestbook",
+            description: "Leave a message! Entries are reviewed before appearing publicly.",
+            success_message: "Your entry has been submitted for review!",
+            error_submit: "Failed to submit. Please try again.",
+            name_label: "Name",
+            message_label: "Message",
+            submit_button: "Sign Guestbook",
+            no_entries: "No entries yet. Be the first!",
+            loading_entries: "Loading entries...",
+            page_prev: "Previous",
+            page_next: "Next",
+        },
+}};

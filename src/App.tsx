@@ -7,6 +7,8 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const PhotosPage = lazy(() => import("./pages/PhotosPage"));
 const BlogListPage = lazy(() => import("./pages/BlogListPage"));
 const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
+const GuestbookPage = lazy(() => import("./pages/GuestbookPage"));
+const GuestbookAdminPage = lazy(() => import("./pages/GuestbookAdminPage"));
 
 function AppContent() {
 	const location = useLocation();
@@ -18,10 +20,13 @@ function AppContent() {
 					<Route path="/photos" element={<PhotosPage />} />
 					<Route path="/blog" element={<BlogListPage />} />
 					<Route path="/blog/:slug" element={<BlogPostPage />} />
+					<Route path="/guestbook" element={<GuestbookPage />} />
+					<Route path="/guestbook/admin" element={<GuestbookAdminPage />} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</ContentFade>
-		</Suspense>
+		<ScrollToTop />
+</Suspense>
 	);
 }
 

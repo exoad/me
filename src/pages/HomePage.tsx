@@ -6,15 +6,20 @@ import { useState, useEffect } from "react";
 import { BlogPostData, loadAllBlogPosts } from "../utils/markdown";
 
 function NameCard() {
-	// Core Gruvbox colors: red, green, yellow, blue - randomly selected on load
+	// Core Gruvbox colors: red, green, yellow, blue
 	const coreColors = ["text-red", "text-green", "text-yellow", "text-blue"];
-	const randomColor = coreColors[Math.floor(Math.random() * coreColors.length)];
+	const [colorIndex, setColorIndex] = useState(Math.floor(Math.random() * coreColors.length));
 	const name = strings.name;
 
 	return (
 		<div className="flex flex-col items-start lg:items-end gap-3">
 			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl text-fg0 tracking-tight">
-				<span className={randomColor}>{name[0]}</span>
+				<span
+			className={`${coreColors[colorIndex]} cursor-pointer transition-colors duration-300`}
+		onClick={() => setColorIndex((i) => (i + 1) % coreColors.length)}
+		title="Click to change color"
+>{name[0]}
+</span>
 				{name.slice(1)}
 			</h1>
 			<p className="text-fg3 text-xs font-sans uppercase tracking-[0.2em]">
