@@ -257,6 +257,24 @@ function ContentSections() {
 				<div className="border-b border-bg2 mt-4" />
 			</section>
 
+			<section className="max-w-2xl">
+				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
+					Guestbook
+				</h2>
+				<a
+					href="/guestbook"
+					className="block group transition-all duration-300 hover:opacity-70"
+				>
+					<h3 className="text-2xl sm:text-3xl font-bold text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
+						{strings.pages.guestbook.title}
+					</h3>
+					<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
+						{strings.pages.guestbook.description}
+					</p>
+				</a>
+				<div className="border-b border-bg2 mt-4" />
+			</section>
+
 			<section>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Projects
@@ -311,7 +329,7 @@ export default function HomePage() {
 				<div className="min-h-[100dvh] flex flex-col items-center justify-center bg-bg0 px-6">
 					<NameCard />
 				</div>
-				<div className="bg-bg0 px-6 sm:px-12 md:px-24 pb-20 max-w-3xl mx-auto">
+				<div className="bg-bg0 px-[calc(var(--spacing)*_6)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)] pb-20 max-w-3xl mx-auto">
 					<ContentSections />
 				</div>
 				<footer className="bg-bg0 border-t border-bg2 py-8 px-6">
