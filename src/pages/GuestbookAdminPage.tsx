@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
+import { MdCheckCircle, MdRadioButtonUnchecked } from 'react-icons/md';
 
 interface Entry {
   id: number;
@@ -68,23 +69,30 @@ export default function GuestbookAdminPage() {
           <>
           {entries.map((entry) => (
               <article key={entry.id} className="py-4 border-b border-bg2">
-                  <header className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                          <span className="font-bold text-fg0">{entry.name}</span>
-                          <span className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm ${entry.approved===1?'bg-green/20 text-green':'bg-yellow/20 text-yellow'}`}>
-                              {entry.approved===1?'Approved':'Unapproved'}
-                          </span>
+                  <div className="flex gap-4">
+                      <div className={`pt-1 text-3xl ${entry.approved===1?'text-green':'text-yellow'}`} aria-hidden="true">
+                          {entry.approved===1?<MdCheckCircle />:<MdRadioButtonUnchecked />}
                       </div>
-                      <time className="text-xs text-fg4">{formatDate(entry.created_at)}</time>
-                  </header>
-                  <p className="text-fg3 text-sm font-sans leading-relaxed whitespace-pre-wrap">{entry.message}</p>
-                  <div className="flex flex-wrap gap-3 mt-3">
-                      {entry.approved===1 ? (
-                          <button onClick={() => setEntryState(entry.id,0)} className="text-sm text-yellow hover:underline">Mark unapproved</button>
-                      ) : (
-                          <button onClick={() => setEntryState(entry.id,1)} className="text-sm text-green hover:underline">Approve</button>
-                      )}
-                      <button onClick={() => deleteEntry(entry.id)} className="text-sm text-red hover:underline">Delete</button>
+                      <div className="min-w-0 flex-1">
+                          <header className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between mb-2">
+                              <div className="flex items-center gap-3">
+                                  <span className="font-bold text-fg0">{entry.name}</span>
+                                  <span className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm ${entry.approved===1?'bg-green/20 text-green':'bg-yellow/20 text-yellow'}`}>
+                                      {entry.approved===1?'Approved':'Unapproved'}
+                                  </span>
+                              </div>
+                              <time className="text-xs text-fg4">{formatDate(entry.created_at)}</time>
+                          </header>
+                          <p className="text-fg3 text-sm font-sans leading-relaxed whitespace-pre-wrap">{entry.message}</p>
+                          <div className="flex flex-wrap gap-3 mt-3">
+                              {entry.approved===1 ? (
+                                  <button onClick={() => setEntryState(entry.id,0)} className="text-sm text-yellow hover:underline">Mark unapproved</button>
+                              ) : (
+                                  <button onClick={() => setEntryState(entry.id,1)} className="text-sm text-green hover:underline">Approve</button>
+                              )}
+                              <button onClick={() => deleteEntry(entry.id)} className="text-sm text-red hover:underline">Delete</button>
+                          </div>
+                      </div>
                   </div>
               </article>
           ))}

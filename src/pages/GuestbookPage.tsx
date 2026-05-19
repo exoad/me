@@ -13,6 +13,7 @@ interface GuestbookEntry {
 
 interface GuestbookResponse {
   entries: GuestbookEntry[];
+  totalEntries?: number;
   totalPages: number;
   currentPage: number;
 }
@@ -141,21 +142,21 @@ export default function GuestbookPage() {
             Back to home
           </button>
 
-          <header className="mb-[calc(var(--spacing)*_8)]">
+          <header className="mb-[calc(var(--spacing)*_10)]">
             <p className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-[calc(var(--spacing)*_4)]">
               Guest Book
             </p>
-            <h1 className="text-4xl sm:text-5xl font-bold text-fg0 mb-[calc(var(--spacing)*_4)]">
+            <h1 className="text-4xl sm:text-5xl font-bold text-fg0 mb-[calc(var(--spacing)*_3)]">
               {strings.pages.guestbook.title}
             </h1>
-            <p className="text-fg3 text-base font-sans leading-relaxed">
+            <p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg">
               {strings.pages.guestbook.description}
             </p>
           </header>
 
           <form
             onSubmit={handleSubmit}
-            className="mb-[calc(var(--spacing)*_12)] rounded-sm border border-bg2 bg-bg0 p-[calc(var(--spacing)*_5)] sm:p-[calc(var(--spacing)*_6)]"
+            className="mb-[calc(var(--spacing)*_14)] border-y border-bg2 py-[calc(var(--spacing)*_6)]"
           >
             <div className="mb-[calc(var(--spacing)*_4)]">
               <label className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
@@ -214,7 +215,7 @@ export default function GuestbookPage() {
           </form>
 
           <section>
-            <h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-[calc(var(--spacing)*_4)]">
+            <h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-[calc(var(--spacing)*_5)]">
               Recent Entries
             </h2>
 
@@ -227,7 +228,7 @@ export default function GuestbookPage() {
                 {entries.map((entry) => (
                   <article
                     key={entry.id}
-                    className="border-b border-bg2 pb-[calc(var(--spacing)*_4)] mb-[calc(var(--spacing)*_4)]"
+                    className="border-b border-bg2 pb-[calc(var(--spacing)*_5)] mb-[calc(var(--spacing)*_5)]"
                   >
                     <header className="mb-[calc(var(--spacing)*_2)] flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
                       <h3 className="font-bold text-fg0">{entry.name}</h3>

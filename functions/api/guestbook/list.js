@@ -34,6 +34,7 @@ const{results}=await env.DB.prepare(
 
 return new Response(JSON.stringify({
 entries :results ,
+totalEntries :countResult.total ,
 totalPages :Math.ceil(countResult.total /limit ),
 currentPage :page ,
 }),{

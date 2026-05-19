@@ -13,13 +13,24 @@ function NameCard() {
 
 	return (
 		<div className="flex flex-col items-start lg:items-end gap-3">
-			<h1 className="font-black text-5xl sm:text-6xl md:text-7xl text-fg0 tracking-tight">
+			<h1
+				className="font-black text-5xl sm:text-6xl md:text-7xl text-fg0 tracking-tight cursor-pointer select-none"
+				onClick={() => setColorIndex((i) => (i + 1) % coreColors.length)}
+				onKeyDown={(e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						e.preventDefault();
+						setColorIndex((i) => (i + 1) % coreColors.length);
+					}
+				}}
+				role="button"
+				tabIndex={0}
+				title="Click to change color"
+			>
 				<span
-			className={`${coreColors[colorIndex]} cursor-pointer transition-colors duration-300`}
-		onClick={() => setColorIndex((i) => (i + 1) % coreColors.length)}
-		title="Click to change color"
->{name[0]}
-</span>
+					className={`${coreColors[colorIndex]} transition-colors duration-300`}
+				>
+					{name[0]}
+				</span>
 				{name.slice(1)}
 			</h1>
 			<p className="text-fg3 text-xs font-sans uppercase tracking-[0.2em]">
@@ -147,9 +158,19 @@ function ContentSections() {
 		(p) => !p.featured && p.title !== "Drosk" && p.title !== "bibo",
 	);
 	const [latestPosts, setLatestPosts] = useState<BlogPostData[]>([]);
+	const [guestbookCount, setGuestbookCount] = useState<number | null>(null);
 
 	useEffect(() => {
 		loadAllBlogPosts().then(posts => setLatestPosts(posts)).catch(() => {});
+		window.fetch("/api/guestbook/list?page=1&limit=1")
+			.then((res) => (res.ok ? res.json() : null))
+			.then((data) => {
+				if (!data) return;
+				setGuestbookCount(
+					typeof data.totalEntries === "number" ? data.totalEntries : data.totalPages,
+				);
+			})
+			.catch(() => {});
 	}, []);
 
 	return (
@@ -257,24 +278,6 @@ function ContentSections() {
 				<div className="border-b border-bg2 mt-4" />
 			</section>
 
-			<section className="max-w-2xl">
-				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
-					Guestbook
-				</h2>
-				<a
-					href="/guestbook"
-					className="block group transition-all duration-300 hover:opacity-70"
-				>
-					<h3 className="text-2xl sm:text-3xl font-bold text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
-						{strings.pages.guestbook.title}
-					</h3>
-					<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
-						{strings.pages.guestbook.description}
-					</p>
-				</a>
-				<div className="border-b border-bg2 mt-4" />
-			</section>
-
 			<section>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Projects
@@ -314,6 +317,31 @@ function ContentSections() {
 						jmeng2@terpmail.umd.edu
 					</a>
 				</div>
+				<div className="border-b border-bg2 mt-4" />
+			</section>
+
+			<section className="max-w-2xl">
+				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
+					Guestbook
+				</h2>
+				<a
+					href="/guestbook"
+					className="block group transition-all duration-300 hover:opacity-70"
+				>
+					<div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+						<h3 className="text-2xl sm:text-3xl font-bold text-fg0 transition-colors duration-300 group-hover:text-fg1">
+							{strings.pages.guestbook.title}
+						</h3>
+						<span className="text-fg4 text-xs font-sans">
+							{guestbookCount === null
+								? "loading entries"
+								: `${guestbookCount} ${guestbookCount === 1 ? "entry" : "entries"}`}
+						</span>
+					</div>
+					<p className="mt-2 text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
+						{strings.pages.guestbook.description}
+					</p>
+				</a>
 			</section>
 		</div>
 	);
