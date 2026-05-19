@@ -143,15 +143,12 @@ export default function ProjectsPage() {
                                             <ProjectsColorBar technologies={proj.technologies} ref={proj.title} />
                                         </Row>
                                         <div className="border-b border-bg2 my-4" />
-                                        <button
-                                            className="bg-transparent border-none text-fg1 text-md font-light font-sans cursor-pointer duration-300 group relative"
-                                            onClick={() => window.open(proj.link, "_blank")}
-                                        >
+                                        <div className="bg-transparent border-none text-fg1 text-md font-light font-sans duration-300 group relative">
                                             <Row gap={2} mainAxisAlignment='center'>
                                                 <MdOutlineArrowOutward />
                                                 View Project
                                             </Row>
-                                        </button>
+                                        </div>
                                     </div>
                                 </div>
                             </a>

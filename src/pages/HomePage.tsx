@@ -3,6 +3,7 @@ import SEO from "../components/SEO.tsx";
 import { SiGithub, SiLinkedin, SiX } from "react-icons/si";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { BlogPostData, loadAllBlogPosts } from "../utils/markdown";
 
 function NameCard() {
@@ -24,6 +25,7 @@ function NameCard() {
 				}}
 				role="button"
 				tabIndex={0}
+				aria-label="Cycle the first letter color"
 				title="Click to change color"
 			>
 				<span
@@ -65,11 +67,14 @@ function NameCard() {
 
 function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 	const [open, setOpen] = useState(false);
+	const panelId = `project-${proj.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
 	return (
 		<div className="border-b border-bg2 transition-all duration-300 hover:border-bg3">
 			<button
 				onClick={() => setOpen(!open)}
+				aria-expanded={open}
+				aria-controls={panelId}
 				className="group w-full flex items-center justify-between gap-4 py-4 hover:border-fg3 transition duration-300 text-left"
 			>
 				<div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
@@ -86,6 +91,7 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 				/>
 			</button>
 			<div
+				id={panelId}
 				className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
 					open ? "max-h-96 opacity-100 pb-6" : "max-h-0 opacity-0"
 				}`}
@@ -158,7 +164,7 @@ function ContentSections() {
 		(p) => !p.featured && p.title !== "Drosk" && p.title !== "bibo",
 	);
 	const [latestPosts, setLatestPosts] = useState<BlogPostData[]>([]);
-	const [guestbookCount, setGuestbookCount] = useState<number | null>(null);
+	const [guestbookCount, setGuestbookCount] = useState<number | null | undefined>(null);
 
 	useEffect(() => {
 		loadAllBlogPosts().then(posts => setLatestPosts(posts)).catch(() => {});
@@ -170,26 +176,21 @@ function ContentSections() {
 					typeof data.totalEntries === "number" ? data.totalEntries : data.totalPages,
 				);
 			})
-			.catch(() => {});
+			.catch(() => setGuestbookCount(undefined));
 	}, []);
 
 	return (
 		<div className="flex flex-col gap-y-[3.5rem]">
 			<section className="animate-fade-in-up" style={{ animationDelay: '40ms' }}>
 				<p className="text-fg2 text-base sm:text-lg font-sans leading-relaxed max-w-xl">
-					I build software because I believe the best tools respect their users —
-					local-first, deterministic, and free from surveillance. From custom
-					audio engines and CPU rasterizers to file automation and programming
-					languages, I work across the stack to make things that work reliably
-					and stay yours. Most of my work is open source. Outside of code, I
-					enjoy hiking,{" "}
-					<a
-						href="/photos"
+					{strings.pages.home.about.content.split("photography")[0]}
+					<Link
+						to="/photos"
 						className="underline underline-offset-4 decoration-fg4 hover:decoration-fg2 transition-colors"
 					>
 						photography
-					</a>
-					, and movies.
+					</Link>
+					{strings.pages.home.about.content.split("photography")[1]}
 				</p>
 			</section>
 
@@ -236,8 +237,8 @@ function ContentSections() {
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Writing
 				</h2>
-				<a
-					href="/blog"
+				<Link
+					to="/blog"
 					className="block group transition-all duration-300 hover:opacity-70"
 				>
 					<h3 className="text-2xl sm:text-3xl font-bold text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
@@ -246,13 +247,13 @@ function ContentSections() {
 					<p className="text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
 						{strings.pages.blog.description}
 					</p>
-				</a>
+				</Link>
 				{latestPosts.length > 0 && (
 					<div className="mt-4 flex flex-col gap-4">
 						{latestPosts.slice(0, 2).map((post) => (
-							<a
+							<Link
 								key={post.slug}
-								href={"/blog/" + post.slug}
+								to={"/blog/" + post.slug}
 							className="group transition-all duration-300 hover:translate-x-1"
 							>
 								<div className="flex items-center gap-2 mb-1">
@@ -265,14 +266,14 @@ function ContentSections() {
 								<h4 className="text-base text-fg2 group-hover:text-fg0 transition-colors duration-300">
 									{post.title}
 								</h4>
-							</a>
+							</Link>
 						))}
-						<a
-							href="/blog"
+						<Link
+							to="/blog"
 							className="inline-flex items-center gap-1 text-fg4 hover:text-fg2 text-xs font-sans transition duration-300"
 						>
 							view all posts <MdOutlineArrowOutward size={10} />
-						</a>
+						</Link>
 					</div>
 				)}
 				<div className="border-b border-bg2 mt-4" />
@@ -324,8 +325,8 @@ function ContentSections() {
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Guestbook
 				</h2>
-				<a
-					href="/guestbook"
+				<Link
+					to="/guestbook"
 					className="block group transition-all duration-300 hover:-translate-y-1 hover:opacity-80"
 				>
 					<div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
@@ -335,13 +336,15 @@ function ContentSections() {
 						<span className="text-fg4 text-xs font-sans">
 							{guestbookCount === null
 								? "loading entries"
+								: guestbookCount === undefined
+									? "entries unavailable"
 								: `${guestbookCount} ${guestbookCount === 1 ? "entry" : "entries"}`}
 						</span>
 					</div>
 					<p className="mt-2 text-fg3 text-sm font-sans leading-relaxed max-w-lg transition-colors duration-300 group-hover:text-fg2">
 						{strings.pages.guestbook.description}
 					</p>
-				</a>
+				</Link>
 			</section>
 		</div>
 	);
@@ -353,11 +356,17 @@ export default function HomePage() {
 			<SEO title="Home" description={strings.pages.home.about.content} />
 
 			{/* Mobile / small screens: stacked layout */}
+			<main id="main">
 			<div className="lg:hidden">
 				<div className="min-h-[100dvh] flex flex-col items-center justify-center bg-bg0 px-6">
-					<NameCard />
+					<div className="flex flex-col items-center gap-8">
+						<NameCard />
+						<a href="#home-content" className="text-[10px] uppercase tracking-[0.2em] text-fg4 transition-colors hover:text-yellow">
+							{strings.pages.home.scroll_text}
+						</a>
+					</div>
 				</div>
-				<div className="bg-bg0 px-[calc(var(--spacing)*_6)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)] pb-20 max-w-3xl mx-auto">
+				<div id="home-content" className="bg-bg0 px-[calc(var(--spacing)*_6)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)] pb-20 max-w-3xl mx-auto">
 					<ContentSections />
 				</div>
 				<footer className="bg-bg0 border-t border-bg2 py-8 px-6">
@@ -399,6 +408,7 @@ export default function HomePage() {
 					</footer>
 				</div>
 			</div>
+			</main>
 		</>
 	);
 }

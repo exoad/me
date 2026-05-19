@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
+import SubpageNav from '../components/SubpageNav';
 import { MdCheckCircle, MdRadioButtonUnchecked } from 'react-icons/md';
 
 interface Entry {
@@ -15,7 +15,6 @@ interface Entry {
 }
 
 export default function GuestbookAdminPage() {
-    const navigate = useNavigate();
     const [loggedIn, setLoggedIn] = useState(false);
     const [checkingSession, setCheckingSession] = useState(true);
     const [password, setPassword] = useState('');
@@ -40,9 +39,9 @@ export default function GuestbookAdminPage() {
 
     const loadEntries=async()=>{setLoading(true);try{var res=await window.fetch('/api/admin/pending',{cache:'no-store'});if(res.ok){var data=await res.json();setEntries(data.entries||[]);}else if(res.status===401||res.status===403){setLoggedIn(false);setEntries([]);}}catch(err){console.error(err);}finally{setLoading(false);}};
 
-    const setEntryState=async(id:number, approved:number)=>{try{var res=await window.fetch('/api/admin/approve',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,approved}),});if(res.ok)loadEntries();}catch(err){console.error(err);}};
+    const setEntryState=async(id:number, approved:number)=>{setStatusMsg(null);try{var res=await window.fetch('/api/admin/approve',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,approved}),});if(res.ok){setStatusMsg(approved===1?'Entry approved.':'Entry marked unapproved.');loadEntries();}else{setStatusMsg('Could not update entry.');}}catch(err){console.error(err);setStatusMsg('Could not update entry.');}};
 
-    const deleteEntry=async(id:number)=>{try{var res=await window.fetch('/api/admin/delete',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),});if(res.ok)loadEntries();}catch(err){console.error(err)};};
+    const deleteEntry=async(id:number)=>{if(!window.confirm('Delete this entry from the admin list?'))return;setStatusMsg(null);try{var res=await window.fetch('/api/admin/delete',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),});if(res.ok){setStatusMsg('Entry deleted.');loadEntries();}else{setStatusMsg('Could not delete entry.');}}catch(err){console.error(err);setStatusMsg('Could not delete entry.');};};
 
     const checkSafety=async(entry:Entry)=>{setCheckingSafetyId(entry.id);setStatusMsg(null);try{var res=await window.fetch('/api/admin/check-safety',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:entry.id}),});if(res.ok){var data=await res.json();setEntries((current)=>current.map((item)=>item.id===entry.id?{...item,...data.entry}:item));setExpandedSafetyId(entry.id);}else if(res.status===401||res.status===403){setLoggedIn(false);setEntries([]);}else{var err=await res.json().catch(()=>({error:'Could not check safety.'}));setStatusMsg(err.error||'Could not check safety.');}}catch(err){console.error(err);setStatusMsg('Could not check safety.');}finally{setCheckingSafetyId(null);}};
 
@@ -68,11 +67,11 @@ export default function GuestbookAdminPage() {
         return (
           <>
           <SEO title="Guestbook Admin" description="Admin panel" url="https://exoad.net/guestbook/admin"/>
-          <div className="min-h-screen bg-bg0 px-[calc(var(--spacing)*_6)] py-[calc(var(--spacing)*_10)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)]">
+          <main id="main" className="min-h-screen bg-bg0 px-[calc(var(--spacing)*_6)] py-[calc(var(--spacing)*_10)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)]">
           <div className="max-w-xl mx-auto">
-          <p className="text-fg4 text-sm font-sans">Checking admin session...</p>
+          <p className="text-fg4 text-sm font-sans" role="status" aria-live="polite">Checking admin session...</p>
           </div>
-          </div>
+          </main>
           </>
       );
   }
@@ -81,17 +80,18 @@ export default function GuestbookAdminPage() {
         return (
           <>
           <SEO title="Guestbook Admin" description="Admin panel" url="https://exoad.net/guestbook/admin"/>
-          <div className="min-h-screen bg-bg0 px-[calc(var(--spacing)*_6)] py-[calc(var(--spacing)*_10)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)]">
+          <main id="main" className="min-h-screen bg-bg0 px-[calc(var(--spacing)*_6)] py-[calc(var(--spacing)*_10)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)]">
           <div className="max-w-xl mx-auto">
-          <button onClick={() => navigate('/')} className="flex items-center gap-2 text-fg4 hover:text-yellow transition-colors duration-300 text-sm font-sans mb-12 group">Home</button>
+          <SubpageNav />
           <h1 className="text-4xl font-bold text-fg0 mb-8">Guestbook Admin</h1>
           <form onSubmit={handleLogin} className="space-y-4">
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" autoComplete="current-password" className="w-full bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:outline-none focus:border-yellow"/>
-          {statusMsg&&<p className="text-red text-sm font-sans">{statusMsg}</p>}
+          <label htmlFor="admin-password" className="block text-xs uppercase tracking-wide text-fg4 font-sans">Password</label>
+          <input id="admin-password" name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" autoComplete="current-password" className="w-full bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:border-yellow"/>
+          {statusMsg&&<p className="text-red text-sm font-sans" role="alert">{statusMsg}</p>}
           <button type="submit" className="bg-yellow text-bg0 px-6 py-2 rounded-sm font-sans text-sm hover:opacity-80 transition-opacity">Login</button>
           </form>
           </div>
-          </div>
+          </main>
           </>
       );
   }
@@ -99,15 +99,15 @@ export default function GuestbookAdminPage() {
   return(
       <>
       <SEO title="Guestbook Admin" description="Admin panel" url="https://exoad.net/guestbook/admin"/>
-      <div className="min-h-screen bg-bg0 px-[calc(var(--spacing)*_6)] py-[calc(var(--spacing)*_10)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)]">
+      <main id="main" className="min-h-screen bg-bg0 px-[calc(var(--spacing)*_6)] py-[calc(var(--spacing)*_10)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)]">
       <div className="max-w-2xl mx-auto">
-      <button onClick={() => navigate('/guestbook')} className="flex items-center gap-2 text-fg4 hover:text-yellow transition-colors duration-300 text-sm font-sans mb-12 group">Back to guestbook</button>
+      <SubpageNav backTo="/guestbook" backLabel="Guestbook" />
       <p className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">Moderation</p>
       <h1 className="text-4xl font-bold text-fg0 mb-3">Guestbook Entries</h1>
       <p className="text-fg3 text-sm font-sans mb-8">Newest entries are shown first. Deleted entries are hidden from this list. Safety checks run server-side only.</p>
-      {statusMsg&&<p className="mb-4 text-red text-sm font-sans">{statusMsg}</p>}
+      {statusMsg&&<p className="mb-4 text-yellow text-sm font-sans" role="status" aria-live="polite">{statusMsg}</p>}
       {loading ? (
-          <p className="text-fg4 text-sm font-sans">Loading...</p>
+          <p className="text-fg4 text-sm font-sans" role="status" aria-live="polite">Loading...</p>
       ) : entries.length === 0 ? (
           <p className="text-fg3 text-sm font-sans">No entries.</p>
       ) : (
@@ -125,7 +125,7 @@ export default function GuestbookAdminPage() {
                                   <span className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm ${entry.approved===1?'bg-green/20 text-green':'bg-yellow/20 text-yellow'}`}>
                                       {entry.approved===1?'Approved':'Unapproved'}
                                   </span>
-                                  <button type="button" onClick={() => handleSafetyBadge(entry)} disabled={checkingSafetyId===entry.id} className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm transition-opacity hover:opacity-80 disabled:opacity-50 ${safetyClass(entry)}`}>
+                                  <button type="button" onClick={() => handleSafetyBadge(entry)} disabled={checkingSafetyId===entry.id} aria-expanded={expandedSafetyId===entry.id} className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm transition-opacity hover:opacity-80 disabled:opacity-50 ${safetyClass(entry)}`}>
                                       {checkingSafetyId===entry.id?'CHECKING...':safetyLabel(entry)}
                                   </button>
                               </div>
@@ -154,11 +154,11 @@ export default function GuestbookAdminPage() {
                           )}
                           <div className="flex flex-wrap gap-3 mt-3">
                               {entry.approved===1 ? (
-                                  <button onClick={() => setEntryState(entry.id,0)} className="text-sm text-yellow hover:underline">Mark unapproved</button>
+                                  <button type="button" onClick={() => setEntryState(entry.id,0)} className="text-sm text-yellow hover:underline">Mark unapproved</button>
                               ) : (
-                                  <button onClick={() => setEntryState(entry.id,1)} className="text-sm text-green hover:underline">Approve</button>
+                                  <button type="button" onClick={() => setEntryState(entry.id,1)} className="text-sm text-green hover:underline">Approve</button>
                               )}
-                              <button onClick={() => deleteEntry(entry.id)} className="text-sm text-red hover:underline">Delete</button>
+                              <button type="button" onClick={() => deleteEntry(entry.id)} className="text-sm text-red hover:underline">Delete</button>
                           </div>
                       </div>
                   </div>
@@ -167,7 +167,7 @@ export default function GuestbookAdminPage() {
           </>
       )}
       </div>
-      </div>
+      </main>
 </>
 );
 }

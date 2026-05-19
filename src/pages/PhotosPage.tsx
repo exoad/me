@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { photos } from "../data/photos";
 import SEO from '../components/SEO';
+import SubpageNav from '../components/SubpageNav';
 import { strings } from '../data/shared.ts';
 import { MdOutlineArrowOutward } from "react-icons/md";
 
@@ -57,6 +58,7 @@ function usePhotoVisibility() {
 
 export default function PhotosPage() {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   const [hoveredPhoto, setHoveredPhoto] = useState<string | null>(null);
   const { visiblePhotos, observePhoto, cleanup } = usePhotoVisibility();
   const photoRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -77,6 +79,7 @@ export default function PhotosPage() {
     const photoId = `photo-${index}`;
     const isVisible = visiblePhotos.has(photoId);
     const isLoaded = loadedImages[photoId];
+    const hasFailed = failedImages[photoId];
     const isHovered = hoveredPhoto === photoId;
 
     useEffect(() => {
@@ -105,23 +108,32 @@ export default function PhotosPage() {
           {isVisible ? (
             <button
               onClick={() => window.open(photo.src, '_blank')}
+              onFocus={() => setHoveredPhoto(photoId)}
+              onBlur={() => setHoveredPhoto(null)}
               className="w-full block relative"
-              aria-label={`View larger image of ${photo.alt}`}
+              aria-label={`View larger image of ${photo.alt}. ${photo.location}, ${formatDate(photo.date)}`}
             >
-              <img
-                src={photo.thumbnailSrc}
-                alt={photo.alt}
-                className={`w-full h-auto object-cover transition-opacity duration-500 ${
-                  isLoaded ? 'opacity-100' : 'opacity-0'
-                }`}
-                onLoad={() => handleImageLoad(photoId)}
-                decoding="async"
-                loading="eager"
-                style={{ 
-                  transform: isHovered ? 'scale(1.02)' : 'scale(1)',
-                  transition: 'transform 0.5s ease-out'
-                }}
-              />
+              {hasFailed ? (
+                <div className="flex min-h-48 items-center justify-center bg-bg1 p-6 text-center text-sm text-fg4 font-sans">
+                  {strings.pages.photos.error}
+                </div>
+              ) : (
+                <img
+                  src={photo.thumbnailSrc}
+                  alt={photo.alt}
+                  className={`w-full h-auto object-cover transition-opacity duration-500 ${
+                    isLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  onLoad={() => handleImageLoad(photoId)}
+                  onError={() => setFailedImages(prev => ({ ...prev, [photoId]: true }))}
+                  decoding="async"
+                  loading="eager"
+                  style={{
+                    transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                    transition: 'transform 0.5s ease-out'
+                  }}
+                />
+              )}
 
               <div 
                 className={`absolute inset-0 bg-bg0/80 flex flex-col justify-end p-4 transition-opacity duration-300 ${
@@ -161,17 +173,12 @@ export default function PhotosPage() {
 
       <div className="min-h-screen bg-bg0">
         <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between border-b border-bg2">
-          <a 
-            href="/" 
-            className="text-fg4 hover:text-fg0 transition-colors duration-300 text-xs font-sans uppercase tracking-widest"
-          >
-            ← Back
-          </a>
-          <h1 className="text-lg text-fg0">Photos</h1>
-          <div className="w-16"></div>
+          <div className="w-full">
+            <SubpageNav />
+          </div>
         </div>
 
-        <main className="py-12 px-6">
+        <main id="main" className="py-12 px-6">
           <div className="max-w-6xl mx-auto">
             <div className="mb-12 max-w-xl">
               <h2 className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">Gallery</h2>
@@ -203,10 +210,10 @@ export default function PhotosPage() {
               {strings.footer.legals}
             </span>
             <a
-              href="/"
+              href="#main"
               className="text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300 uppercase tracking-wider"
             >
-              Home
+              Top
             </a>
           </div>
         </footer>

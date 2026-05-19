@@ -34,6 +34,7 @@ export default function BlogToc({ entries }: { entries: TocEntry[] }) {
                     <li key={entry.id}>
                         <a
                             href={`#${entry.id}`}
+                            aria-current={activeId === entry.id ? 'location' : undefined}
                             className={`block text-base font-sans transition-colors duration-200 hover:text-fg0 ${
                                 entry.level === 2 ? 'pl-0' : entry.level === 3 ? 'pl-3' : 'pl-6'
                             } ${

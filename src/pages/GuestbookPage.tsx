@@ -1,8 +1,8 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import SEO from '../components/SEO';
+import SubpageNav from '../components/SubpageNav';
 import { strings } from '../data/shared';
-import { MdArrowBack, MdSend, MdChevronLeft, MdChevronRight, MdAdd, MdClose } from 'react-icons/md';
+import { MdSend, MdChevronLeft, MdChevronRight, MdAdd, MdClose } from 'react-icons/md';
 
 interface GuestbookEntry {
   id: number;
@@ -73,11 +73,11 @@ function loadTurnstileScript() {
 }
 
 export default function GuestbookPage() {
-  const navigate = useNavigate();
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [entriesError, setEntriesError] = useState('');
   const [name, setName] = useState('');
   const [msgText, setMsgText] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -86,31 +86,37 @@ export default function GuestbookPage() {
   const [turnstileToken, setTurnstileToken] = useState('');
   const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
   const turnstileWidgetIdRef = useRef<string | null>(null);
+  const formToggleRef = useRef<HTMLButtonElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const dialogCloseRef = useRef<HTMLButtonElement | null>(null);
+
+  const loadEntriesForPage = useCallback(async (p: number) => {
+    setLoading(true);
+    setEntriesError('');
+    try {
+      const res = await window.fetch('/api/guestbook/list?page=' + p + '&limit=20');
+      let data: GuestbookResponse;
+      if (res.ok) {
+        data = await res.json();
+      } else {
+        data = { entries: [], totalPages: 1, currentPage: p };
+        setEntriesError('Could not load entries right now.');
+      }
+      setEntries(data.entries || []);
+      setTotalPages(data.totalPages || 1);
+    } catch (e) {
+      console.error(e);
+      setEntries([]);
+      setEntriesError('Could not load entries right now.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (window.scrollY > 0) window.scrollTo({ top: 0 });
-    loadEntries(page);
-
-    async function loadEntries(p: number) {
-      setLoading(true);
-      try {
-        const res = await window.fetch('/api/guestbook/list?page=' + p + '&limit=20');
-        let data: GuestbookResponse;
-        if (res.ok) {
-          data = await res.json();
-        } else {
-          data = { entries: [], totalPages: 1, currentPage: p };
-        }
-        setEntries(data.entries || []);
-        setTotalPages(data.totalPages || 1);
-      } catch (e) {
-        console.error(e);
-        setEntries([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-  }, [page]);
+    loadEntriesForPage(page);
+  }, [loadEntriesForPage, page]);
 
   useEffect(() => {
     if (!formOpen) {
@@ -148,6 +154,11 @@ export default function GuestbookPage() {
       }
     };
   }, [formOpen]);
+
+  useEffect(() => {
+    if (!statusMsg?.ok) return;
+    dialogCloseRef.current?.focus();
+  }, [statusMsg]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -189,6 +200,37 @@ export default function GuestbookPage() {
       setStatusMsg({ text: String(strings.pages.guestbook.error_submit), ok: false });
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const closeSuccessDialog = () => {
+    setStatusMsg(null);
+    formToggleRef.current?.focus();
+  };
+
+  const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSuccessDialog();
+      return;
+    }
+
+    if (event.key !== 'Tab' || !dialogRef.current) return;
+
+    const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
     }
   };
 
@@ -243,16 +285,9 @@ export default function GuestbookPage() {
         description={strings.pages.guestbook.description}
         url="https://exoad.net/guestbook"
       />
-      <main className="min-h-screen bg-bg0 px-[calc(var(--spacing)*_6)] py-[calc(var(--spacing)*_10)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)] md:py-[calc(var(--spacing)*_16)]">
+      <main id="main" className="min-h-screen bg-bg0 px-[calc(var(--spacing)*_6)] py-[calc(var(--spacing)*_10)] sm:px-[calc(var(--spacing)*_8)] md:px-[calc(var(--spacing)*_16)] md:py-[calc(var(--spacing)*_16)]">
         <div className="mx-auto w-full max-w-xl">
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="mb-[calc(var(--spacing)*_10)] inline-flex items-center gap-2 text-fg4 hover:text-yellow transition-colors duration-300 text-sm font-sans group"
-          >
-            <MdArrowBack size={16} className="transition-transform duration-300 group-hover:-translate-x-1" />
-            Back to home
-          </button>
+          <SubpageNav />
 
           <header className="mb-[calc(var(--spacing)*_8)] animate-fade-in-up">
             <p className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-[calc(var(--spacing)*_4)]">
@@ -268,10 +303,12 @@ export default function GuestbookPage() {
 
           <section className="mb-[calc(var(--spacing)*_12)] border-y border-bg2 animate-fade-in-up" style={{ animationDelay: '60ms' }}>
             <button
+              ref={formToggleRef}
               type="button"
-              onClick={() => setFormOpen((open) => !open)}
+              onClick={() => { setStatusMsg((current) => current?.ok ? current : null); setFormOpen((open) => !open); }}
               className="group flex w-full items-center justify-between gap-4 py-[calc(var(--spacing)*_5)] text-left transition-colors duration-300 hover:text-fg0"
               aria-expanded={formOpen}
+              aria-controls="guestbook-form"
             >
               <span>
                 <span className="block text-fg0 font-bold text-lg">
@@ -288,49 +325,56 @@ export default function GuestbookPage() {
 
             {formOpen && (
               <form
+                id="guestbook-form"
                 onSubmit={handleSubmit}
                 className="animate-fade-in-up pb-[calc(var(--spacing)*_6)]"
               >
                 <div className="mb-[calc(var(--spacing)*_4)]">
-                  <label className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
+                  <label htmlFor="guestbook-name" className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
                     {strings.pages.guestbook.name_label}
                   </label>
                   <input
+                    id="guestbook-name"
+                    name="name"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     maxLength={100}
                     required
                     placeholder="Your name"
-                    className="w-full bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:outline-none focus:border-yellow"
+                    className="w-full bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:border-yellow"
                   />
                 </div>
 
                 <div className="mb-[calc(var(--spacing)*_4)]">
-                  <label className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
+                  <label htmlFor="guestbook-message" className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
                     {strings.pages.guestbook.message_label}
                   </label>
                   <textarea
+                    id="guestbook-message"
+                    name="message"
                     value={msgText}
                     onChange={(e) => setMsgText(e.target.value)}
                     maxLength={MESSAGE_MAX_LENGTH}
                     required
                     rows={4}
                     placeholder="Leave a message"
-                    className="w-full resize-y bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:outline-none focus:border-yellow"
+                    aria-describedby="guestbook-message-count"
+                    className="w-full resize-y bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:border-yellow"
                   />
-                  <div className="mt-2 text-right font-sans text-[11px] text-fg4">
+                  <div id="guestbook-message-count" className="mt-2 text-right font-sans text-[11px] text-fg4">
                     {msgText.length}/{MESSAGE_MAX_LENGTH}
                   </div>
                 </div>
 
+                <p className="mb-2 text-xs text-fg4 font-sans">Verification appears only when signing.</p>
                 <div
                   ref={turnstileContainerRef}
                   className="cf-turnstile mb-[calc(var(--spacing)*_2)] min-h-[65px]"
                 />
 
                 {statusMsg && !statusMsg.ok && (
-                  <p className="mb-[calc(var(--spacing)*_4)] text-sm font-sans text-red">
+                  <p className="mb-[calc(var(--spacing)*_4)] text-sm font-sans text-red" role="alert">
                     {statusMsg.text}
                   </p>
                 )}
@@ -349,17 +393,25 @@ export default function GuestbookPage() {
 
           {statusMsg?.ok && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg0/80 px-6 backdrop-blur-sm animate-fade-in">
-              <div className="w-full max-w-sm border border-bg2 bg-bg0 p-6 shadow-2xl animate-scale-in">
+              <div
+                ref={dialogRef}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="guestbook-success-title"
+                onKeyDown={handleDialogKeyDown}
+                className="w-full max-w-sm border border-bg2 bg-bg0 p-6 shadow-2xl animate-scale-in"
+              >
                 <p className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
                   Guest Book
                 </p>
-                <h2 className="text-2xl font-bold text-fg0 mb-3">Note received</h2>
+                <h2 id="guestbook-success-title" className="text-2xl font-bold text-fg0 mb-3">Note received</h2>
                 <p className="text-fg3 text-sm font-sans leading-relaxed mb-6">
                   {statusMsg.text}
                 </p>
                 <button
+                  ref={dialogCloseRef}
                   type="button"
-                  onClick={() => setStatusMsg(null)}
+                  onClick={closeSuccessDialog}
                   className="bg-yellow text-bg0 px-5 py-2 rounded-sm font-sans text-sm hover:opacity-80 transition-opacity"
                 >
                   Nice
@@ -374,7 +426,14 @@ export default function GuestbookPage() {
             </h2>
 
             {loading ? (
-              <p className="text-fg4 text-sm font-sans">{strings.pages.guestbook.loading_entries}</p>
+              <p className="text-fg4 text-sm font-sans" role="status" aria-live="polite">{strings.pages.guestbook.loading_entries}</p>
+            ) : entriesError ? (
+              <div className="text-sm font-sans text-fg3" role="alert">
+                <p>{entriesError}</p>
+                <button type="button" onClick={() => loadEntriesForPage(page)} className="mt-2 text-yellow hover:underline">
+                  Try again
+                </button>
+              </div>
             ) : entries.length === 0 ? (
               <p className="text-fg3 text-sm font-sans">{strings.pages.guestbook.no_entries}</p>
             ) : (
@@ -413,7 +472,7 @@ export default function GuestbookPage() {
             )}
           </section>
 
-          <nav className="mt-[calc(var(--spacing)*_8)] flex items-center justify-center gap-4 text-sm font-sans">
+          <nav className="mt-[calc(var(--spacing)*_8)] flex items-center justify-center gap-4 text-sm font-sans" aria-label="Guestbook entries pagination">
             <button
               type="button"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
@@ -423,7 +482,7 @@ export default function GuestbookPage() {
               <MdChevronLeft size={18} />
               Prev
             </button>
-            <span className="text-fg4">
+            <span className="text-fg4" aria-current="page">
               Page {page} of {totalPages}
             </span>
             <button

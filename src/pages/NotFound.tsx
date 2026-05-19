@@ -6,6 +6,7 @@ import HoverShowLine from '../components/HoverShowLine.tsx';
 import StarBg from "../components/StarsBg";
 import { Column } from '../components/FlexLayouter.tsx';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function NotFound({ scaffoldProps = {} }) {
     useEffect(() => {
@@ -48,6 +49,12 @@ export default function NotFound({ scaffoldProps = {} }) {
                         </span>
                         <HoverShowLine />
                     </button>
+                    <Link
+                        to="/"
+                        className="text-gb-fg4 hover:text-gb-orange transition-colors duration-300 font-montserrat"
+                    >
+                        Home
+                    </Link>
                 </Column>
             </ScaffoldContent>
         </Scaffold>

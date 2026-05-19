@@ -530,7 +530,7 @@ export const strings = {
     },
     name: "Jiaming Meng",
     footer: {
-        legals: "© 2025 Jiaming Meng\nAll rights reserved.",
+        legals: "© 2026 Jiaming Meng\nAll rights reserved.",
         site: "EXOAD.NET",
         source: {
             leading: "Source Code:",

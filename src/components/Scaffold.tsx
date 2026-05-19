@@ -11,7 +11,7 @@ export default function Scaffold(props: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
-        <div className="relative select-none">
+        <div className="relative">
             {!props.skipMenuBar && <MenuBar />}
             {props.useForcedPadding ? (
                 <div className="content-wrapper" style={{ paddingTop: props.skipMenuBar ? "0" : "6rem" }}>
@@ -25,7 +25,7 @@ export default function Scaffold(props: Readonly<{
 }
 
 export function ScaffoldContent(props: Readonly<{ useDefaultLayout?: boolean; children: React.ReactNode; className?: string; }>) {
-    return <div className={`bg-gb-bg0-hard min-h-screen ${props.className ?? ""} ${props.useDefaultLayout ? 'flex flex-col items-center justify-start' : ''} px-4 sm:px-8 md:px-16 pt-24 pb-12`}>
+    return <main id="main" className={`bg-gb-bg0-hard min-h-screen ${props.className ?? ""} ${props.useDefaultLayout ? 'flex flex-col items-center justify-start' : ''} px-4 sm:px-8 md:px-16 pt-24 pb-12`}>
         {props.children}
-    </div>;
+    </main>;
 }

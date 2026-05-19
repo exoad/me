@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
+import SubpageNav from '../components/SubpageNav';
 import { strings } from "../data/shared";
 import { BlogPostData, loadAllBlogPosts } from '../utils/markdown';
-import { MdOutlineArrowOutward, MdArrowBack } from 'react-icons/md';
+import { MdOutlineArrowOutward } from 'react-icons/md';
 
 // Loading indicator colors (excluding red) - green, yellow, blue
 const LOADING_COLORS = [
@@ -25,6 +26,7 @@ function BlogPostCard({ post, index }: { post: BlogPostData; index: number }) {
     return (
         <button
             onClick={() => navigate(`/blog/${post.slug}`)}
+            aria-label={`Read ${post.title}`}
             className={`block w-full text-left group transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             }`}
@@ -36,7 +38,7 @@ function BlogPostCard({ post, index }: { post: BlogPostData; index: number }) {
                         {post.tags.slice(0, 2).map(t => `#${t}`).join(' ')}
                     </span>
                 </div>
-                <h3 className={`text-xl sm:text-2xl font-bold ${colorClass} group-hover:text-fg0 transition-colors duration-300 mb-2 whitespace-nowrap overflow-hidden text-ellipsis`}>
+                <h3 className={`text-xl sm:text-2xl font-bold ${colorClass} group-hover:text-fg0 transition-colors duration-300 mb-2`}>
                     {post.title}
                 </h3>
                 <p className="text-fg3 text-sm font-sans leading-relaxed max-w-2xl mb-3">
@@ -73,13 +75,9 @@ export default function BlogListPage() {
                 description={strings.pages.blog.description}
                 url="https://exoad.net/blog"
             />
-            <div className="min-h-screen bg-bg0">
+            <main id="main" className="min-h-screen bg-bg0">
                 <div className="max-w-2xl mx-auto px-6 py-12">
-                    {/* Back to home */}
-                    <button onClick={() => navigate('/')} className="flex items-center gap-2 text-fg4 hover:text-yellow transition-colors duration-300 text-sm font-sans mb-12 group">
-                        <MdArrowBack size={16} />
-                        Home
-                    </button>
+                    <SubpageNav />
 
                     {/* Minimal header like landing page */}
                     <div className="mb-8">
@@ -95,7 +93,7 @@ export default function BlogListPage() {
                     {/* Posts list - no dividers, minimal spacing */}
                     <div className="space-y-2">
                         {loading ? (
-                            <div className="flex items-center gap-2 text-fg4 text-sm font-sans py-8">
+                            <div className="flex items-center gap-2 text-fg4 text-sm font-sans py-8" role="status" aria-live="polite" aria-busy="true">
                                 <div className="w-2 h-2 bg-yellow rounded-full animate-pulse" />
                                 <span>Loading posts...</span>
                             </div>
@@ -108,7 +106,7 @@ export default function BlogListPage() {
                         )}
                     </div>
                 </div>
-            </div>
+            </main>
         </>
     );
 }

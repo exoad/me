@@ -11,11 +11,8 @@ export default function MenuBar() {
                 <NameToggle names={strings.header.names_funny} />
                 <Navigation items={[
                     { path: '/', label: strings.navigation.home },
-                    // { path: '/about', label: strings.navigation.about },
-                    { path: '/projects', label: strings.navigation.projects },
                     { path: '/blog', label: strings.navigation.blog },
                     { path: '/photos', label: strings.navigation.photos },
-                    { path: '/contacts', label: strings.navigation.contact },
                     { path: '/guestbook', label: strings.navigation.guestbook }
                 ]} onNavigate={(path: string) => {
                     navigate(path);

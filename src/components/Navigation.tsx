@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MdMenu, MdOutlineClose } from 'react-icons/md';
 import NavLink from './NavLink';
 import '../styles/Navigation.css';
@@ -12,13 +12,24 @@ export default function Navigation({ items, onNavigate }: Readonly<{
     onNavigate: (path: string) => void;
 }>) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+    const firstMobileItemRef = useRef<HTMLButtonElement | null>(null);
+
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') setIsSidebarOpen(false);
+            if (e.key === 'Escape') {
+                setIsSidebarOpen(false);
+                menuButtonRef.current?.focus();
+            }
         };
         document.addEventListener('keydown', handleKey);
         return () => document.removeEventListener('keydown', handleKey);
     }, []);
+
+    useEffect(() => {
+        if (isSidebarOpen) firstMobileItemRef.current?.focus();
+    }, [isSidebarOpen]);
+
     const handleNavClick = (path: string) => {
         onNavigate(path);
         setIsSidebarOpen(false);
@@ -38,9 +49,12 @@ export default function Navigation({ items, onNavigate }: Readonly<{
             </nav>
             <div className="sm:hidden">
                 <button
+                    ref={menuButtonRef}
                     className="flex items-center justify-center py-3 text-gb-fg1 font-medium bg-transparent transition-colors active:scale-95"
                     onClick={() => setIsSidebarOpen(true)}
-                    aria-label="Open sidebar"
+                    aria-label="Open menu"
+                    aria-expanded={isSidebarOpen}
+                    aria-controls="mobile-menu"
                 >
                     <MdMenu size="2rem" />
                 </button>
@@ -54,7 +68,7 @@ export default function Navigation({ items, onNavigate }: Readonly<{
             ) : null}
             <div className="sm:hidden sm:pt-20">
                 {createPortal(
-                    <div className={`fixed inset-0 select-none w-screen h-screen bg-gb-bg0/70 backdrop-blur-md border-t border-gb-bg3/50 z-[99999] transform transition-transform ease-in-out duration-400 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                    <div id="mobile-menu" role="dialog" aria-modal="true" className={`fixed inset-0 select-none w-screen h-screen bg-gb-bg0/70 backdrop-blur-md border-t border-gb-bg3/50 z-[99999] transform transition-transform ease-in-out duration-400 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
                     >
                         <div className="h-16 flex items-center justify-between px-6 border-b border-gb-bg3/50">
                             <span className="text-2xl text-gb-fg1 font-medium">{strings.navigation.mobile_menu.title}</span>
@@ -70,6 +84,7 @@ export default function Navigation({ items, onNavigate }: Readonly<{
                             {items.map((item) => (
                                 <button
                                     key={item.path}
+                                    ref={item === items[0] ? firstMobileItemRef : undefined}
                                     className="group relative w-full text-left px-8 py-4 text-gb-fg1 text-4xl font-normal font-montserrat transition-colors duration-150"
                                     onClick={() => handleNavClick(item.path)}
                                 >
