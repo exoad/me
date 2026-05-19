@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { strings } from '../data/shared';
-import { MdArrowBack, MdSend, MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import { MdArrowBack, MdSend, MdChevronLeft, MdChevronRight, MdAdd, MdClose } from 'react-icons/md';
 
 interface GuestbookEntry {
   id: number;
@@ -41,6 +41,7 @@ export default function GuestbookPage() {
   const [msgText, setMsgText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [statusMsg, setStatusMsg] = useState<StatusMessage | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
     if (window.scrollY > 0) window.scrollTo({ top: 0 });
@@ -99,6 +100,7 @@ export default function GuestbookPage() {
       if (res.ok) {
         setName('');
         setMsgText('');
+        setFormOpen(false);
         setStatusMsg({ text: data.message || strings.pages.guestbook.success_message, ok: true });
         if (window.turnstile) window.turnstile.reset();
       } else {
@@ -142,7 +144,7 @@ export default function GuestbookPage() {
             Back to home
           </button>
 
-          <header className="mb-[calc(var(--spacing)*_10)]">
+          <header className="mb-[calc(var(--spacing)*_8)]">
             <p className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-[calc(var(--spacing)*_4)]">
               Guest Book
             </p>
@@ -154,65 +156,88 @@ export default function GuestbookPage() {
             </p>
           </header>
 
-          <form
-            onSubmit={handleSubmit}
-            className="mb-[calc(var(--spacing)*_14)] border-y border-bg2 py-[calc(var(--spacing)*_6)]"
-          >
-            <div className="mb-[calc(var(--spacing)*_4)]">
-              <label className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
-                {strings.pages.guestbook.name_label}
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                maxLength={100}
-                required
-                placeholder="Your name"
-                className="w-full bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:outline-none focus:border-yellow"
-              />
-            </div>
-
-            <div className="mb-[calc(var(--spacing)*_4)]">
-              <label className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
-                {strings.pages.guestbook.message_label}
-              </label>
-              <textarea
-                value={msgText}
-                onChange={(e) => setMsgText(e.target.value)}
-                maxLength={1000}
-                required
-                rows={5}
-                placeholder="Leave a message"
-                className="w-full resize-y bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:outline-none focus:border-yellow"
-              />
-            </div>
-
-            <div
-              className="cf-turnstile mb-[calc(var(--spacing)*_4)]"
-              data-sitekey="0x4AAAAAADRVTMltusSmfuQN"
-              data-theme="dark"
-            />
-
-            {statusMsg && (
-              <p
-                className={`mb-[calc(var(--spacing)*_4)] text-sm font-sans ${
-                  statusMsg.ok ? 'text-green' : 'text-red'
-                }`}
-              >
-                {statusMsg.text}
-              </p>
-            )}
-
+          <section className="mb-[calc(var(--spacing)*_12)] border-y border-bg2">
             <button
-              type="submit"
-              disabled={submitting || !name.trim() || !msgText.trim()}
-              className="inline-flex items-center gap-2 bg-yellow text-bg0 px-6 py-2 rounded-sm font-sans text-sm hover:opacity-80 transition-opacity disabled:opacity-50"
+              type="button"
+              onClick={() => setFormOpen((open) => !open)}
+              className="group flex w-full items-center justify-between gap-4 py-[calc(var(--spacing)*_5)] text-left"
+              aria-expanded={formOpen}
             >
-              <MdSend size={14} />
-              {submitting ? 'Submitting...' : strings.pages.guestbook.submit_button}
+              <span>
+                <span className="block text-fg0 font-bold text-lg">
+                  {formOpen ? 'Hide signing form' : 'Sign the guestbook'}
+                </span>
+                <span className="block text-fg4 text-xs font-sans mt-1">
+                  Short notes only. New entries wait for approval.
+                </span>
+              </span>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-yellow text-bg0 transition-opacity group-hover:opacity-80">
+                {formOpen ? <MdClose size={20} /> : <MdAdd size={20} />}
+              </span>
             </button>
-          </form>
+
+            {formOpen && (
+              <form
+                onSubmit={handleSubmit}
+                className="pb-[calc(var(--spacing)*_6)]"
+              >
+                <div className="mb-[calc(var(--spacing)*_4)]">
+                  <label className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
+                    {strings.pages.guestbook.name_label}
+                  </label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    maxLength={100}
+                    required
+                    placeholder="Your name"
+                    className="w-full bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:outline-none focus:border-yellow"
+                  />
+                </div>
+
+                <div className="mb-[calc(var(--spacing)*_4)]">
+                  <label className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
+                    {strings.pages.guestbook.message_label}
+                  </label>
+                  <textarea
+                    value={msgText}
+                    onChange={(e) => setMsgText(e.target.value)}
+                    maxLength={1000}
+                    required
+                    rows={4}
+                    placeholder="Leave a message"
+                    className="w-full resize-y bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:outline-none focus:border-yellow"
+                  />
+                </div>
+
+                <div
+                  className="cf-turnstile mb-[calc(var(--spacing)*_4)]"
+                  data-sitekey="0x4AAAAAADRVTMltusSmfuQN"
+                  data-theme="dark"
+                />
+
+                <button
+                  type="submit"
+                  disabled={submitting || !name.trim() || !msgText.trim()}
+                  className="inline-flex items-center gap-2 bg-yellow text-bg0 px-6 py-2 rounded-sm font-sans text-sm hover:opacity-80 transition-opacity disabled:opacity-50"
+                >
+                  <MdSend size={14} />
+                  {submitting ? 'Submitting...' : strings.pages.guestbook.submit_button}
+                </button>
+              </form>
+            )}
+          </section>
+
+          {statusMsg && (
+            <p
+              className={`mb-[calc(var(--spacing)*_8)] border-b border-bg2 pb-[calc(var(--spacing)*_4)] text-sm font-sans ${
+                statusMsg.ok ? 'text-green' : 'text-red'
+              }`}
+            >
+              {statusMsg.text}
+            </p>
+          )}
 
           <section>
             <h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-[calc(var(--spacing)*_5)]">
@@ -225,18 +250,25 @@ export default function GuestbookPage() {
               <p className="text-fg3 text-sm font-sans">{strings.pages.guestbook.no_entries}</p>
             ) : (
               <div>
-                {entries.map((entry) => (
+                {entries.map((entry, index) => (
                   <article
                     key={entry.id}
-                    className="border-b border-bg2 pb-[calc(var(--spacing)*_5)] mb-[calc(var(--spacing)*_5)]"
+                    className="group border-b border-bg2 pb-[calc(var(--spacing)*_5)] mb-[calc(var(--spacing)*_5)]"
                   >
-                    <header className="mb-[calc(var(--spacing)*_2)] flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                      <h3 className="font-bold text-fg0">{entry.name}</h3>
-                      <time className="text-fg4 text-xs font-sans">{formatDate(entry.created_at)}</time>
-                    </header>
-                    <p className="text-fg3 text-sm font-sans leading-relaxed whitespace-pre-wrap">
-                      {entry.message}
-                    </p>
+                    <div className="flex gap-4">
+                      <span className="mt-1 hidden w-8 shrink-0 text-right font-sans text-xs text-fg4 sm:block">
+                        {String((page - 1) * 20 + index + 1).padStart(2, '0')}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <header className="mb-[calc(var(--spacing)*_2)] flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+                          <h3 className="font-bold text-fg0">{entry.name}</h3>
+                          <time className="text-fg4 text-xs font-sans">{formatDate(entry.created_at)}</time>
+                        </header>
+                        <p className="text-fg3 text-sm font-sans leading-relaxed whitespace-pre-wrap">
+                          {entry.message}
+                        </p>
+                      </div>
+                    </div>
                   </article>
                 ))}
               </div>
