@@ -175,7 +175,7 @@ function ContentSections() {
 
 	return (
 		<div className="flex flex-col gap-y-[3.5rem]">
-			<section className="animate-fade-in-up" style={{ animationDelay: '80ms' }}>
+			<section className="animate-fade-in-up" style={{ animationDelay: '40ms' }}>
 				<p className="text-fg2 text-base sm:text-lg font-sans leading-relaxed max-w-xl">
 					I build software because I believe the best tools respect their users —
 					local-first, deterministic, and free from surveillance. From custom
@@ -194,7 +194,7 @@ function ContentSections() {
 			</section>
 
 			{droskProject && (
-				<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '160ms' }}>
+				<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '70ms' }}>
 					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Current Focus
 					</h2>
@@ -205,7 +205,7 @@ function ContentSections() {
 
 			{/* bibo - Special mention */}
 			{biboProject && (
-				<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '220ms' }}>
+				<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '90ms' }}>
 					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Active Project
 					</h2>
@@ -232,7 +232,7 @@ function ContentSections() {
 				</section>
 			)}
 
-			<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '280ms' }}>
+			<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '110ms' }}>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Writing
 				</h2>
@@ -278,7 +278,7 @@ function ContentSections() {
 				<div className="border-b border-bg2 mt-4" />
 			</section>
 
-			<section className="animate-fade-in-up" style={{ animationDelay: '340ms' }}>
+			<section className="animate-fade-in-up" style={{ animationDelay: '130ms' }}>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Projects
 				</h2>
@@ -299,7 +299,7 @@ function ContentSections() {
 				</div>
 			</section>
 
-			<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+			<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '150ms' }}>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Contact
 				</h2>
@@ -320,7 +320,7 @@ function ContentSections() {
 				<div className="border-b border-bg2 mt-4" />
 			</section>
 
-			<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '460ms' }}>
+			<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '170ms' }}>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Guestbook
 				</h2>

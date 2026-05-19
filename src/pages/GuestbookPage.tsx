@@ -158,7 +158,7 @@ export default function GuestbookPage() {
             </p>
           </header>
 
-          <section className="mb-[calc(var(--spacing)*_12)] border-y border-bg2 animate-fade-in-up" style={{ animationDelay: '120ms' }}>
+          <section className="mb-[calc(var(--spacing)*_12)] border-y border-bg2 animate-fade-in-up" style={{ animationDelay: '60ms' }}>
             <button
               type="button"
               onClick={() => setFormOpen((open) => !open)}
@@ -262,7 +262,7 @@ export default function GuestbookPage() {
             </div>
           )}
 
-          <section className="animate-fade-in-up" style={{ animationDelay: '220ms' }}>
+          <section className="animate-fade-in-up" style={{ animationDelay: '90ms' }}>
             <h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-[calc(var(--spacing)*_5)]">
               Recent Entries
             </h2>
@@ -276,8 +276,8 @@ export default function GuestbookPage() {
                 {entries.map((entry, index) => (
                   <article
                     key={entry.id}
-                    className="group animate-fade-in-up border-b border-bg2 pb-[calc(var(--spacing)*_5)] mb-[calc(var(--spacing)*_5)] transition-all duration-300 hover:border-bg3"
-                    style={{ animationDelay: `${Math.min(index * 80, 480)}ms` }}
+                    className="group animate-fade-in-up border-b border-bg2 pb-[calc(var(--spacing)*_5)] mb-[calc(var(--spacing)*_5)] transition-colors duration-200 hover:border-bg3"
+                    style={{ animationDelay: `${Math.min(index * 24, 120)}ms` }}
                   >
                     <div className="flex gap-4">
                       <span className="mt-1 hidden w-8 shrink-0 text-right font-sans text-xs text-fg4 sm:block">
