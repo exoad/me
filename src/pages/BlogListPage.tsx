@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type CSSProperties, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import SubpageNav from '../components/SubpageNav';
@@ -15,21 +15,14 @@ const LOADING_COLORS = [
 
 function BlogPostCard({ post, index }: { post: BlogPostData; index: number }) {
     const navigate = useNavigate();
-    const [visible, setVisible] = useState(false);
     const colorClass = LOADING_COLORS[index % LOADING_COLORS.length];
-
-    useEffect(() => {
-        const timer = setTimeout(() => setVisible(true), index * 100);
-        return () => clearTimeout(timer);
-    }, [index]);
 
     return (
         <button
             onClick={() => navigate(`/blog/${post.slug}`)}
             aria-label={`Read ${post.title}`}
-            className={`block w-full text-left group transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}
+            className="motion-lift block w-full text-left group"
+            style={{ '--motion-index': Math.min(index, 5) } as CSSProperties}
         >
             <div className="py-6 pr-4 transition-all duration-300">
                 <div className="flex items-baseline gap-4 mb-2">
@@ -45,7 +38,7 @@ function BlogPostCard({ post, index }: { post: BlogPostData; index: number }) {
                     {post.excerpt}
                 </p>
                 <div className="flex items-center gap-2 text-fg4 group-hover:text-fg2 transition-colors duration-300 text-xs font-sans">
-                    <span className="group-hover:underline underline-offset-4">Read more</span>
+                    <span className="motion-link-reveal">Read more</span>
                     <MdOutlineArrowOutward size={10} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </div>
             </div>
@@ -91,7 +84,7 @@ export default function BlogListPage() {
                     </div>
 
                     {/* Posts list - no dividers, minimal spacing */}
-                    <div className="space-y-2">
+                    <div className="motion-list-reveal space-y-2">
                         {loading ? (
                             <div className="flex items-center gap-2 text-fg4 text-sm font-sans py-8" role="status" aria-live="polite" aria-busy="true">
                                 <div className="w-2 h-2 bg-yellow rounded-full animate-pulse" />

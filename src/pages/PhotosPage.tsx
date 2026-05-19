@@ -93,7 +93,7 @@ export default function PhotosPage() {
         onMouseEnter={() => setHoveredPhoto(photoId)}
         onMouseLeave={() => setHoveredPhoto(null)}
       >
-        <div className="relative overflow-hidden bg-bg1 border border-bg2 hover:border-fg4 transition-colors duration-500">
+        <div className="motion-lift relative overflow-hidden bg-bg1 border border-bg2 hover:border-fg4 transition-colors duration-500">
           {isVisible && !isLoaded && (
             <div className="absolute inset-0 flex items-center justify-center z-10 bg-bg0">
               <div className="flex items-center gap-1">
@@ -121,17 +121,15 @@ export default function PhotosPage() {
                 <img
                   src={photo.thumbnailSrc}
                   alt={photo.alt}
-                  className={`w-full h-auto object-cover transition-opacity duration-500 ${
+                  className={`w-full h-auto object-cover transition-[opacity,transform] duration-300 ${
                     isLoaded ? 'opacity-100' : 'opacity-0'
+                  } ${
+                    isHovered ? 'scale-[1.012]' : 'scale-100'
                   }`}
                   onLoad={() => handleImageLoad(photoId)}
                   onError={() => setFailedImages(prev => ({ ...prev, [photoId]: true }))}
                   decoding="async"
-                  loading="eager"
-                  style={{
-                    transform: isHovered ? 'scale(1.02)' : 'scale(1)',
-                    transition: 'transform 0.5s ease-out'
-                  }}
+                  loading={index < 2 ? 'eager' : 'lazy'}
                 />
               )}
 

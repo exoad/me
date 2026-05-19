@@ -5,6 +5,7 @@ import { MdOutlineArrowOutward } from "react-icons/md";
 import { hexToRgba } from '../utils/css.ts';
 import { Row } from "../components/FlexLayouter.tsx";
 import ProjectsColorBar from '../components/ProjectsColorBar.tsx';
+import { motionSafeScrollBehavior } from '../utils/motion.ts';
 
 const gradients = [
     "from-gb-red via-gb-orange to-gb-yellow",
@@ -22,7 +23,7 @@ export default function ProjectsPage() {
     const itemRefs = useRef<(HTMLElement | null)[]>([]);
     useEffect(() => {
         if (window.scrollY > 0) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: motionSafeScrollBehavior() });
         }
     }, []);
     useEffect(() => {
@@ -74,9 +75,9 @@ export default function ProjectsPage() {
                                 href={proj.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`relative transition-all duration-1000 ease-[cubic-bezier(0.17,0.67,0.38,1)] block ${visibleItems.has(index)
+                                className={`relative transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] block ${visibleItems.has(index)
                                     ? "opacity-100 translate-y-0 scale-100 blur-0"
-                                    : "opacity-0 translate-y-6 sm:translate-y-8 lg:translate-y-10 scale-95 blur-sm"
+                                    : "opacity-0 translate-y-4 scale-[0.99]"
                                     }`}
                                 style={{ transitionDelay: `${120 + index}ms` }}
                                 ref={(el) => { itemRefs.current[index] = el; }}

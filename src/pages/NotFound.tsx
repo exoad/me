@@ -7,11 +7,12 @@ import StarBg from "../components/StarsBg";
 import { Column } from '../components/FlexLayouter.tsx';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motionSafeScrollBehavior } from '../utils/motion';
 
 export default function NotFound({ scaffoldProps = {} }) {
     useEffect(() => {
         if (window.scrollY > 0) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: motionSafeScrollBehavior() });
         }
     }, []);
     return (
@@ -24,7 +25,7 @@ export default function NotFound({ scaffoldProps = {} }) {
             <StarBg scrollY={0} />
             <ScaffoldContent useDefaultLayout>
 
-                <Column gap={16} mainAxisAlignment="center" className="transition-opacity duration-1000">
+                <Column gap={16} mainAxisAlignment="center" className="transition-opacity duration-300">
                     <h1
                         className="text-gb-fg0 text-8xl md:text-9xl font-bold"
                         style={{ textShadow: '0 0 20px rgba(214,93,14,0.3)' }}

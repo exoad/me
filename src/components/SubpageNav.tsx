@@ -12,7 +12,7 @@ export default function SubpageNav({ backTo = '/', backLabel = 'Home' }: { backT
 
   return (
     <nav className="mb-12 flex flex-col gap-4 border-b border-bg2 pb-5 font-sans sm:flex-row sm:items-center sm:justify-between" aria-label="Site navigation">
-      <Link to={backTo} className="text-sm text-fg4 transition-colors duration-300 hover:text-yellow">
+      <Link to={backTo} className="motion-link-reveal motion-press w-fit text-sm text-fg4 transition-colors duration-300 hover:text-yellow">
         ← {backLabel}
       </Link>
       <div className="flex flex-wrap gap-4 text-[11px] uppercase tracking-[0.16em] text-fg4">
@@ -23,7 +23,7 @@ export default function SubpageNav({ backTo = '/', backLabel = 'Home' }: { backT
               key={item.path}
               to={item.path}
               aria-current={active ? 'page' : undefined}
-              className={active ? 'text-yellow' : 'transition-colors duration-300 hover:text-fg0'}
+              className={`motion-link-reveal motion-press ${active ? 'text-yellow' : 'transition-colors duration-300 hover:text-fg0'}`}
             >
               {item.label}
             </Link>

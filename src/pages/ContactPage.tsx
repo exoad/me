@@ -3,12 +3,13 @@ import SEO from '../components/SEO';
 import { strings } from '../data/shared.ts';
 import { Column } from '../components/FlexLayouter.tsx';
 import CopyEmailButton from '../components/CopyEmailButton.tsx';
+import { motionSafeScrollBehavior } from '../utils/motion.ts';
 
 
 export default function ContactPage() {
     useEffect(() => {
         if (window.scrollY > 0) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: motionSafeScrollBehavior() });
         }
     }, []);
     return (

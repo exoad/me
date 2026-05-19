@@ -49,6 +49,32 @@
     }
 }
 
+@keyframes nameAccentPop {
+    0% {
+        transform: scale(1);
+        text-shadow: none;
+    }
+    45% {
+        transform: scale(1.08);
+        text-shadow: 0 0 18px currentColor;
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: none;
+    }
+}
+
+@keyframes softPulseDown {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.65;
+    }
+    50% {
+        transform: translateY(3px);
+        opacity: 1;
+    }
+}
+
 .animate-fade-in-up {
     opacity: 0;
     animation: fadeInUp 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -75,7 +101,7 @@
 @keyframes pageEnter {
     0% {
         opacity: 0;
-        transform: translateY(4px);
+        transform: translateY(6px);
     }
     100% {
         opacity: 1;
@@ -86,10 +112,38 @@
 @keyframes pageExit {
     0% {
         opacity: 1;
+        transform: translateY(0);
     }
     100% {
         opacity: 0;
+        transform: translateY(-3px);
     }
+}
+
+.content-fade-stack {
+    position: relative;
+    min-height: 100%;
+}
+
+.content-fade-stack.is-transitioning {
+    isolation: isolate;
+}
+
+.content-fade-layer {
+    width: 100%;
+}
+
+.content-fade-layer-enter {
+    opacity: 0;
+    animation: pageEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.content-fade-layer-exit {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    animation: pageExit 0.18s ease-out forwards;
 }
 
 .page-transition {
@@ -128,17 +182,143 @@
     animation-duration: 0.22s;
 }
 
+.animate-page-enter {
+    opacity: 0;
+    animation: pageEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-name-pop {
+    animation: nameAccentPop 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.animate-soft-pulse-down {
+    animation: softPulseDown 1.8s ease-in-out infinite;
+}
+
+.motion-lift {
+    transition:
+        transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.24s ease,
+        color 0.2s ease,
+        background-color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.motion-lift:is(:hover, :focus-visible) {
+    transform: translateY(-2px);
+}
+
+.motion-press {
+    transition:
+        transform 0.14s ease,
+        opacity 0.18s ease,
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease;
+}
+
+.motion-press:active {
+    transform: translateY(1px) scale(0.99);
+}
+
+.motion-link-reveal {
+    position: relative;
+    text-decoration: none;
+}
+
+.motion-link-reveal::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.18em;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.55;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition:
+        transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.2s ease;
+}
+
+.motion-link-reveal:is(:hover, :focus-visible, [aria-current="page"])::after {
+    opacity: 0.85;
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.motion-list-reveal > * {
+    opacity: 0;
+    transform: translateY(6px);
+    animation: fadeInUp 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(var(--motion-index, 0) * 45ms);
+}
+
+.motion-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+        grid-template-rows 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.2s ease;
+}
+
+.motion-panel[data-open="true"],
+.motion-panel.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+}
+
+.motion-panel > * {
+    min-height: 0;
+    overflow: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+        scroll-behavior: auto !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+    }
+
     .animate-fade-in-up,
     .animate-fade-in,
     .animate-scale-in,
     .animate-fade-out,
     .animate-scale-out,
+    .animate-page-enter,
     .page-transition-enter,
     .page-transition-exit,
-    .content-fade {
+    .content-fade,
+    .content-fade-layer-enter,
+    .content-fade-layer-exit,
+    .motion-list-reveal > * {
         animation: none !important;
         opacity: 1 !important;
         transform: none !important;
+    }
+
+    .content-fade-layer-exit {
+        display: none !important;
+    }
+
+    .motion-lift:is(:hover, :focus-visible),
+    .motion-press:active {
+        transform: none !important;
+    }
+
+    .motion-panel,
+    .motion-panel[data-open="true"],
+    .motion-panel.is-open {
+        transition: none !important;
     }
 }

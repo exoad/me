@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { TocEntry } from '../utils/markdown';
+import { motionSafeScrollBehavior } from '../utils/motion';
 
 export default function BlogToc({ entries }: { entries: TocEntry[] }) {
     const [activeId, setActiveId] = useState<string>('');
@@ -35,18 +36,18 @@ export default function BlogToc({ entries }: { entries: TocEntry[] }) {
                         <a
                             href={`#${entry.id}`}
                             aria-current={activeId === entry.id ? 'location' : undefined}
-                            className={`block text-base font-sans transition-colors duration-200 hover:text-fg0 ${
+                            className={`motion-link-reveal block text-base font-sans transition-[color,transform] duration-200 hover:text-fg0 ${
                                 entry.level === 2 ? 'pl-0' : entry.level === 3 ? 'pl-3' : 'pl-6'
                             } ${
                                 activeId === entry.id
-                                    ? 'text-yellow font-bold'
+                                    ? 'translate-x-1 text-yellow font-bold'
                                     : 'text-fg4'
                             }`}
                             onClick={(e) => {
                                 e.preventDefault();
                                 const el = document.getElementById(entry.id);
                                 if (el) {
-                                    el.scrollIntoView({ behavior: 'smooth' });
+                                    el.scrollIntoView({ behavior: motionSafeScrollBehavior() });
                                 }
                             }}
                         >

@@ -9,18 +9,33 @@ import { BlogPostData, loadAllBlogPosts } from "../utils/markdown";
 function NameCard() {
 	// Core Gruvbox colors: red, green, yellow, blue
 	const coreColors = ["text-red", "text-green", "text-yellow", "text-blue"];
-	const [colorIndex, setColorIndex] = useState(Math.floor(Math.random() * coreColors.length));
+	const [colorIndex, setColorIndex] = useState(() => {
+		const stored = window.sessionStorage.getItem("nameAccentIndex");
+		return stored ? Number(stored) % coreColors.length : Math.floor(Math.random() * coreColors.length);
+	});
+	const [popped, setPopped] = useState(false);
 	const name = strings.name;
+
+	const cycleColor = () => {
+		setColorIndex((i) => {
+			const next = (i + 1) % coreColors.length;
+			window.sessionStorage.setItem("nameAccentIndex", String(next));
+			return next;
+		});
+		setPopped(false);
+		window.requestAnimationFrame(() => setPopped(true));
+		window.setTimeout(() => setPopped(false), 360);
+	};
 
 	return (
 		<div className="flex flex-col items-start lg:items-end gap-3 animate-fade-in-up">
 			<h1
 				className="font-black text-5xl sm:text-6xl md:text-7xl text-fg0 tracking-tight cursor-pointer select-none"
-				onClick={() => setColorIndex((i) => (i + 1) % coreColors.length)}
+				onClick={cycleColor}
 				onKeyDown={(e) => {
 					if (e.key === "Enter" || e.key === " ") {
 						e.preventDefault();
-						setColorIndex((i) => (i + 1) % coreColors.length);
+						cycleColor();
 					}
 				}}
 				role="button"
@@ -29,7 +44,7 @@ function NameCard() {
 				title="Click to change color"
 			>
 				<span
-					className={`${coreColors[colorIndex]} transition-colors duration-300`}
+					className={`inline-block ${coreColors[colorIndex]} transition-colors duration-300 ${popped ? "animate-name-pop" : ""}`}
 				>
 					{name[0]}
 				</span>
@@ -65,6 +80,39 @@ function NameCard() {
 	);
 }
 
+function ContactEmail({ email }: { email: string }) {
+	const [copied, setCopied] = useState(false);
+
+	const copyEmail = async () => {
+		try {
+			await navigator.clipboard.writeText(email);
+			setCopied(true);
+			window.setTimeout(() => setCopied(false), 1400);
+		} catch {
+			window.location.href = `mailto:${email}`;
+		}
+	};
+
+	return (
+		<div className="group flex items-center gap-3">
+			<a
+				href={`mailto:${email}`}
+				className="motion-link-reveal text-fg hover:text-fg0 text-base font-sans transition duration-300"
+			>
+				{email}
+			</a>
+			<button
+				type="button"
+				onClick={copyEmail}
+				className="motion-press text-[10px] uppercase tracking-[0.16em] text-fg4 opacity-70 transition-colors duration-200 hover:text-yellow group-hover:opacity-100"
+				aria-label={`Copy ${email}`}
+			>
+				{copied ? "copied" : "copy"}
+			</button>
+		</div>
+	);
+}
+
 function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 	const [open, setOpen] = useState(false);
 	const panelId = `project-${proj.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
@@ -75,7 +123,7 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 				onClick={() => setOpen(!open)}
 				aria-expanded={open}
 				aria-controls={panelId}
-				className="group w-full flex items-center justify-between gap-4 py-4 hover:border-fg3 transition duration-300 text-left"
+				className="motion-press group w-full flex items-center justify-between gap-4 py-4 hover:border-fg3 transition duration-300 text-left"
 			>
 				<div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
 					<span className="text-fg text-sm sm:text-base font-sans font-semibold">
@@ -92,33 +140,34 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 			</button>
 			<div
 				id={panelId}
-				className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-					open ? "max-h-96 opacity-100 pb-6" : "max-h-0 opacity-0"
-				}`}
+				className="motion-panel"
+				data-open={open}
 			>
-				<p className="text-fg3 text-sm font-sans leading-relaxed mb-4 max-w-lg">
-					{proj.description}
-				</p>
-				<div className="flex items-center gap-4">
-					<span
-						className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm ${
-							proj.state === "active"
-								? "bg-green-dim/30 text-green"
-								: proj.state === "finished"
-									? "bg-blue-dim/30 text-blue"
-									: "bg-gray/20 text-fg4"
-						}`}
-					>
-						{proj.state}
-					</span>
-					<a
-						href={proj.link}
-						target="_blank"
-						rel="noopener noreferrer"
-						className="inline-flex items-center gap-1 text-fg3 hover:text-fg text-xs font-sans transition duration-300"
-					>
-						visit <MdOutlineArrowOutward size={10} />
-					</a>
+				<div className="pb-6">
+					<p className="text-fg3 text-sm font-sans leading-relaxed mb-4 max-w-lg">
+						{proj.description}
+					</p>
+					<div className="flex items-center gap-4">
+						<span
+							className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm ${
+								proj.state === "active"
+									? "bg-green-dim/30 text-green"
+									: proj.state === "finished"
+										? "bg-blue-dim/30 text-blue"
+										: "bg-gray/20 text-fg4"
+							}`}
+						>
+							{proj.state}
+						</span>
+						<a
+							href={proj.link}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="motion-link-reveal motion-press inline-flex items-center gap-1 text-fg3 hover:text-fg text-xs font-sans transition duration-300"
+						>
+							visit <MdOutlineArrowOutward size={10} />
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -131,7 +180,7 @@ function FeaturedTeaser({ proj }: { proj: (typeof projects)[0] }) {
 			href={proj.link}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="block group transition-all duration-300 hover:-translate-y-1 hover:opacity-80"
+			className="motion-lift block group hover:opacity-80"
 		>
 			<div className="flex items-center gap-2 mb-2">
 				<span className={`px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest rounded-sm transition-colors duration-300 ${
@@ -186,7 +235,7 @@ function ContentSections() {
 					{strings.pages.home.about.content.split("photography")[0]}
 					<Link
 						to="/photos"
-						className="underline underline-offset-4 decoration-fg4 hover:decoration-fg2 transition-colors"
+						className="motion-link-reveal decoration-fg4 hover:decoration-fg2 transition-colors"
 					>
 						photography
 					</Link>
@@ -239,7 +288,7 @@ function ContentSections() {
 				</h2>
 				<Link
 					to="/blog"
-					className="block group transition-all duration-300 hover:opacity-70"
+					className="motion-lift block group hover:opacity-70"
 				>
 					<h3 className="text-2xl sm:text-3xl font-bold text-fg0 mb-2 transition-colors duration-300 group-hover:text-fg1">
 						{strings.pages.blog.title}
@@ -254,7 +303,7 @@ function ContentSections() {
 							<Link
 								key={post.slug}
 								to={"/blog/" + post.slug}
-							className="group transition-all duration-300 hover:translate-x-1"
+							className="motion-lift group"
 							>
 								<div className="flex items-center gap-2 mb-1">
 									<span className="text-fg4 text-xs font-sans">{post.date}</span>
@@ -270,7 +319,7 @@ function ContentSections() {
 						))}
 						<Link
 							to="/blog"
-							className="inline-flex items-center gap-1 text-fg4 hover:text-fg2 text-xs font-sans transition duration-300"
+							className="motion-link-reveal motion-press inline-flex items-center gap-1 text-fg4 hover:text-fg2 text-xs font-sans transition duration-300"
 						>
 							view all posts <MdOutlineArrowOutward size={10} />
 						</Link>
@@ -293,7 +342,7 @@ function ContentSections() {
 						href={strings.links.github}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="inline-flex items-center gap-1 text-fg4 hover:text-fg2 text-xs font-sans transition duration-300"
+						className="motion-link-reveal motion-press inline-flex items-center gap-1 text-fg4 hover:text-fg2 text-xs font-sans transition duration-300"
 					>
 						all projects <MdOutlineArrowOutward size={10} />
 					</a>
@@ -305,18 +354,8 @@ function ContentSections() {
 					Contact
 				</h2>
 				<div className="flex flex-col gap-2">
-					<a
-						href="mailto:jackm@exoad.net"
-						className="text-fg hover:text-fg0 text-base font-sans transition duration-300"
-					>
-						jackm@exoad.net
-					</a>
-					<a
-						href="mailto:jmeng2@terpmail.umd.edu"
-						className="text-fg hover:text-fg0 text-base font-sans transition duration-300"
-					>
-						jmeng2@terpmail.umd.edu
-					</a>
+					<ContactEmail email="jackm@exoad.net" />
+					<ContactEmail email="jmeng2@terpmail.umd.edu" />
 				</div>
 				<div className="border-b border-bg2 mt-4" />
 			</section>
@@ -327,7 +366,7 @@ function ContentSections() {
 				</h2>
 				<Link
 					to="/guestbook"
-					className="block group transition-all duration-300 hover:-translate-y-1 hover:opacity-80"
+					className="motion-lift block group hover:opacity-80"
 				>
 					<div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
 						<h3 className="text-2xl sm:text-3xl font-bold text-fg0 transition-colors duration-300 group-hover:text-fg1">
@@ -361,7 +400,7 @@ export default function HomePage() {
 				<div className="min-h-[100dvh] flex flex-col items-center justify-center bg-bg0 px-6">
 					<div className="flex flex-col items-center gap-8">
 						<NameCard />
-						<a href="#home-content" className="text-[10px] uppercase tracking-[0.2em] text-fg4 transition-colors hover:text-yellow">
+						<a href="#home-content" className="animate-soft-pulse-down motion-link-reveal text-[10px] uppercase tracking-[0.2em] text-fg4 transition-colors hover:text-yellow">
 							{strings.pages.home.scroll_text}
 						</a>
 					</div>
@@ -378,7 +417,7 @@ export default function HomePage() {
 							href={strings.footer.source.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300"
+							className="motion-link-reveal text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300"
 						>
 							{strings.footer.source.url_attr}
 						</a>
@@ -401,7 +440,7 @@ export default function HomePage() {
 							href={strings.footer.source.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300"
+							className="motion-link-reveal text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300"
 						>
 							{strings.footer.source.url_attr}
 						</a>

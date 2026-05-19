@@ -137,22 +137,6 @@ body {
   animation: pulseSlow 3s ease-in-out infinite;
 }
 
-/* Page enter animation - slow, premium fade in */
-@keyframes pageEnter {
-  0% {
-    opacity: 0;
-    transform: translateY(32px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-page-enter {
-  animation: pageEnter 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
 /* Scrolling color bar - colors flow through like a marquee */
 @keyframes colorScroll {
   0% {
@@ -212,22 +196,6 @@ body {
     #458588 91.66%, #458588 100%   /* blue */
   );
   background-size: 25% 100%;
-}
-
-/* Slower page enter animation */
-@keyframes pageEnterSlow {
-  0% {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-page-enter {
-  animation: pageEnterSlow 4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Shimmer effect over the color bar */

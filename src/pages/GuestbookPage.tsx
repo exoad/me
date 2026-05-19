@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import SEO from '../components/SEO';
 import SubpageNav from '../components/SubpageNav';
 import { strings } from '../data/shared';
@@ -306,7 +306,7 @@ export default function GuestbookPage() {
               ref={formToggleRef}
               type="button"
               onClick={() => { setStatusMsg((current) => current?.ok ? current : null); setFormOpen((open) => !open); }}
-              className="group flex w-full items-center justify-between gap-4 py-[calc(var(--spacing)*_5)] text-left transition-colors duration-300 hover:text-fg0"
+              className="motion-press group flex w-full items-center justify-between gap-4 py-[calc(var(--spacing)*_5)] text-left transition-colors duration-300 hover:text-fg0"
               aria-expanded={formOpen}
               aria-controls="guestbook-form"
             >
@@ -318,7 +318,7 @@ export default function GuestbookPage() {
                   Leave a lighthearted note, a hello, or a tiny internet footprint.
                 </span>
               </span>
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-yellow text-bg0 transition-all duration-300 group-hover:scale-105 group-hover:opacity-80">
+              <span className="motion-press flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-yellow text-bg0 transition-all duration-300 group-hover:scale-105 group-hover:opacity-80">
                 {formOpen ? <MdClose size={20} /> : <MdAdd size={20} />}
               </span>
             </button>
@@ -382,7 +382,7 @@ export default function GuestbookPage() {
                 <button
                   type="submit"
                   disabled={submitting || !name.trim() || !msgText.trim()}
-                  className="inline-flex items-center gap-2 bg-yellow text-bg0 px-6 py-2 rounded-sm font-sans text-sm hover:opacity-80 transition-opacity disabled:opacity-50"
+                  className="motion-press inline-flex items-center gap-2 bg-yellow text-bg0 px-6 py-2 rounded-sm font-sans text-sm hover:opacity-80 transition-opacity disabled:opacity-50"
                 >
                   <MdSend size={14} />
                   {submitting ? 'Submitting...' : strings.pages.guestbook.submit_button}
@@ -412,7 +412,7 @@ export default function GuestbookPage() {
                   ref={dialogCloseRef}
                   type="button"
                   onClick={closeSuccessDialog}
-                  className="bg-yellow text-bg0 px-5 py-2 rounded-sm font-sans text-sm hover:opacity-80 transition-opacity"
+                  className="motion-press bg-yellow text-bg0 px-5 py-2 rounded-sm font-sans text-sm hover:opacity-80 transition-opacity"
                 >
                   Nice
                 </button>
@@ -430,19 +430,19 @@ export default function GuestbookPage() {
             ) : entriesError ? (
               <div className="text-sm font-sans text-fg3" role="alert">
                 <p>{entriesError}</p>
-                <button type="button" onClick={() => loadEntriesForPage(page)} className="mt-2 text-yellow hover:underline">
+                <button type="button" onClick={() => loadEntriesForPage(page)} className="motion-press motion-link-reveal mt-2 text-yellow">
                   Try again
                 </button>
               </div>
             ) : entries.length === 0 ? (
               <p className="text-fg3 text-sm font-sans">{strings.pages.guestbook.no_entries}</p>
             ) : (
-              <div className="divide-y divide-bg2">
+              <div className="motion-list-reveal divide-y divide-bg2">
                 {entries.map((entry, index) => (
                   <article
                     key={entry.id}
                     className="group relative animate-fade-in-up py-[calc(var(--spacing)*_7)] transition-colors duration-200 first:pt-0"
-                    style={{ animationDelay: `${Math.min(index * 24, 120)}ms` }}
+                    style={{ '--motion-index': Math.min(index, 5) } as CSSProperties}
                   >
                     <span className={`absolute right-0 font-sans text-[10px] tracking-[0.18em] text-fg4/45 ${index === 0 ? 'top-0' : 'top-[calc(var(--spacing)*_7)]'}`}>
                       {String((page - 1) * 20 + index + 1).padStart(2, '0')}
@@ -477,7 +477,7 @@ export default function GuestbookPage() {
               type="button"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="inline-flex items-center gap-1 text-fg4 hover:text-yellow transition-colors disabled:opacity-40 disabled:hover:text-fg4"
+              className="motion-press inline-flex items-center gap-1 text-fg4 hover:text-yellow transition-colors disabled:opacity-40 disabled:hover:text-fg4"
             >
               <MdChevronLeft size={18} />
               Prev
@@ -489,7 +489,7 @@ export default function GuestbookPage() {
               type="button"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="inline-flex items-center gap-1 text-fg4 hover:text-yellow transition-colors disabled:opacity-40 disabled:hover:text-fg4"
+              className="motion-press inline-flex items-center gap-1 text-fg4 hover:text-yellow transition-colors disabled:opacity-40 disabled:hover:text-fg4"
             >
               Next
               <MdChevronRight size={18} />

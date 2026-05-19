@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { strings, timeline } from "../data/shared.ts";
 import SEO from '../components/SEO.tsx';
 import { Column } from '../components/FlexLayouter.tsx';
+import { motionSafeScrollBehavior } from '../utils/motion.ts';
 
 export default function AboutPage() {
     const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
@@ -30,7 +31,7 @@ export default function AboutPage() {
     }, []);
     useEffect(() => {
         if (window.scrollY > 0) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: motionSafeScrollBehavior() });
         }
     }, []);
     return (

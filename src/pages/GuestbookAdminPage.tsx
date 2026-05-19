@@ -125,7 +125,7 @@ export default function GuestbookAdminPage() {
                                   <span className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm ${entry.approved===1?'bg-green/20 text-green':'bg-yellow/20 text-yellow'}`}>
                                       {entry.approved===1?'Approved':'Unapproved'}
                                   </span>
-                                  <button type="button" onClick={() => handleSafetyBadge(entry)} disabled={checkingSafetyId===entry.id} aria-expanded={expandedSafetyId===entry.id} className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm transition-opacity hover:opacity-80 disabled:opacity-50 ${safetyClass(entry)}`}>
+                                  <button type="button" onClick={() => handleSafetyBadge(entry)} disabled={checkingSafetyId===entry.id} aria-expanded={expandedSafetyId===entry.id} className={`motion-press text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm transition-opacity hover:opacity-80 disabled:opacity-50 ${safetyClass(entry)}`}>
                                       {checkingSafetyId===entry.id?'CHECKING...':safetyLabel(entry)}
                                   </button>
                               </div>
@@ -136,7 +136,7 @@ export default function GuestbookAdminPage() {
                               <div className="mt-3 border border-bg2 bg-bg0_s/30 p-3 font-sans">
                                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                       <p className="text-xs text-fg3">{entry.safety_reason||'No safety report has been stored yet.'}</p>
-                                      <button type="button" onClick={() => checkSafety(entry)} disabled={checkingSafetyId===entry.id} className="text-xs text-yellow hover:underline disabled:opacity-50">
+                                      <button type="button" onClick={() => checkSafety(entry)} disabled={checkingSafetyId===entry.id} className="motion-press motion-link-reveal text-xs text-yellow disabled:opacity-50">
                                           {checkingSafetyId===entry.id?'Checking...':'Check again'}
                                       </button>
                                   </div>
@@ -154,11 +154,11 @@ export default function GuestbookAdminPage() {
                           )}
                           <div className="flex flex-wrap gap-3 mt-3">
                               {entry.approved===1 ? (
-                                  <button type="button" onClick={() => setEntryState(entry.id,0)} className="text-sm text-yellow hover:underline">Mark unapproved</button>
+                                  <button type="button" onClick={() => setEntryState(entry.id,0)} className="motion-press motion-link-reveal text-sm text-yellow">Mark unapproved</button>
                               ) : (
-                                  <button type="button" onClick={() => setEntryState(entry.id,1)} className="text-sm text-green hover:underline">Approve</button>
+                                  <button type="button" onClick={() => setEntryState(entry.id,1)} className="motion-press motion-link-reveal text-sm text-green">Approve</button>
                               )}
-                              <button type="button" onClick={() => deleteEntry(entry.id)} className="text-sm text-red hover:underline">Delete</button>
+                              <button type="button" onClick={() => deleteEntry(entry.id)} className="motion-press motion-link-reveal text-sm text-red">Delete</button>
                           </div>
                       </div>
                   </div>

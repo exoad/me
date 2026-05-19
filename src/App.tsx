@@ -26,7 +26,7 @@ function AppContent() {
 	const location = useLocation();
 	return (
 		<>
-		<a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-bg1 focus:px-3 focus:py-2 focus:text-sm focus:text-fg0 focus:outline-none focus:ring-2 focus:ring-yellow">
+		<a href="#main" className="motion-press sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-bg1 focus:px-3 focus:py-2 focus:text-sm focus:text-fg0 focus:outline-none focus:ring-2 focus:ring-yellow">
 			Skip to main content
 		</a>
 		<Suspense fallback={<PageLoading />}>
