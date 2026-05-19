@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { strings } from '../data/shared';
@@ -24,15 +24,52 @@ type StatusMessage = {
 };
 
 const MESSAGE_MAX_LENGTH = 600;
+const TURNSTILE_SITE_KEY = '0x4AAAAAADRVTMltusSmfuQN';
 const LINK_PATTERN = /((?:https?:\/\/|www\.)[^\s<>"']+)/gi;
 const LINK_PART_PATTERN = /^(?:https?:\/\/|www\.)[^\s<>"']+$/i;
+let turnstileScriptPromise: Promise<void> | null = null;
 
 declare global {
   interface Window {
     turnstile?: {
-      reset: () => void;
+      render: (
+        container: HTMLElement,
+        options: {
+          sitekey: string;
+          theme: 'dark' | 'light' | 'auto';
+          callback: (token: string) => void;
+          'expired-callback': () => void;
+          'error-callback': () => void;
+        },
+      ) => string;
+      remove: (widgetId: string) => void;
+      reset: (widgetId?: string) => void;
     };
   }
+}
+
+function loadTurnstileScript() {
+  if (window.turnstile) return Promise.resolve();
+  if (turnstileScriptPromise) return turnstileScriptPromise;
+
+  turnstileScriptPromise = new Promise((resolve, reject) => {
+    const existingScript = document.querySelector<HTMLScriptElement>('script[src*="turnstile"]');
+    if (existingScript) {
+      existingScript.addEventListener('load', () => resolve(), { once: true });
+      existingScript.addEventListener('error', () => reject(new Error('Turnstile failed to load')), { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    script.async = true;
+    script.defer = true;
+    script.addEventListener('load', () => resolve(), { once: true });
+    script.addEventListener('error', () => reject(new Error('Turnstile failed to load')), { once: true });
+    document.head.appendChild(script);
+  });
+
+  return turnstileScriptPromise;
 }
 
 export default function GuestbookPage() {
@@ -46,16 +83,13 @@ export default function GuestbookPage() {
   const [submitting, setSubmitting] = useState(false);
   const [statusMsg, setStatusMsg] = useState<StatusMessage | null>(null);
   const [formOpen, setFormOpen] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
+  const turnstileWidgetIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (window.scrollY > 0) window.scrollTo({ top: 0 });
     loadEntries(page);
-    if (!document.querySelector('script[src*="turnstile"]')) {
-      const s = document.createElement('script');
-      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-      s.async = true;
-      document.head.appendChild(s);
-    }
 
     async function loadEntries(p: number) {
       setLoading(true);
@@ -78,12 +112,46 @@ export default function GuestbookPage() {
     }
   }, [page]);
 
+  useEffect(() => {
+    if (!formOpen) {
+      setTurnstileToken('');
+      return;
+    }
+
+    let cancelled = false;
+
+    loadTurnstileScript()
+      .then(() => {
+        if (cancelled || !window.turnstile || !turnstileContainerRef.current || turnstileWidgetIdRef.current) return;
+
+        turnstileWidgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
+          sitekey: TURNSTILE_SITE_KEY,
+          theme: 'dark',
+          callback: (token) => {
+            setTurnstileToken(token);
+            setStatusMsg((current) => (current && !current.ok ? null : current));
+          },
+          'expired-callback': () => setTurnstileToken(''),
+          'error-callback': () => setTurnstileToken(''),
+        });
+      })
+      .catch(() => {
+        setStatusMsg({ text: 'Could not load verification. Please refresh and try again.', ok: false });
+      });
+
+    return () => {
+      cancelled = true;
+      setTurnstileToken('');
+      if (window.turnstile && turnstileWidgetIdRef.current) {
+        window.turnstile.remove(turnstileWidgetIdRef.current);
+        turnstileWidgetIdRef.current = null;
+      }
+    };
+  }, [formOpen]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!name.trim() || !msgText.trim()) return;
-
-    const turnstileEl = document.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]');
-    const turnstileToken = turnstileEl ? turnstileEl.value : '';
 
     if (!turnstileToken) {
       setStatusMsg({ text: 'Please complete the verification.', ok: false });
@@ -109,9 +177,13 @@ export default function GuestbookPage() {
           text: data.message || 'Your note is on its way. I will give it a quick look and approve it soon.',
           ok: true,
         });
-        if (window.turnstile) window.turnstile.reset();
+        setTurnstileToken('');
       } else {
         setStatusMsg({ text: data.error || strings.pages.guestbook.error_submit, ok: false });
+        if (window.turnstile && turnstileWidgetIdRef.current) {
+          window.turnstile.reset(turnstileWidgetIdRef.current);
+          setTurnstileToken('');
+        }
       }
     } catch (err) {
       setStatusMsg({ text: String(strings.pages.guestbook.error_submit), ok: false });
@@ -253,10 +325,15 @@ export default function GuestbookPage() {
                 </div>
 
                 <div
-                  className="cf-turnstile mb-[calc(var(--spacing)*_4)]"
-                  data-sitekey="0x4AAAAAADRVTMltusSmfuQN"
-                  data-theme="dark"
+                  ref={turnstileContainerRef}
+                  className="cf-turnstile mb-[calc(var(--spacing)*_2)] min-h-[65px]"
                 />
+
+                {statusMsg && !statusMsg.ok && (
+                  <p className="mb-[calc(var(--spacing)*_4)] text-sm font-sans text-red">
+                    {statusMsg.text}
+                  </p>
+                )}
 
                 <button
                   type="submit"
@@ -269,16 +346,6 @@ export default function GuestbookPage() {
               </form>
             )}
           </section>
-
-          {statusMsg && !statusMsg.ok && (
-            <p
-              className={`mb-[calc(var(--spacing)*_8)] border-b border-bg2 pb-[calc(var(--spacing)*_4)] text-sm font-sans ${
-                statusMsg.ok ? 'text-green' : 'text-red'
-              }`}
-            >
-              {statusMsg.text}
-            </p>
-          )}
 
           {statusMsg?.ok && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg0/80 px-6 backdrop-blur-sm animate-fade-in">
