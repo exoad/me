@@ -10,14 +10,19 @@ export async function onRequest(context) {
 
   try {
     const url = new URL(request.url);
-    const id = url.pathname.split('/').pop();
+    let body = {};
+    try {
+      body = await request.json();
+    } catch (e) {}
+    const pathId = url.pathname.split('/').pop();
+    const id = body.id ?? pathId;
 
     if (!id || isNaN(id)) {
       return jsonError('Invalid entry ID',400 );
    }
 
    await env.DB.prepare(
-     'DELETE FROM entries WHERE id = ?'
+     'UPDATE entries SET approved = 3 WHERE id = ?'
    ).bind(parseInt(id)).run();
 
    return new Response(JSON.stringify({success:true }),{

@@ -10,15 +10,16 @@ export async function onRequest(context) {
 
   try {
     const url = new URL(request.url);
-    const id = url.pathname.split('/').pop();
     const body = await request.json();
-    const { approved } = body; // 1 = approve, 2 = reject
+    const pathId = url.pathname.split('/').pop();
+    const id = body.id ?? pathId;
+    const { approved } = body; // 0 = unapproved, 1 = approved, 3 = deleted
 
     if (!id || isNaN(id)) {
       return jsonError('Invalid entry ID', 400);
     }
-    if (approved !== 1 && approved !== 2) {
-      return jsonError('approved must be 1 (approve) or2(reject)',400 );
+    if (approved !== 0 && approved !== 1 && approved !== 3) {
+      return jsonError('approved must be 0 (unapproved), 1 (approved), or 3 (deleted)',400 );
    }
 
    await env.DB.prepare(

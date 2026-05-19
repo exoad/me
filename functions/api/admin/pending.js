@@ -3,7 +3,7 @@ export async function onRequest(context) {
 
   try {
     const { results } = await env.DB.prepare(
-      'SELECT id, name, message, created_at FROM entries WHERE approved = 0 ORDER BY created_at ASC'
+      'SELECT id, name, message, created_at, approved FROM entries WHERE approved != 3 ORDER BY datetime(created_at) DESC, id DESC'
     ).all();
 
     return new Response(JSON.stringify({ entries: results }), {
