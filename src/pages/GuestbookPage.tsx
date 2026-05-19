@@ -272,27 +272,35 @@ export default function GuestbookPage() {
             ) : entries.length === 0 ? (
               <p className="text-fg3 text-sm font-sans">{strings.pages.guestbook.no_entries}</p>
             ) : (
-              <div>
+              <div className="flex flex-col gap-[calc(var(--spacing)*_4)]">
                 {entries.map((entry, index) => (
                   <article
                     key={entry.id}
-                    className="group animate-fade-in-up border-b border-bg2 pb-[calc(var(--spacing)*_5)] mb-[calc(var(--spacing)*_5)] transition-colors duration-200 hover:border-bg3"
+                    className="group relative animate-fade-in-up border border-bg2 border-l-yellow/45 bg-bg0_s/25 px-[calc(var(--spacing)*_5)] py-[calc(var(--spacing)*_5)] transition-colors duration-200 hover:border-bg3 hover:border-l-yellow hover:bg-bg1/20 sm:px-[calc(var(--spacing)*_6)]"
                     style={{ animationDelay: `${Math.min(index * 24, 120)}ms` }}
                   >
-                    <div className="flex gap-4">
-                      <span className="mt-1 hidden w-8 shrink-0 text-right font-sans text-xs text-fg4 sm:block">
-                        {String((page - 1) * 20 + index + 1).padStart(2, '0')}
+                    <span className="absolute right-[calc(var(--spacing)*_4)] top-[calc(var(--spacing)*_4)] font-sans text-[10px] tracking-[0.18em] text-fg4/50">
+                      {String((page - 1) * 20 + index + 1).padStart(2, '0')}
+                    </span>
+                    <blockquote className="relative pr-[calc(var(--spacing)*_8)]">
+                      <span className="pointer-events-none absolute -left-1 top-[-0.35rem] font-serif text-5xl leading-none text-yellow/25">
+                        &ldquo;
                       </span>
-                      <div className="min-w-0 flex-1">
-                        <header className="mb-[calc(var(--spacing)*_2)] flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                          <h3 className="font-bold text-fg0">{entry.name}</h3>
-                          <time className="text-fg4 text-xs font-sans">{formatDate(entry.created_at)}</time>
-                        </header>
-                        <p className="text-fg3 text-sm font-sans leading-relaxed whitespace-pre-wrap">
-                          {entry.message}
-                        </p>
-                      </div>
-                    </div>
+                      <p className="relative pl-[calc(var(--spacing)*_5)] text-lg leading-relaxed text-fg0 whitespace-pre-wrap sm:text-xl">
+                        {entry.message}
+                      </p>
+                      <footer className="mt-[calc(var(--spacing)*_5)] flex flex-col gap-2 border-t border-bg2/80 pt-[calc(var(--spacing)*_3)] font-sans sm:flex-row sm:items-center sm:justify-between">
+                        <span className="inline-flex items-center gap-2 text-sm font-semibold text-fg2">
+                          <span className="h-px w-5 bg-yellow/70 transition-colors duration-200 group-hover:bg-yellow" />
+                          <cite className="not-italic transition-colors duration-200 group-hover:text-yellow">
+                            {entry.name}
+                          </cite>
+                        </span>
+                        <time className="text-[11px] uppercase tracking-[0.14em] text-fg4">
+                          {formatDate(entry.created_at)}
+                        </time>
+                      </footer>
+                    </blockquote>
                   </article>
                 ))}
               </div>
