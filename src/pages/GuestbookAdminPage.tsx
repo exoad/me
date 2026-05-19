@@ -9,6 +9,8 @@ interface Entry {
   message: string;
   created_at: string;
   approved: number;
+  safety_status?: string;
+  safety_reason?: string;
 }
 
 export default function GuestbookAdminPage() {
@@ -28,6 +30,14 @@ export default function GuestbookAdminPage() {
     const deleteEntry=async(id:number)=>{try{var res=await window.fetch('/api/admin/delete',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),});if(res.ok)loadEntries();}catch(err){console.error(err)};};
 
     const formatDate=(dateStr:string)=>{try{return new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}).format(new Date(dateStr));}catch(e){return dateStr;}};
+
+    const safetyLabel=(entry:Entry)=>entry.safety_status?entry.safety_status.toUpperCase():'UNCHECKED';
+    const safetyClass=(entry:Entry)=>{
+        if(entry.safety_status==='safe')return 'bg-green/20 text-green';
+        if(entry.safety_status==='cautionary')return 'bg-yellow/20 text-yellow';
+        if(entry.safety_status==='unsafe')return 'bg-red/20 text-red';
+        return 'bg-gray/20 text-fg4';
+    };
 
 
 // PLACEHOLDER_LOGIN_FORM
@@ -80,10 +90,16 @@ export default function GuestbookAdminPage() {
                                   <span className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm ${entry.approved===1?'bg-green/20 text-green':'bg-yellow/20 text-yellow'}`}>
                                       {entry.approved===1?'Approved':'Unapproved'}
                                   </span>
+                                  <span className={`text-[10px] font-sans uppercase tracking-widest px-2 py-1 rounded-sm ${safetyClass(entry)}`}>
+                                      {safetyLabel(entry)}
+                                  </span>
                               </div>
                               <time className="text-xs text-fg4">{formatDate(entry.created_at)}</time>
                           </header>
                           <p className="text-fg3 text-sm font-sans leading-relaxed whitespace-pre-wrap">{entry.message}</p>
+                          {entry.safety_reason&&(
+                              <p className="mt-2 text-xs text-fg4 font-sans">{entry.safety_reason}</p>
+                          )}
                           <div className="flex flex-wrap gap-3 mt-3">
                               {entry.approved===1 ? (
                                   <button onClick={() => setEntryState(entry.id,0)} className="text-sm text-yellow hover:underline">Mark unapproved</button>

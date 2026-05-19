@@ -16,7 +16,7 @@ export async function onRequest(context) {
 
    // Get total count
    const countResult=await env.DB.prepare(
-     'SELECT COUNT(*) as total FROM entries WHERE approved = ?'
+     "SELECT COUNT(*) as total FROM entries WHERE approved = ? AND safety_status != 'unsafe'"
    ).bind(1).first();
    
    
@@ -29,7 +29,7 @@ export async function onRequest(context) {
 // Get paginated entries
 
 const{results}=await env.DB.prepare(
-'SELECT id ,name ,message ,created_at FROM entries WHERE approved = ? ORDER BY created_at DESC LIMIT ? OFFSET ?'
+"SELECT id ,name ,message ,created_at FROM entries WHERE approved = ? AND safety_status != 'unsafe' ORDER BY created_at DESC LIMIT ? OFFSET ?"
 ).bind(1 ,limit ,offset).all();
 
 return new Response(JSON.stringify({

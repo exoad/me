@@ -12,7 +12,7 @@ function NameCard() {
 	const name = strings.name;
 
 	return (
-		<div className="flex flex-col items-start lg:items-end gap-3">
+		<div className="flex flex-col items-start lg:items-end gap-3 animate-fade-in-up">
 			<h1
 				className="font-black text-5xl sm:text-6xl md:text-7xl text-fg0 tracking-tight cursor-pointer select-none"
 				onClick={() => setColorIndex((i) => (i + 1) % coreColors.length)}
@@ -67,7 +67,7 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<div className="border-b border-bg2">
+		<div className="border-b border-bg2 transition-all duration-300 hover:border-bg3">
 			<button
 				onClick={() => setOpen(!open)}
 				className="group w-full flex items-center justify-between gap-4 py-4 hover:border-fg3 transition duration-300 text-left"
@@ -125,7 +125,7 @@ function FeaturedTeaser({ proj }: { proj: (typeof projects)[0] }) {
 			href={proj.link}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="block group transition-all duration-300 hover:opacity-70"
+			className="block group transition-all duration-300 hover:-translate-y-1 hover:opacity-80"
 		>
 			<div className="flex items-center gap-2 mb-2">
 				<span className={`px-2 py-0.5 text-[10px] font-sans uppercase tracking-widest rounded-sm transition-colors duration-300 ${
@@ -175,7 +175,7 @@ function ContentSections() {
 
 	return (
 		<div className="flex flex-col gap-y-[3.5rem]">
-			<section>
+			<section className="animate-fade-in-up" style={{ animationDelay: '80ms' }}>
 				<p className="text-fg2 text-base sm:text-lg font-sans leading-relaxed max-w-xl">
 					I build software because I believe the best tools respect their users —
 					local-first, deterministic, and free from surveillance. From custom
@@ -194,7 +194,7 @@ function ContentSections() {
 			</section>
 
 			{droskProject && (
-				<section className="max-w-2xl">
+				<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '160ms' }}>
 					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Current Focus
 					</h2>
@@ -205,7 +205,7 @@ function ContentSections() {
 
 			{/* bibo - Special mention */}
 			{biboProject && (
-				<section className="max-w-2xl">
+				<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '220ms' }}>
 					<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Active Project
 					</h2>
@@ -232,7 +232,7 @@ function ContentSections() {
 				</section>
 			)}
 
-			<section className="max-w-2xl">
+			<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '280ms' }}>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 						Writing
 				</h2>
@@ -253,7 +253,7 @@ function ContentSections() {
 							<a
 								key={post.slug}
 								href={"/blog/" + post.slug}
-								className="group transition-all duration-300"
+							className="group transition-all duration-300 hover:translate-x-1"
 							>
 								<div className="flex items-center gap-2 mb-1">
 									<span className="text-fg4 text-xs font-sans">{post.date}</span>
@@ -278,7 +278,7 @@ function ContentSections() {
 				<div className="border-b border-bg2 mt-4" />
 			</section>
 
-			<section>
+			<section className="animate-fade-in-up" style={{ animationDelay: '340ms' }}>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Projects
 				</h2>
@@ -299,7 +299,7 @@ function ContentSections() {
 				</div>
 			</section>
 
-			<section className="max-w-2xl">
+			<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '400ms' }}>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Contact
 				</h2>
@@ -320,13 +320,13 @@ function ContentSections() {
 				<div className="border-b border-bg2 mt-4" />
 			</section>
 
-			<section className="max-w-2xl">
+			<section className="max-w-2xl animate-fade-in-up" style={{ animationDelay: '460ms' }}>
 				<h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
 					Guestbook
 				</h2>
 				<a
 					href="/guestbook"
-					className="block group transition-all duration-300 hover:opacity-70"
+					className="block group transition-all duration-300 hover:-translate-y-1 hover:opacity-80"
 				>
 					<div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
 						<h3 className="text-2xl sm:text-3xl font-bold text-fg0 transition-colors duration-300 group-hover:text-fg1">

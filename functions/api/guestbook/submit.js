@@ -70,11 +70,23 @@ if(!turnstileResult.success){
 return jsonError('Verification failed Please try again ',400 );
 }
 
-// Insert entry as pending approved=0
+const moderation = await moderateEntry({
+  apiKey: env.OPENAI_API_KEY,
+  name: name.trim(),
+  message: message.trim(),
+});
 
+// Insert entry as pending approved=0. Unsafe entries stay hidden from public views,
+// but remain visible in the admin dashboard for review.
 await env.DB.prepare(
-'INSERT INTO entries(name ,message ) VALUES(? ,?)'
-).bind(name.trim(),message.trim()).run();
+'INSERT INTO entries(name ,message, safety_status, safety_reason, safety_scores ) VALUES(? ,?, ?, ?, ?)'
+).bind(
+  name.trim(),
+  message.trim(),
+  moderation.status,
+  moderation.reason,
+  JSON.stringify(moderation.scores)
+).run();
 
 return new Response(JSON.stringify({
 success :true ,
@@ -95,4 +107,107 @@ return new Response(JSON.stringify({error :message }),{
 status ,
 headers:{'Content-Type':'application/json'},
 });
+}
+
+async function moderateEntry({ apiKey, name, message }) {
+  if (!apiKey) {
+    return {
+      status: 'unchecked',
+      reason: 'Moderation API key is not configured.',
+      scores: {},
+    };
+  }
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/moderations', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'omni-moderation-latest',
+        input: `Guestbook name: ${name}\nGuestbook message: ${message}`,
+      }),
+    });
+
+    if (!response.ok) {
+      return {
+        status: 'unchecked',
+        reason: `Moderation request failed with ${response.status}.`,
+        scores: {},
+      };
+    }
+
+    const data = await response.json();
+    const result = data.results?.[0] || {};
+    const categories = result.categories || {};
+    const scores = result.category_scores || {};
+
+    return classifyModeration({ message, categories, scores, flagged: !!result.flagged });
+  } catch (e) {
+    console.error('Moderation failed', e);
+    return {
+      status: 'unchecked',
+      reason: 'Moderation request failed.',
+      scores: {},
+    };
+  }
+}
+
+function classifyModeration({ message, categories, scores, flagged }) {
+  const unsafeCategories = [
+    'hate',
+    'hate/threatening',
+    'harassment/threatening',
+    'sexual',
+    'sexual/minors',
+    'violence/graphic',
+    'self-harm/intent',
+    'self-harm/instructions',
+    'illicit/violent',
+  ];
+  const cautionCategories = [
+    'harassment',
+    'violence',
+    'self-harm',
+    'illicit',
+  ];
+  const mildProfanity = /\b(fuck|shit|bitch|asshole|bastard|damn|crap|dick|piss)\b/i;
+
+  const unsafeSignals = unsafeCategories.filter((category) => {
+    return categories[category] || (typeof scores[category] === 'number' && scores[category] >= 0.55);
+  });
+
+  if (unsafeSignals.length > 0 || (flagged && maxScore(scores) >= 0.75)) {
+    return {
+      status: 'unsafe',
+      reason: `Unsafe content: ${unsafeSignals.join(', ') || 'high moderation score'}.`,
+      scores,
+    };
+  }
+
+  const cautionSignals = cautionCategories.filter((category) => {
+    return categories[category] || (typeof scores[category] === 'number' && scores[category] >= 0.25);
+  });
+
+  if (cautionSignals.length > 0 || mildProfanity.test(message)) {
+    return {
+      status: 'cautionary',
+      reason: cautionSignals.length > 0
+        ? `Review suggested: ${cautionSignals.join(', ')}.`
+        : 'Review suggested: mild profanity.',
+      scores,
+    };
+  }
+
+  return {
+    status: 'safe',
+    reason: 'No notable safety signals.',
+    scores,
+  };
+}
+
+function maxScore(scores) {
+  return Math.max(0, ...Object.values(scores).filter((value) => typeof value === 'number'));
 }

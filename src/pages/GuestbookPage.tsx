@@ -101,7 +101,10 @@ export default function GuestbookPage() {
         setName('');
         setMsgText('');
         setFormOpen(false);
-        setStatusMsg({ text: data.message || strings.pages.guestbook.success_message, ok: true });
+        setStatusMsg({
+          text: data.message || 'Your note is on its way. I will give it a quick look and approve it soon.',
+          ok: true,
+        });
         if (window.turnstile) window.turnstile.reset();
       } else {
         setStatusMsg({ text: data.error || strings.pages.guestbook.error_submit, ok: false });
@@ -110,7 +113,6 @@ export default function GuestbookPage() {
       setStatusMsg({ text: String(strings.pages.guestbook.error_submit), ok: false });
     } finally {
       setSubmitting(false);
-      setTimeout(() => setStatusMsg(null), 5000);
     }
   };
 
@@ -144,7 +146,7 @@ export default function GuestbookPage() {
             Back to home
           </button>
 
-          <header className="mb-[calc(var(--spacing)*_8)]">
+          <header className="mb-[calc(var(--spacing)*_8)] animate-fade-in-up">
             <p className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-[calc(var(--spacing)*_4)]">
               Guest Book
             </p>
@@ -156,11 +158,11 @@ export default function GuestbookPage() {
             </p>
           </header>
 
-          <section className="mb-[calc(var(--spacing)*_12)] border-y border-bg2">
+          <section className="mb-[calc(var(--spacing)*_12)] border-y border-bg2 animate-fade-in-up" style={{ animationDelay: '120ms' }}>
             <button
               type="button"
               onClick={() => setFormOpen((open) => !open)}
-              className="group flex w-full items-center justify-between gap-4 py-[calc(var(--spacing)*_5)] text-left"
+              className="group flex w-full items-center justify-between gap-4 py-[calc(var(--spacing)*_5)] text-left transition-colors duration-300 hover:text-fg0"
               aria-expanded={formOpen}
             >
               <span>
@@ -168,10 +170,10 @@ export default function GuestbookPage() {
                   {formOpen ? 'Hide signing form' : 'Sign the guestbook'}
                 </span>
                 <span className="block text-fg4 text-xs font-sans mt-1">
-                  Short notes only. New entries wait for approval.
+                  Leave a lighthearted note, a hello, or a tiny internet footprint.
                 </span>
               </span>
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-yellow text-bg0 transition-opacity group-hover:opacity-80">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-yellow text-bg0 transition-all duration-300 group-hover:scale-105 group-hover:opacity-80">
                 {formOpen ? <MdClose size={20} /> : <MdAdd size={20} />}
               </span>
             </button>
@@ -179,7 +181,7 @@ export default function GuestbookPage() {
             {formOpen && (
               <form
                 onSubmit={handleSubmit}
-                className="pb-[calc(var(--spacing)*_6)]"
+                className="animate-fade-in-up pb-[calc(var(--spacing)*_6)]"
               >
                 <div className="mb-[calc(var(--spacing)*_4)]">
                   <label className="block text-xs uppercase tracking-wide text-fg4 mb-[calc(var(--spacing)*_2)] font-sans">
@@ -229,7 +231,7 @@ export default function GuestbookPage() {
             )}
           </section>
 
-          {statusMsg && (
+          {statusMsg && !statusMsg.ok && (
             <p
               className={`mb-[calc(var(--spacing)*_8)] border-b border-bg2 pb-[calc(var(--spacing)*_4)] text-sm font-sans ${
                 statusMsg.ok ? 'text-green' : 'text-red'
@@ -239,7 +241,28 @@ export default function GuestbookPage() {
             </p>
           )}
 
-          <section>
+          {statusMsg?.ok && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg0/80 px-6 backdrop-blur-sm animate-fade-in">
+              <div className="w-full max-w-sm border border-bg2 bg-bg0 p-6 shadow-2xl animate-scale-in">
+                <p className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-4">
+                  Guest Book
+                </p>
+                <h2 className="text-2xl font-bold text-fg0 mb-3">Note received</h2>
+                <p className="text-fg3 text-sm font-sans leading-relaxed mb-6">
+                  {statusMsg.text}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setStatusMsg(null)}
+                  className="bg-yellow text-bg0 px-5 py-2 rounded-sm font-sans text-sm hover:opacity-80 transition-opacity"
+                >
+                  Nice
+                </button>
+              </div>
+            </div>
+          )}
+
+          <section className="animate-fade-in-up" style={{ animationDelay: '220ms' }}>
             <h2 className="text-fg4 font-sans uppercase tracking-[0.2em] text-[10px] mb-[calc(var(--spacing)*_5)]">
               Recent Entries
             </h2>
@@ -253,7 +276,8 @@ export default function GuestbookPage() {
                 {entries.map((entry, index) => (
                   <article
                     key={entry.id}
-                    className="group border-b border-bg2 pb-[calc(var(--spacing)*_5)] mb-[calc(var(--spacing)*_5)]"
+                    className="group animate-fade-in-up border-b border-bg2 pb-[calc(var(--spacing)*_5)] mb-[calc(var(--spacing)*_5)] transition-all duration-300 hover:border-bg3"
+                    style={{ animationDelay: `${Math.min(index * 80, 480)}ms` }}
                   >
                     <div className="flex gap-4">
                       <span className="mt-1 hidden w-8 shrink-0 text-right font-sans text-xs text-fg4 sm:block">

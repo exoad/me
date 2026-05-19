@@ -1,6 +1,7 @@
 @import url("./assets/fonts/fonts.css");
 @import "tailwindcss";
 @import "./styles/gruvbox-theme.css";
+@import "./styles/Animations.css";
 @import "katex/dist/katex.min.css";
 
 /* ============================================
