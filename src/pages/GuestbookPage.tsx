@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { strings } from '../data/shared';
@@ -22,6 +22,10 @@ type StatusMessage = {
   text: string;
   ok: boolean;
 };
+
+const MESSAGE_MAX_LENGTH = 600;
+const LINK_PATTERN = /((?:https?:\/\/|www\.)[^\s<>"']+)/gi;
+const LINK_PART_PATTERN = /^(?:https?:\/\/|www\.)[^\s<>"']+$/i;
 
 declare global {
   interface Window {
@@ -128,6 +132,38 @@ export default function GuestbookPage() {
     }
   };
 
+  const messageTextClass = (message: string) => {
+    if (message.length > 360) return 'text-base sm:text-lg';
+    if (message.length > 180) return 'text-[17px] sm:text-lg';
+    return 'text-lg sm:text-xl';
+  };
+
+  const renderMessage = (message: string): ReactNode[] => {
+    return message.split(LINK_PATTERN).map((part, index) => {
+      if (!LINK_PART_PATTERN.test(part)) return part;
+
+      const href = part.startsWith('www.') ? `https://${part}` : part;
+      try {
+        const url = new URL(href);
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') return part;
+      } catch {
+        return part;
+      }
+
+      return (
+        <a
+          key={`${part}-${index}`}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          className="text-yellow underline decoration-yellow/35 underline-offset-4 transition-colors duration-200 hover:text-fg0 hover:decoration-yellow"
+        >
+          {part}
+        </a>
+      );
+    });
+  };
+
   return (
     <>
       <SEO
@@ -205,12 +241,15 @@ export default function GuestbookPage() {
                   <textarea
                     value={msgText}
                     onChange={(e) => setMsgText(e.target.value)}
-                    maxLength={1000}
+                    maxLength={MESSAGE_MAX_LENGTH}
                     required
                     rows={4}
                     placeholder="Leave a message"
                     className="w-full resize-y bg-bg1 border border-bg3 rounded-sm px-3 py-2 text-fg placeholder:text-fg4 focus:outline-none focus:border-yellow"
                   />
+                  <div className="mt-2 text-right font-sans text-[11px] text-fg4">
+                    {msgText.length}/{MESSAGE_MAX_LENGTH}
+                  </div>
                 </div>
 
                 <div
@@ -272,24 +311,24 @@ export default function GuestbookPage() {
             ) : entries.length === 0 ? (
               <p className="text-fg3 text-sm font-sans">{strings.pages.guestbook.no_entries}</p>
             ) : (
-              <div className="flex flex-col gap-[calc(var(--spacing)*_4)]">
+              <div className="divide-y divide-bg2">
                 {entries.map((entry, index) => (
                   <article
                     key={entry.id}
-                    className="group relative animate-fade-in-up border border-bg2 border-l-yellow/45 bg-bg0_s/25 px-[calc(var(--spacing)*_5)] py-[calc(var(--spacing)*_5)] transition-colors duration-200 hover:border-bg3 hover:border-l-yellow hover:bg-bg1/20 sm:px-[calc(var(--spacing)*_6)]"
+                    className="group relative animate-fade-in-up py-[calc(var(--spacing)*_7)] transition-colors duration-200 first:pt-0"
                     style={{ animationDelay: `${Math.min(index * 24, 120)}ms` }}
                   >
-                    <span className="absolute right-[calc(var(--spacing)*_4)] top-[calc(var(--spacing)*_4)] font-sans text-[10px] tracking-[0.18em] text-fg4/50">
+                    <span className={`absolute right-0 font-sans text-[10px] tracking-[0.18em] text-fg4/45 ${index === 0 ? 'top-0' : 'top-[calc(var(--spacing)*_7)]'}`}>
                       {String((page - 1) * 20 + index + 1).padStart(2, '0')}
                     </span>
                     <blockquote className="relative pr-[calc(var(--spacing)*_8)]">
                       <span className="pointer-events-none absolute -left-1 top-[-0.35rem] font-serif text-5xl leading-none text-yellow/25">
                         &ldquo;
                       </span>
-                      <p className="relative pl-[calc(var(--spacing)*_5)] text-lg leading-relaxed text-fg0 whitespace-pre-wrap sm:text-xl">
-                        {entry.message}
+                      <p className={`relative pl-[calc(var(--spacing)*_5)] leading-relaxed text-fg0 whitespace-pre-wrap break-words ${messageTextClass(entry.message)}`}>
+                        {renderMessage(entry.message)}
                       </p>
-                      <footer className="mt-[calc(var(--spacing)*_5)] flex flex-col gap-2 border-t border-bg2/80 pt-[calc(var(--spacing)*_3)] font-sans sm:flex-row sm:items-center sm:justify-between">
+                      <footer className="mt-[calc(var(--spacing)*_4)] flex flex-col gap-2 pl-[calc(var(--spacing)*_5)] font-sans sm:flex-row sm:items-center sm:justify-between">
                         <span className="inline-flex items-center gap-2 text-sm font-semibold text-fg2">
                           <span className="h-px w-5 bg-yellow/70 transition-colors duration-200 group-hover:bg-yellow" />
                           <cite className="not-italic transition-colors duration-200 group-hover:text-yellow">

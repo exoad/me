@@ -22,8 +22,8 @@ export async function onRequest(context) {
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return jsonError('Message is required', 400);
     }
-    if (message.trim().length > 1000) {
-      return jsonError('Message must be under 1000 characters', 400);
+    if (message.trim().length > 600) {
+      return jsonError('Message must be under 600 characters', 400);
     }
     if (!turnstileToken) {
       return jsonError('Turnstile verification required', 400);
