@@ -12,6 +12,10 @@ headers:{'Content-Type':'application/json'},
 }
 
 try{
+if(!env.ADMIN_PASSWORD){
+return jsonError('Admin password is not configured ',500 );
+}
+
 const body=await request.json();
 const{password}=body;
 
@@ -46,9 +50,12 @@ return jsonError('Invalid password ',401 );
 }
 
 // Create HMAC-signed session token
-const secret=env.SESSION_SECRET ||env.ADMIN_PASSWORD ||'fallback-secret';
-const random=crypto.randomUUID();
-const sessionToken=await sign(random ,secret );
+const secret=env.SESSION_SECRET ||env.ADMIN_PASSWORD;
+const payload=btoa(JSON.stringify({
+sid:crypto.randomUUID(),
+exp:Date.now()+SESSION_DURATION,
+})).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const sessionToken=await sign(payload ,secret );
 
 // Set cookie
 const expires=new Date(Date.now()+SESSION_DURATION).toUTCString();
@@ -56,6 +63,7 @@ return new Response(JSON.stringify({success:true }),{
 status :200 ,
 headers:{
 'Content-Type':'application/json',
+'Cache-Control':'no-store',
 'Set-Cookie':`${SESSION_COOKIE}=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Expires=${expires}`,
 },
 });
@@ -82,6 +90,6 @@ async function sign(data ,secret ){
 function jsonError(message ,status ){
  return new Response(JSON.stringify({error:message }),{
    status ,
-   headers:{'Content-Type':'application/json'},
+   headers:{'Content-Type':'application/json','Cache-Control':'no-store'},
  });
 }

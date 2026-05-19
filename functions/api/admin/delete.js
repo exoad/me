@@ -27,7 +27,7 @@ export async function onRequest(context) {
 
    return new Response(JSON.stringify({success:true }),{
      status :200 ,
-     headers:{'Content-Type':'application/json'},
+     headers:{'Content-Type':'application/json','Cache-Control':'no-store'},
    });
 
  }catch(e){
@@ -39,6 +39,6 @@ export async function onRequest(context) {
 function jsonError(message ,status ){
  return new Response(JSON.stringify({error:message }),{
    status ,
-   headers:{'Content-Type':'application/json'},
+   headers:{'Content-Type':'application/json','Cache-Control':'no-store'},
  });
 }

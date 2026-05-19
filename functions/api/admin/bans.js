@@ -8,13 +8,13 @@ export async function onRequest(context) {
 
     return new Response(JSON.stringify({ ips: results.map(r => r.ip) }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   } catch (e) {
     console.error(e);
     return new Response(JSON.stringify({ error: 'Something went wrong' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 }
