@@ -16,13 +16,13 @@ export default function GuestbookAdminPage() {
     const [entries, setEntries] = useState<Entry[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const handleLogin=async(e:React.FormEvent)=>{e.preventDefault();try{var res=await window.fetch('/api/guestbook/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password}),});if(res.ok){setLoggedIn(true);loadPending();}}catch(err){console.error(err);}};
+    const handleLogin=async(e:React.FormEvent)=>{e.preventDefault();try{var res=await window.fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password}),});if(res.ok){setLoggedIn(true);loadPending();}}catch(err){console.error(err);}};
 
-    const loadPending=async()=>{setLoading(true);try{var res=await window.fetch('/api/guestbook/admin/pending');if(res.ok){var data=await res.json();setEntries(data.entries||[]);}}catch(err){console.error(err);}finally{setLoading(false);}};
+    const loadPending=async()=>{setLoading(true);try{var res=await window.fetch('/api/admin/pending');if(res.ok){var data=await res.json();setEntries(data.entries||[]);}}catch(err){console.error(err);}finally{setLoading(false);}};
 
-    const approveEntry=async(id:number)=>{try{var res=await window.fetch('/api/guestbook/admin/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),});if(res.ok)loadPending();}catch(err){console.error(err);}};
+    const approveEntry=async(id:number)=>{try{var res=await window.fetch('/api/admin/approve/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({approved:1}),});if(res.ok)loadPending();}catch(err){console.error(err);}};
 
-    const deleteEntry=async(id:number)=>{try{var res=await window.fetch('/api/guestbook/admin/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id}),});if(res.ok)loadPending();}catch(err){console.error(err)};};
+    const deleteEntry=async(id:number)=>{try{var res=await window.fetch('/api/admin/delete/'+id,{method:'DELETE'});if(res.ok)loadPending();}catch(err){console.error(err)};};
 
 
 // PLACEHOLDER_LOGIN_FORM
