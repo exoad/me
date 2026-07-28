@@ -1,63 +1,29 @@
-import SpinningSquareDivider from '../components/SpinningSquareDivider';
 import { strings } from '../data/shared.ts';
-import Scaffold, { ScaffoldContent } from '../components/Scaffold.tsx';
 import SEO from '../components/SEO.tsx';
-import HoverShowLine from '../components/HoverShowLine.tsx';
-import StarBg from "../components/StarsBg";
-import { Column } from '../components/FlexLayouter.tsx';
-import { useEffect } from 'react';
+import Header from '../components/Header.tsx';
+import Footer from '../components/Footer.tsx';
 import { Link } from 'react-router-dom';
-import { motionSafeScrollBehavior } from '../utils/motion';
 
-export default function NotFound({ scaffoldProps = {} }) {
-    useEffect(() => {
-        if (window.scrollY > 0) {
-            window.scrollTo({ top: 0, behavior: motionSafeScrollBehavior() });
-        }
-    }, []);
+export default function NotFound() {
     return (
-        <Scaffold showSpinner={false} {...scaffoldProps}>
+        <main id="main" className="page">
             <SEO
                 title="Page Not Found"
                 description={strings.pages.not_found.description}
                 type='website'
             />
-            <StarBg scrollY={0} />
-            <ScaffoldContent useDefaultLayout>
-
-                <Column gap={16} mainAxisAlignment="center" className="transition-opacity duration-300">
-                    <h1
-                        className="text-gb-fg0 text-8xl md:text-9xl font-bold"
-                        style={{ textShadow: '0 0 20px rgba(214,93,14,0.3)' }}
-                    >
-                        {strings.pages.not_found.super}
-                    </h1>
-                    <p className="text-gb-fg1 text-xl md:text-5xl font-medium text-center font-montserrat "
-                    >
-                        {strings.pages.not_found.title}
-                    </p>
-                    <p className="text-gb-fg4 text-base md:text-lg text-center max-w-md font-montserrat"
-                    >
-                        {strings.pages.not_found.description}
-                    </p>
-                    <SpinningSquareDivider />
-                    <button
-                        className="bg-transparent text-gb-fg1 md:text-base font-light py-3 px-6 cursor-pointer hover:text-gb-orange transition-colors duration-300 group font-montserrat"
-                        onClick={() => globalThis.history.back()}
-                    >
-                        <span className="text-xl">
-                            {strings.pages.not_found.go_back}
-                        </span>
-                        <HoverShowLine />
-                    </button>
-                    <Link
-                        to="/"
-                        className="text-gb-fg4 hover:text-gb-orange transition-colors duration-300 font-montserrat"
-                    >
-                        Home
-                    </Link>
-                </Column>
-            </ScaffoldContent>
-        </Scaffold>
+            <Header />
+            <h1>{strings.pages.not_found.super}</h1>
+            <p>{strings.pages.not_found.title}</p>
+            <p className="muted">{strings.pages.not_found.description}</p>
+            <p>
+                <button type="button" className="btn-link" onClick={() => globalThis.history.back()}>
+                    {strings.pages.not_found.go_back}
+                </button>
+                {" · "}
+                <Link to="/">Home</Link>
+            </p>
+            <Footer />
+        </main>
     );
 }

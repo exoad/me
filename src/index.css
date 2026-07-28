@@ -1,47 +1,5 @@
-@import url("./assets/fonts/fonts.css");
 @import "tailwindcss";
-@import "./styles/gruvbox-theme.css";
-@import "./styles/Animations.css";
 @import "katex/dist/katex.min.css";
-
-/* ============================================
-   LEGACY COLOR VARIABLES (for backward compatibility)
-   ============================================ */
-
-@theme {
-    --color-bg0: #1d2021;
-    --color-bg0_h: #1d2021;
-    --color-bg0_s: #32302f;
-    --color-bg1: #3c3836;
-    --color-bg2: #504945;
-    --color-bg3: #665c54;
-    --color-bg4: #7c6f64;
-    --color-fg0: #fbf1c7;
-    --color-fg: #ebdbb2;
-    --color-fg2: #d5c4a1;
-    --color-fg3: #bdae93;
-    --color-fg4: #a89984;
-    --color-red: #cc241d;
-    --color-red-dim: #9d0006;
-    --color-green: #98971a;
-    --color-green-dim: #79740e;
-    --color-yellow: #d79921;
-    --color-yellow-dim: #b57614;
-    --color-blue: #458588;
-    --color-blue-dim: #076678;
-    --color-purple: #b16286;
-    --color-purple-dim: #8f3f71;
-    --color-aqua: #689d6a;
-    --color-aqua-dim: #427b58;
-    --color-orange: #d65d0e;
-    --color-orange-dim: #af3a03;
-    --color-gray: #928374;
-    
-}
-
-/* ============================================
-   BASE STYLES
-   ============================================ */
 
 html, body, #root {
     margin: 0;
@@ -49,285 +7,125 @@ html, body, #root {
 }
 
 body {
-    font-family: "Inter", system-ui, sans-serif;
-    background: var(--color-bg-primary);
-    color: var(--color-fg-secondary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: #fff;
+    color: #111;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-.font-sans {
-    font-family: "Inter", system-ui, sans-serif !important;
+a {
+    color: #06c;
 }
 
-.font-display {
-    font-family: "Inter", system-ui, sans-serif !important;
+.muted {
+    color: #555;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: #06c;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* ============================================
+   PAGE LAYOUT
+   ============================================ */
+
+.page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem;
+}
+
+.site-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.site-name {
+    font-weight: 700;
+    text-decoration: none;
+    color: #111;
+}
+
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.site-nav a {
+    text-decoration: none;
+}
+
+.site-nav a:hover {
+    text-decoration: underline;
+}
+
+.site-nav a[aria-current="page"] {
+    color: #111;
     font-weight: 700;
 }
 
-/* Loading bar animation */
-@keyframes loadingBar {
-  0% {
-    transform: translateX(-100%);
-  }
-  50% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+.project-row {
+    border-bottom: 1px solid #ddd;
+    padding: 0.75rem 0;
 }
 
-/* Multi-segment loading bar animation */
-@keyframes loadingSegment {
-  0%, 100% {
-    opacity: 0.3;
-    transform: scaleY(0.5);
-  }
-  50% {
-    opacity: 1;
-    transform: scaleY(1);
-  }
+.project-row summary {
+    cursor: pointer;
 }
 
-.animate-loading-segment {
-  animation: loadingSegment 1.2s ease-in-out infinite;
+.blog-post-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    padding: 1rem 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
 }
 
-/* Premium loading bar animation - 5 second duration, subtle wave */
-@keyframes loadingBar {
-  0% {
-    height: 20%;
-    opacity: 0.4;
-  }
-  25% {
-    height: 70%;
-    opacity: 0.8;
-  }
-  50% {
-    height: 100%;
-    opacity: 1;
-  }
-  75% {
-    height: 60%;
-    opacity: 0.7;
-  }
-  100% {
-    height: 20%;
-    opacity: 0.4;
-  }
+.site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    border-top: 1px solid #ddd;
+    margin-top: 3rem;
+    padding-top: 1rem;
+    color: #555;
+    font-size: 0.85rem;
 }
 
-.animate-loading-bar {
-  animation: loadingBar 5s ease-in-out infinite;
-  transform-origin: bottom;
-}
+/* ============================================
+   BLOG CONTENT (rendered markdown)
+   ============================================ */
 
-/* Slow pulse for loading text */
-@keyframes pulseSlow {
-  0%, 100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-.animate-pulse-slow {
-  animation: pulseSlow 3s ease-in-out infinite;
-}
-
-/* Scrolling color bar - colors flow through like a marquee */
-@keyframes colorScroll {
-  0% {
-    background: linear-gradient(90deg, 
-      #cc241d 0%, #cc241d 20%,
-      #98971a 20%, #98971a 40%,
-      #458588 40%, #458588 60%,
-      #d79921 60%, #d79921 80%,
-      #cc241d 80%, #cc241d 100%
-    );
-    transform: translateX(-100%);
-  }
-  100% {
-    background: linear-gradient(90deg, 
-      #cc241d 0%, #cc241d 20%,
-      #98971a 20%, #98971a 40%,
-      #458588 40%, #458588 60%,
-      #d79921 60%, #d79921 80%,
-      #cc241d 80%, #cc241d 100%
-    );
-    transform: translateX(100%);
-  }
-}
-
-.animate-color-scroll {
-  animation: colorScroll 4s linear infinite;
-  width: 200%;
-  background-size: 50% 100%;
-}
-
-/* All Gruvbox colors scrolling through the bar - slower */
-@keyframes colorScrollAll {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
-.animate-color-scroll {
-  animation: colorScrollAll 8s linear infinite;
-  width: 400%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    #cc241d 0%, #cc241d 8.33%,    /* red */
-    #98971a 8.33%, #98971a 16.66%, /* green */
-    #d79921 16.66%, #d79921 25%,   /* yellow */
-    #458588 25%, #458588 33.33%,   /* blue */
-    #b16286 33.33%, #b16286 41.66%, /* purple */
-    #689d6a 41.66%, #689d6a 50%,   /* aqua */
-    #d65d0e 50%, #d65d0e 58.33%,   /* orange */
-    #928374 58.33%, #928374 66.66%, /* gray */
-    #cc241d 66.66%, #cc241d 75%,   /* red */
-    #98971a 75%, #98971a 83.33%,   /* green */
-    #d79921 83.33%, #d79921 91.66%, /* yellow */
-    #458588 91.66%, #458588 100%   /* blue */
-  );
-  background-size: 25% 100%;
-}
-
-/* Shimmer effect over the color bar */
-@keyframes shimmer {
-  0% {
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      rgba(251, 241, 199, 0.3) 50%, 
-      transparent 100%
-    );
-    transform: translateX(-100%);
-  }
-  100% {
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      rgba(251, 241, 199, 0.3) 50%, 
-      transparent 100%
-    );
-    transform: translateX(100%);
-  }
-}
-
-.animate-shimmer {
-  animation: shimmer 2s ease-in-out infinite;
-}
-
-/* Wave scale animation for loading bars */
-@keyframes waveScale {
-  0%, 100% {
-    transform: scaleY(0.3) scaleX(0.8);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scaleY(1) scaleX(1);
-    opacity: 1;
-  }
-}
-
-.animate-wave-scale {
-  animation: waveScale 1.2s ease-in-out infinite;
-  height: 48px;
-  transform-origin: center;
-}
-
-/* Smoother wave animation for loading indicator */
-@keyframes waveScaleSmooth {
-  0%, 100% {
-    transform: scaleY(0.4) scaleX(0.9);
-    opacity: 0.6;
-  }
-  50% {
-    transform: scaleY(1) scaleX(1);
-    opacity: 1;
-  }
-}
-
-.animate-wave-scale {
-  animation: waveScaleSmooth 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  height: 48px;
-  transform-origin: center;
-  will-change: transform, opacity;
-}
-
-/* Wave scale - bars always visible, no initial gap */
-@keyframes waveScaleSmooth {
-  0%, 100% {
-    transform: scaleY(0.5);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-}
-
-.animate-wave-scale {
-  animation: waveScaleSmooth 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  will-change: transform;
-}
-
-/* Optimized wave animation - GPU accelerated, no choppy first frame */
-@keyframes waveScaleOptimized {
-  0%, 100% {
-    transform: scale3d(1, 0.5, 1);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scale3d(1, 1, 1);
-    opacity: 1;
-  }
-}
-
-.animate-wave-scale {
-  animation: waveScaleOptimized 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  will-change: transform, opacity;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-/* Optimized wave animation - reduced GPU load */
-@keyframes waveScaleOptimized {
-  0%, 100% {
-    transform: scaleY(0.6);
-  }
-  50% {
-    transform: scaleY(1);
-  }
-}
-
-.animate-wave-scale {
-  animation: waveScaleOptimized 2s ease-in-out infinite;
-  will-change: transform;
-}
-
-/* Reduce motion for users who prefer it */
-@media (prefers-reduced-motion: reduce) {
-  .animate-wave-scale {
-    animation: none;
-    transform: scaleY(1);
-  }
-}
-
-/* Blog Content Styles */
 .blog-content {
-    color: var(--color-fg2);
-    font-family: "Inter", system-ui, sans-serif;
+    color: #111;
     font-size: 1.05rem;
     line-height: 1.8;
 }
 
 .blog-content h1 {
-    color: var(--color-fg0);
+    color: #111;
     font-size: 2rem;
     font-weight: 700;
     margin-top: 2.5rem;
@@ -335,7 +133,7 @@ body {
 }
 
 .blog-content h2 {
-    color: var(--color-fg0);
+    color: #111;
     font-size: 1.5rem;
     font-weight: 600;
     margin-top: 2rem;
@@ -343,18 +141,15 @@ body {
 }
 
 .blog-content h3 {
-    color: var(--color-fg4);
-    font-size: 0.75rem;
-    font-weight: 400;
-    font-family: "Inter", system-ui, sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin-top: 1.25rem;
-    margin-bottom: 0.15rem;
+    color: #111;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .blog-content h4 {
-    color: var(--color-fg2);
+    color: #111;
     font-size: 1.05rem;
     font-weight: 600;
     margin-top: 1.5rem;
@@ -377,72 +172,51 @@ body {
 }
 
 .blog-content a {
-    color: var(--color-blue);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.blog-content a:hover {
-    color: var(--color-fg0);
+    color: #06c;
     text-decoration: underline;
 }
 
 .blog-content blockquote {
-    border-left: 2px solid var(--color-yellow);
+    border-left: 1px solid #ccc;
     padding: 0.5rem 1rem;
     margin: 1.5rem 0;
-    color: var(--color-fg3);
-    background: var(--color-bg1);
+    color: #333;
 }
 
 .blog-content strong {
-    color: var(--color-fg0);
+    color: #111;
     font-weight: 700;
-    font-size: 1.1rem;
-}
-
-.blog-content h1 strong,
-.blog-content h2 strong,
-.blog-content h3 strong {
-    color: var(--color-yellow);
-}
-
-.blog-content blockquote strong {
-    color: var(--color-green);
-}
-
-.blog-content li strong {
-    color: var(--color-blue);
 }
 
 .blog-content em {
-    color: var(--color-fg3);
+    color: #333;
 }
 
 .blog-content code {
-    background: var(--color-bg1);
+    background: #f5f5f5;
+    border: 1px solid #ddd;
     padding: 0.15rem 0.4rem;
     font-size: 0.9rem;
-    border-radius: 3px;
 }
 
 .blog-content pre {
-    background: var(--color-bg1);
+    background: #f5f5f5;
+    border: 1px solid #ddd;
     padding: 1rem;
     overflow-x: auto;
     margin-bottom: 1.25rem;
-    border-radius: 4px;
 }
 
 .blog-content pre code {
     background: none;
+    border: none;
     padding: 0;
     font-size: 0.85rem;
 }
 
 .blog-content hr {
     border: none;
-    border-top: 1px solid var(--color-bg2);
+    border-top: 1px solid #ddd;
     margin: 1.5rem 0;
 }
 
@@ -451,10 +225,8 @@ body {
     height: auto;
     margin: 1.5rem auto;
     display: block;
-    border-radius: 4px;
 }
 
-/* KaTeX overrides for dark theme */
 .blog-content .katex {
     font-size: 1.1em;
 }
