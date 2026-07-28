@@ -20,6 +20,8 @@ const PAGE_SIZE = 24;
 const PAGE_COUNT = Math.max(1, Math.ceil(galleryPhotos.length / PAGE_SIZE));
 // Photos at the top of a page fetch immediately; the rest stream in on scroll.
 const PRIORITY_COUNT = 6;
+// Keep in step with the .ph-lightbox-close animation.
+const CLOSE_MS = 260;
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const frameNo = (i: number) => String(i + 1).padStart(3, "0");
@@ -130,8 +132,19 @@ function Lightbox({ index, onNavigate, onClose }: {
     const photo = galleryPhotos[index];
     const [loaded, setLoaded] = useState(false);
     const [failed, setFailed] = useState(false);
+    const [closing, setClosing] = useState(false);
     const dialogRef = useRef<HTMLDivElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);
+    const closeTimer = useRef(0);
+
+    // Let the exit animation finish before the dialog leaves the tree.
+    const requestClose = useCallback(() => {
+        setClosing(true);
+        clearTimeout(closeTimer.current);
+        closeTimer.current = window.setTimeout(onClose, CLOSE_MS);
+    }, [onClose]);
+
+    useEffect(() => () => clearTimeout(closeTimer.current), []);
 
     const prev = index > 0 ? index - 1 : null;
     const next = index < galleryPhotos.length - 1 ? index + 1 : null;
@@ -169,7 +182,7 @@ function Lightbox({ index, onNavigate, onClose }: {
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "Escape") onClose();
+            if (event.key === "Escape") requestClose();
             if (event.key === "ArrowLeft" && prev !== null) onNavigate(prev);
             if (event.key === "ArrowRight" && next !== null) onNavigate(next);
             if (event.key === "Tab") {
@@ -194,11 +207,11 @@ function Lightbox({ index, onNavigate, onClose }: {
         };
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [prev, next, onNavigate, onClose]);
+    }, [prev, next, onNavigate, requestClose]);
 
     return (
         <div
-            className="ph ph-lightbox"
+            className={`ph ph-lightbox${closing ? " is-closing" : ""}`}
             role="dialog"
             aria-modal="true"
             aria-label={`Photo ${frameNo(index)} of ${pad(galleryPhotos.length)}`}
@@ -206,7 +219,7 @@ function Lightbox({ index, onNavigate, onClose }: {
             tabIndex={-1}
             data-lenis-prevent
         >
-            <div className="ph-lightbox-stage" onClick={onClose}>
+            <div className="ph-lightbox-stage" onClick={requestClose}>
                 <div
                     className="ph-rail ph-rail-left"
                     onClick={(event) => event.stopPropagation()}
@@ -281,7 +294,7 @@ function Lightbox({ index, onNavigate, onClose }: {
                     >
                         Next
                     </button>
-                    <button type="button" className="ph-label" onClick={onClose}>
+                    <button type="button" className="ph-label" onClick={requestClose}>
                         Close
                     </button>
                 </div>

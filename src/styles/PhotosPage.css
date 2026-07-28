@@ -15,6 +15,45 @@
     font-family: var(--ph-mono);
 }
 
+/* The page scrollbar belongs to the document, not to .ph — so it hangs off the
+   landing class that is present only while this page is mounted, and reverts on
+   its own when you leave. Squared off, like everything else here. */
+html.is-photos-landing {
+    scrollbar-width: thin;
+    scrollbar-color: #2e2e2e #000000;
+}
+
+/* Older WebKit ignores the two properties above. It also needs the document's
+   own scrollbar addressed directly — a descendant selector only reaches
+   scrollbars inside the page. Chrome 121+ prefers the standard properties and
+   ignores these, which is fine: either route lands in the same place. */
+html.is-photos-landing::-webkit-scrollbar,
+html.is-photos-landing ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+html.is-photos-landing::-webkit-scrollbar-track,
+html.is-photos-landing ::-webkit-scrollbar-track {
+    background: #000000;
+}
+
+html.is-photos-landing::-webkit-scrollbar-thumb,
+html.is-photos-landing ::-webkit-scrollbar-thumb {
+    background: #2e2e2e;
+    border-radius: 0;
+}
+
+html.is-photos-landing::-webkit-scrollbar-thumb:hover,
+html.is-photos-landing ::-webkit-scrollbar-thumb:hover {
+    background: #5a5a5a;
+}
+
+html.is-photos-landing::-webkit-scrollbar-corner,
+html.is-photos-landing ::-webkit-scrollbar-corner {
+    background: #000000;
+}
+
 .ph a,
 .ph button {
     font-family: var(--ph-mono);
@@ -319,6 +358,31 @@
     display: flex;
     flex-direction: column;
     font-family: var(--ph-mono);
+    /* The grid dissolves into the frame rather than being replaced by it. */
+    animation: ph-lightbox-open 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ph-lightbox.is-closing {
+    animation: ph-lightbox-close 0.26s ease forwards;
+    pointer-events: none;
+}
+
+@keyframes ph-lightbox-open {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes ph-lightbox-close {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
 /* Metadata rails flank the frame, each set flush to its own edge. */
@@ -326,7 +390,11 @@
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: 160px minmax(0, 1fr) 160px;
+    /* Rails scale with the window so a small laptop doesn't starve the photo. */
+    grid-template-columns:
+        clamp(160px, 16vw, 220px)
+        minmax(0, 1fr)
+        clamp(160px, 16vw, 220px);
     /* Definite row, so the image's max-height: 100% has something real to
        resolve against instead of feeding back into an auto row. */
     grid-template-rows: minmax(0, 1fr);
@@ -346,16 +414,18 @@
     justify-content: center;
 }
 
+/* Sized to actually be read on a desktop; the small-screen block below returns
+   it to a caption. */
 .ph-rail {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 9px;
-    font-size: 9px;
-    letter-spacing: 0.18em;
+    gap: 11px;
+    font-size: clamp(11px, 1.05vw, 14px);
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--ph-dim);
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 /* Long values wrap onto another line rather than clipping or bleeding out of
@@ -475,10 +545,13 @@
         align-self: stretch;
     }
 
+    /* Back to caption scale where there is no room for the larger setting. */
     .ph-rail {
         flex-direction: row;
         flex-wrap: wrap;
         gap: 4px 12px;
+        font-size: 9px;
+        letter-spacing: 0.18em;
     }
 
     /* Now that the rails are rows, the base centring would govern the main
