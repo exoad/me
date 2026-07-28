@@ -1,5 +1,5 @@
-import { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Suspense, lazy, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -15,9 +15,21 @@ function PageLoading() {
 	);
 }
 
+function ThemedScrollbar() {
+	const location = useLocation();
+
+	useEffect(() => {
+		const isPhotos = location.pathname.startsWith("/photos");
+		document.documentElement.classList.toggle("themed-scrollbar", !isPhotos);
+	}, [location.pathname]);
+
+	return null;
+}
+
 function AppContent() {
 	return (
 		<>
+		<ThemedScrollbar />
 		<a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:text-black focus:outline focus:outline-2 focus:outline-black">
 			Skip to main content
 		</a>

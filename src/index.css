@@ -19,6 +19,35 @@ a {
     color: #06c;
 }
 
+/* ============================================
+   THEMED SCROLLBAR
+   Applied everywhere except /photos (toggled via
+   ThemedScrollbar in App.tsx, which leaves that
+   page's default browser scrollbar untouched).
+   ============================================ */
+
+html.themed-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #fff;
+}
+
+html.themed-scrollbar::-webkit-scrollbar {
+    width: 12px;
+}
+
+html.themed-scrollbar::-webkit-scrollbar-track {
+    background: #fff;
+}
+
+html.themed-scrollbar::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border: 3px solid #fff;
+}
+
+html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
 .muted {
     color: #555;
 }

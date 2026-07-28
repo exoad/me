@@ -47,27 +47,10 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 	);
 }
 
-function FeaturedTeaser({ proj }: { proj: (typeof projects)[0] }) {
-	return (
-		<a href={proj.link} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", color: "inherit" }}>
-			<p className="muted">
-				[{proj.state === "active" ? "In Development" : proj.state === "finished" ? "Completed" : "Archived"}]
-			</p>
-			<h3>{proj.title}</h3>
-			<p className="muted">{proj.description}</p>
-		</a>
-	);
-}
-
 function ContentSections() {
-	const droskProject = projects.find((p) => p.title === "Drosk");
 	const biboProject = projects.find((p) => p.title === "bibo");
-	const otherFeatured = featuredProjects.filter(
-		(p) => p.title !== "Drosk" && p.title !== "bibo",
-	);
-	const allOtherProjects = projects.filter(
-		(p) => !p.featured && p.title !== "Drosk" && p.title !== "bibo",
-	);
+	const otherFeatured = featuredProjects.filter((p) => p.title !== "bibo");
+	const allOtherProjects = projects.filter((p) => !p.featured && p.title !== "bibo");
 	const [latestPosts, setLatestPosts] = useState<BlogPostData[]>([]);
 
 	useEffect(() => {
@@ -83,13 +66,6 @@ function ContentSections() {
 					{strings.pages.home.about.content.split("photography")[1]}
 				</p>
 			</section>
-
-			{droskProject && (
-				<section>
-					<h2>Current Focus</h2>
-					<FeaturedTeaser proj={droskProject} />
-				</section>
-			)}
 
 			{biboProject && (
 				<section>
@@ -157,9 +133,9 @@ export default function HomePage() {
 			<SEO title="Home" description={strings.pages.home.about.content} />
 			<main id="main" className="page">
 				<Header />
-				<h1>{strings.name}</h1>
-				<p className="muted">{strings.pages.home.tagline}</p>
-				<p>
+				<p className="muted">
+					{strings.pages.home.tagline}
+					{" — "}
 					<a href={strings.links.github} aria-label={strings.links.github_aria}>GitHub</a>
 					{" · "}
 					<a href={strings.links.linkedin} aria-label={strings.links.linkedin_aria}>LinkedIn</a>
