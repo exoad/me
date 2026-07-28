@@ -33,6 +33,7 @@ export function usePhotosReveal() {
 
         let cancelled = false;
         let frame = 0;
+        let safety = 0;
 
         const lift = () => {
             if (cancelled) return;
@@ -48,6 +49,10 @@ export function usePhotosReveal() {
         // the stylesheet keeps that fade and drops only the moving pieces.
         Promise.all([fonts, dwell]).then(() => {
             if (cancelled) return;
+            // Waiting two frames lets the grid paint under the veil first, but a
+            // backgrounded tab never runs them — so never let the frames be the
+            // only way out. Lifting twice is harmless.
+            safety = window.setTimeout(lift, 1500);
             frame = requestAnimationFrame(() => {
                 frame = requestAnimationFrame(lift);
             });
@@ -56,6 +61,7 @@ export function usePhotosReveal() {
         return () => {
             cancelled = true;
             cancelAnimationFrame(frame);
+            clearTimeout(safety);
             root.classList.remove(LANDING_CLASS);
             // Reset for the next visit. Never cleared on mount: if index.html's
             // failsafe already revealed a slow-booting page, re-hiding it would
