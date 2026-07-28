@@ -5,11 +5,14 @@ import SEO from "../components/SEO";
 import { galleryPhotos, type GalleryPhoto } from "../data/gallery";
 import { strings } from "../data/shared.ts";
 import { useLenis } from "../hooks/useLenis";
+import { usePhotosReveal } from "../hooks/usePhotosReveal";
 import { motionSafeScrollBehavior, prefersReducedMotion } from "../utils/motion";
 import "../styles/PhotosPage.css";
 
 const PAGE_SIZE = 24;
 const PAGE_COUNT = Math.max(1, Math.ceil(galleryPhotos.length / PAGE_SIZE));
+// Photos at the top of a page fetch immediately; the rest stream in on scroll.
+const PRIORITY_COUNT = 6;
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const frameNo = (i: number) => String(i + 1).padStart(3, "0");
@@ -48,33 +51,62 @@ function balanceColumns(photos: GalleryPhoto[], columnCount: number) {
 }
 
 function Frame({ photo, onOpen }: { photo: GalleryPhoto; onOpen: (photo: GalleryPhoto) => void }) {
+    const globalIndex = galleryPhotos.indexOf(photo);
+    const isPriority = globalIndex % PAGE_SIZE < PRIORITY_COUNT;
+
     const [loaded, setLoaded] = useState(false);
     const [failed, setFailed] = useState(false);
-    const globalIndex = galleryPhotos.indexOf(photo);
+    const imgRef = useRef<HTMLImageElement>(null);
+
+    // A cached image can finish loading before React attaches onLoad, which
+    // would strand it at opacity 0.
+    useEffect(() => {
+        const img = imgRef.current;
+        if (img?.complete && img.naturalWidth > 0) setLoaded(true);
+    }, []);
 
     if (failed) {
-        return <div className="ph-frame ph-frame-error">Unavailable</div>;
+        return (
+            <div
+                className="ph-frame ph-frame-error"
+                style={{ aspectRatio: `${photo.thumbWidth} / ${photo.thumbHeight}` }}
+            >
+                Unavailable
+            </div>
+        );
     }
 
     return (
         <button
             type="button"
             className="ph-frame"
-            style={{ backgroundImage: `url(${photo.blur})` }}
             onClick={() => onOpen(photo)}
             aria-label={`Open photo ${frameNo(globalIndex)}, taken ${formatDate(photo.date)}`}
         >
-            <img
-                src={photo.thumbSrc}
-                width={photo.thumbWidth}
-                height={photo.thumbHeight}
-                alt={`Photograph ${frameNo(globalIndex)}, ${formatDate(photo.date)}`}
-                className={loaded ? "ph-loaded" : undefined}
-                loading={globalIndex % PAGE_SIZE < 6 ? "eager" : "lazy"}
-                decoding="async"
-                onLoad={() => setLoaded(true)}
-                onError={() => setFailed(true)}
-            />
+            <span
+                className="ph-media"
+                style={{ aspectRatio: `${photo.thumbWidth} / ${photo.thumbHeight}` }}
+            >
+                <img
+                    src={photo.blur}
+                    alt=""
+                    aria-hidden="true"
+                    className={`ph-blur${loaded ? " ph-hidden" : ""}`}
+                />
+                <img
+                    ref={imgRef}
+                    src={photo.thumbSrc}
+                    width={photo.thumbWidth}
+                    height={photo.thumbHeight}
+                    alt={`Photograph ${frameNo(globalIndex)}, ${formatDate(photo.date)}`}
+                    className={`ph-photo${loaded ? " ph-loaded" : ""}`}
+                    loading={isPriority ? "eager" : "lazy"}
+                    fetchPriority={isPriority ? "high" : "auto"}
+                    decoding="async"
+                    onLoad={() => setLoaded(true)}
+                    onError={() => setFailed(true)}
+                />
+            </span>
             <span className="ph-frame-meta" aria-hidden="true">
                 <span>{frameNo(globalIndex)}</span>
                 <span>{formatDate(photo.date)}</span>
@@ -92,11 +124,19 @@ function Lightbox({ index, onNavigate, onClose }: {
     const [loaded, setLoaded] = useState(false);
     const [failed, setFailed] = useState(false);
     const dialogRef = useRef<HTMLDivElement>(null);
+    const imgRef = useRef<HTMLImageElement>(null);
 
     const prev = index > 0 ? index - 1 : null;
     const next = index < galleryPhotos.length - 1 ? index + 1 : null;
 
     useEffect(() => {
+        const img = imgRef.current;
+        // Already cached (e.g. stepping back to a photo): skip straight to shown.
+        if (img?.complete && img.naturalWidth > 0) {
+            setLoaded(true);
+            setFailed(false);
+            return;
+        }
         setLoaded(false);
         setFailed(false);
     }, [index]);
@@ -159,6 +199,7 @@ function Lightbox({ index, onNavigate, onClose }: {
                 ) : (
                     <img
                         key={photo.id}
+                        ref={imgRef}
                         src={photo.largeSrc}
                         alt={`Photograph ${frameNo(index)}, ${formatDate(photo.date)}`}
                         className={loaded ? "ph-loaded" : undefined}
@@ -178,7 +219,7 @@ function Lightbox({ index, onNavigate, onClose }: {
                 <div className="ph-lightbox-bar-group">
                     <button
                         type="button"
-                        className="ph-label"
+                        className="ph-label ph-step ph-step-prev"
                         onClick={() => prev !== null && onNavigate(prev)}
                         disabled={prev === null}
                     >
@@ -186,7 +227,7 @@ function Lightbox({ index, onNavigate, onClose }: {
                     </button>
                     <button
                         type="button"
-                        className="ph-label"
+                        className="ph-label ph-step ph-step-next"
                         onClick={() => next !== null && onNavigate(next)}
                         disabled={next === null}
                     >
@@ -207,18 +248,11 @@ export default function PhotosPage() {
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
     const columns = useColumnCount();
 
+    // Fades the page up out of black and holds the canvas black while we're here.
+    usePhotosReveal();
+
     const rawPage = Number.parseInt(searchParams.get("p") ?? "1", 10);
     const page = Number.isNaN(rawPage) ? 1 : Math.min(Math.max(rawPage, 1), PAGE_COUNT);
-
-    // The document canvas stays gruvbox for the rest of the site; paint it black
-    // here so overscroll regions don't flash gray around the page.
-    useEffect(() => {
-        const previous = document.body.style.backgroundColor;
-        document.body.style.backgroundColor = "#000";
-        return () => {
-            document.body.style.backgroundColor = previous;
-        };
-    }, []);
 
     // Replay the entrance animation on page changes only — a breakpoint change
     // rebalances columns and remounts frames, which shouldn't re-animate.
@@ -270,15 +304,6 @@ export default function PhotosPage() {
                 url="https://exoad.net/photos"
             />
 
-            <header className="ph-header">
-                <Link to="/" className="ph-label">← exoad.net</Link>
-                <nav className="ph-nav" aria-label="Site navigation">
-                    <Link to="/blog" className="ph-label">Blog</Link>
-                    <Link to="/photos" className="ph-label" aria-current="page">Photos</Link>
-                    <Link to="/guestbook" className="ph-label">Guestbook</Link>
-                </nav>
-            </header>
-
             <div className="ph-meta">
                 <h1 className="ph-title">Photos</h1>
                 <span className="ph-count">
@@ -312,7 +337,7 @@ export default function PhotosPage() {
                 <nav className="ph-pagination" aria-label="Gallery pages">
                     <button
                         type="button"
-                        className="ph-label"
+                        className="ph-label ph-step ph-step-prev"
                         onClick={() => goToPage(page - 1)}
                         disabled={page === 1}
                     >
@@ -323,7 +348,7 @@ export default function PhotosPage() {
                     </span>
                     <button
                         type="button"
-                        className="ph-label"
+                        className="ph-label ph-step ph-step-next"
                         onClick={() => goToPage(page + 1)}
                         disabled={page === PAGE_COUNT}
                     >
@@ -334,13 +359,18 @@ export default function PhotosPage() {
 
             <footer className="ph-footer">
                 <span className="ph-label">{strings.footer.legals}</span>
-                <button
-                    type="button"
-                    className="ph-label"
-                    onClick={() => scrollToTop(motionSafeScrollBehavior())}
-                >
-                    Top
-                </button>
+                <div className="ph-footer-links">
+                    <Link to="/" className="ph-label ph-step ph-step-prev">
+                        ← exoad.net
+                    </Link>
+                    <button
+                        type="button"
+                        className="ph-label"
+                        onClick={() => scrollToTop(motionSafeScrollBehavior())}
+                    >
+                        Top
+                    </button>
+                </div>
             </footer>
 
             {lightboxIndex !== null &&

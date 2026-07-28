@@ -9,8 +9,50 @@
 
   <!-- Open Graph & Twitter Card meta injected by React Helmet per page -->
   <title>exoad - Jiaming Meng</title>
+
+  <!-- The photos page lands out of black. The veil is painted before any CSS or
+       JS chunk resolves so a direct load never flashes the site background;
+       PhotosPage lifts it once the grid has painted. Other routes never see it. -->
+  <style>
+    #veil { display: none; }
+
+    html.is-photos-landing,
+    html.is-photos-landing body { background: #000; }
+
+    html.is-photos-landing #veil {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 1;
+    }
+
+    html.is-photos-landing #veil.is-lifted {
+      opacity: 0;
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html.is-photos-landing #veil.is-lifted { transition: none; }
+    }
+  </style>
+  <script>
+    (function () {
+      if (location.pathname.replace(/\/+$/, "") !== "/photos") return;
+      var root = document.documentElement;
+      root.classList.add("is-photos-landing");
+      // Never strand the page behind an opaque veil if the app fails to boot.
+      setTimeout(function () {
+        var veil = document.getElementById("veil");
+        if (veil) veil.classList.add("is-lifted");
+      }, 4000);
+    })();
+  </script>
 </head>
 <body>
+  <div id="veil"></div>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
