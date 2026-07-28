@@ -358,6 +358,13 @@
     line-height: 1.6;
 }
 
+/* Long values wrap onto another line rather than clipping or bleeding out of
+   the column — including single tokens with nowhere natural to break. */
+.ph-rail span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
 .ph-rail-left {
     grid-area: left;
     text-align: left;
