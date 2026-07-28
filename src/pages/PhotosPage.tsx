@@ -1,221 +1,359 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import { photos } from "../data/photos";
-import SEO from '../components/SEO';
-import SubpageNav from '../components/SubpageNav';
-import { strings } from '../data/shared.ts';
-import { MdOutlineArrowOutward } from "react-icons/md";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { createPortal } from "react-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import SEO from "../components/SEO";
+import { galleryPhotos, type GalleryPhoto } from "../data/gallery";
+import { strings } from "../data/shared.ts";
+import { useLenis } from "../hooks/useLenis";
+import { motionSafeScrollBehavior, prefersReducedMotion } from "../utils/motion";
+import "../styles/PhotosPage.css";
 
-function formatDate(dateStr: string) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
+const PAGE_SIZE = 24;
+const PAGE_COUNT = Math.max(1, Math.ceil(galleryPhotos.length / PAGE_SIZE));
+
+const pad = (n: number) => String(n).padStart(2, "0");
+const frameNo = (i: number) => String(i + 1).padStart(3, "0");
+const formatDate = (date: string | null) => (date ? date.replaceAll("-", ".") : "—");
+
+function useColumnCount() {
+    const query = useCallback(() => {
+        if (typeof window === "undefined") return 3;
+        if (window.matchMedia("(max-width: 640px)").matches) return 1;
+        if (window.matchMedia("(max-width: 1024px)").matches) return 2;
+        return 3;
+    }, []);
+
+    const [columns, setColumns] = useState(query);
+
+    useEffect(() => {
+        const onResize = () => setColumns(query());
+        window.addEventListener("resize", onResize);
+        return () => window.removeEventListener("resize", onResize);
+    }, [query]);
+
+    return columns;
 }
 
-function usePhotoVisibility() {
-  const [visiblePhotos, setVisiblePhotos] = useState<Set<string>>(new Set());
-  const observersRef = useRef<Map<string, IntersectionObserver>>(new Map());
+/** Distribute photos into columns, always appending to the shortest one so the
+ *  staggered grid stays balanced regardless of aspect ratios. */
+function balanceColumns(photos: GalleryPhoto[], columnCount: number) {
+    const columns: GalleryPhoto[][] = Array.from({ length: columnCount }, () => []);
+    const heights = new Array(columnCount).fill(0);
+    for (const photo of photos) {
+        const target = heights.indexOf(Math.min(...heights));
+        columns[target].push(photo);
+        heights[target] += photo.height / photo.width;
+    }
+    return columns;
+}
 
-  const observePhoto = useCallback((id: string, element: HTMLElement | null) => {
-    if (!element) return;
+function Frame({ photo, onOpen }: { photo: GalleryPhoto; onOpen: (photo: GalleryPhoto) => void }) {
+    const [loaded, setLoaded] = useState(false);
+    const [failed, setFailed] = useState(false);
+    const globalIndex = galleryPhotos.indexOf(photo);
 
-    const existingObserver = observersRef.current.get(id);
-    if (existingObserver) {
-      existingObserver.disconnect();
+    if (failed) {
+        return <div className="ph-frame ph-frame-error">Unavailable</div>;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setVisiblePhotos(prev => {
-          const next = new Set(prev);
-          if (entry.isIntersecting) {
-            next.add(id);
-          } else {
-            if (entry.boundingClientRect.top > window.innerHeight * 2 || 
-                entry.boundingClientRect.bottom < -window.innerHeight * 2) {
-              next.delete(id);
-            }
-          }
-          return next;
-        });
-      },
-      { threshold: 0, rootMargin: '200px' }
+    return (
+        <button
+            type="button"
+            className="ph-frame"
+            style={{ backgroundImage: `url(${photo.blur})` }}
+            onClick={() => onOpen(photo)}
+            aria-label={`Open photo ${frameNo(globalIndex)}, taken ${formatDate(photo.date)}`}
+        >
+            <img
+                src={photo.thumbSrc}
+                width={photo.thumbWidth}
+                height={photo.thumbHeight}
+                alt={`Photograph ${frameNo(globalIndex)}, ${formatDate(photo.date)}`}
+                className={loaded ? "ph-loaded" : undefined}
+                loading={globalIndex % PAGE_SIZE < 6 ? "eager" : "lazy"}
+                decoding="async"
+                onLoad={() => setLoaded(true)}
+                onError={() => setFailed(true)}
+            />
+            <span className="ph-frame-meta" aria-hidden="true">
+                <span>{frameNo(globalIndex)}</span>
+                <span>{formatDate(photo.date)}</span>
+            </span>
+        </button>
     );
+}
 
-    observer.observe(element);
-    observersRef.current.set(id, observer);
-  }, []);
+function Lightbox({ index, onNavigate, onClose }: {
+    index: number;
+    onNavigate: (index: number) => void;
+    onClose: () => void;
+}) {
+    const photo = galleryPhotos[index];
+    const [loaded, setLoaded] = useState(false);
+    const [failed, setFailed] = useState(false);
+    const dialogRef = useRef<HTMLDivElement>(null);
 
-  const cleanup = useCallback(() => {
-    observersRef.current.forEach(observer => observer.disconnect());
-    observersRef.current.clear();
-  }, []);
+    const prev = index > 0 ? index - 1 : null;
+    const next = index < galleryPhotos.length - 1 ? index + 1 : null;
 
-  return { visiblePhotos, observePhoto, cleanup };
+    useEffect(() => {
+        setLoaded(false);
+        setFailed(false);
+    }, [index]);
+
+    useEffect(() => {
+        const previouslyFocused = document.activeElement as HTMLElement | null;
+        dialogRef.current?.focus();
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "";
+            previouslyFocused?.focus();
+        };
+    }, []);
+
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") onClose();
+            if (event.key === "ArrowLeft" && prev !== null) onNavigate(prev);
+            if (event.key === "ArrowRight" && next !== null) onNavigate(next);
+            if (event.key === "Tab") {
+                // Keep Tab cycling inside the modal — the page behind stays in the DOM.
+                const focusables = Array.from(
+                    dialogRef.current?.querySelectorAll<HTMLElement>("button:not(:disabled)") ?? [],
+                );
+                if (focusables.length === 0) return;
+                const first = focusables[0];
+                const last = focusables[focusables.length - 1];
+                const active = document.activeElement as HTMLElement | null;
+                if (event.shiftKey && (active === first || !focusables.includes(active as HTMLElement))) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && (active === last || !focusables.includes(active as HTMLElement))) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+        };
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [prev, next, onNavigate, onClose]);
+
+    return (
+        <div
+            className="ph ph-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Photo ${frameNo(index)} of ${pad(galleryPhotos.length)}`}
+            ref={dialogRef}
+            tabIndex={-1}
+            data-lenis-prevent
+        >
+            <div className="ph-lightbox-stage" onClick={onClose}>
+                {!loaded && !failed && (
+                    <div className="ph-lightbox-loading">
+                        <div className="ph-line" />
+                    </div>
+                )}
+                {failed ? (
+                    <span className="ph-label">Couldn't load this photo — close and try again.</span>
+                ) : (
+                    <img
+                        key={photo.id}
+                        src={photo.largeSrc}
+                        alt={`Photograph ${frameNo(index)}, ${formatDate(photo.date)}`}
+                        className={loaded ? "ph-loaded" : undefined}
+                        onLoad={() => setLoaded(true)}
+                        onError={() => setFailed(true)}
+                        onClick={(event) => event.stopPropagation()}
+                    />
+                )}
+            </div>
+            <div className="ph-lightbox-bar">
+                <div className="ph-lightbox-bar-group">
+                    <span className="ph-page-indicator">
+                        {frameNo(index)} / {frameNo(galleryPhotos.length - 1)}
+                    </span>
+                    <span className="ph-label">{formatDate(photo.date)}</span>
+                </div>
+                <div className="ph-lightbox-bar-group">
+                    <button
+                        type="button"
+                        className="ph-label"
+                        onClick={() => prev !== null && onNavigate(prev)}
+                        disabled={prev === null}
+                    >
+                        Prev
+                    </button>
+                    <button
+                        type="button"
+                        className="ph-label"
+                        onClick={() => next !== null && onNavigate(next)}
+                        disabled={next === null}
+                    >
+                        Next
+                    </button>
+                    <button type="button" className="ph-label" onClick={onClose}>
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default function PhotosPage() {
-  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
-  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
-  const [hoveredPhoto, setHoveredPhoto] = useState<string | null>(null);
-  const { visiblePhotos, observePhoto, cleanup } = usePhotoVisibility();
-  const photoRefs = useRef<Record<string, HTMLDivElement | null>>({});
+    const lenisRef = useLenis(!prefersReducedMotion());
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+    const columns = useColumnCount();
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
-    return () => cleanup();
-  }, [cleanup]);
+    const rawPage = Number.parseInt(searchParams.get("p") ?? "1", 10);
+    const page = Number.isNaN(rawPage) ? 1 : Math.min(Math.max(rawPage, 1), PAGE_COUNT);
 
-  const handleImageLoad = useCallback((id: string) => {
-    setLoadedImages(prev => ({ ...prev, [id]: true }));
-  }, []);
-
-  const leftColumn = photos.filter((_, i) => i % 2 === 0);
-  const rightColumn = photos.filter((_, i) => i % 2 === 1);
-
-  const PhotoCard = ({ photo, index }: { photo: typeof photos[0], index: number }) => {
-    const photoId = `photo-${index}`;
-    const isVisible = visiblePhotos.has(photoId);
-    const isLoaded = loadedImages[photoId];
-    const hasFailed = failedImages[photoId];
-    const isHovered = hoveredPhoto === photoId;
-
+    // The document canvas stays gruvbox for the rest of the site; paint it black
+    // here so overscroll regions don't flash gray around the page.
     useEffect(() => {
-      observePhoto(photoId, photoRefs.current[photoId]);
-    }, [photoId]);
+        const previous = document.body.style.backgroundColor;
+        document.body.style.backgroundColor = "#000";
+        return () => {
+            document.body.style.backgroundColor = previous;
+        };
+    }, []);
+
+    // Replay the entrance animation on page changes only — a breakpoint change
+    // rebalances columns and remounts frames, which shouldn't re-animate.
+    const lastPageRef = useRef(page);
+    const lastColumnsRef = useRef(columns);
+    const animateRef = useRef(true);
+    if (lastColumnsRef.current !== columns) {
+        lastColumnsRef.current = columns;
+        animateRef.current = false;
+    }
+    if (lastPageRef.current !== page) {
+        lastPageRef.current = page;
+        animateRef.current = true;
+    }
+    const animate = animateRef.current;
+
+    const pagePhotos = useMemo(
+        () => galleryPhotos.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+        [page],
+    );
+    const balanced = useMemo(() => balanceColumns(pagePhotos, columns), [pagePhotos, columns]);
+
+    const scrollToTop = (behavior: ScrollBehavior) => {
+        // While a Lenis smooth scroll is animating it ignores window.scrollTo,
+        // so go through the instance when there is one.
+        const lenis = lenisRef.current;
+        if (lenis) {
+            lenis.scrollTo(0, behavior === "auto" ? { immediate: true } : undefined);
+        } else {
+            window.scrollTo({ top: 0, behavior });
+        }
+    };
+
+    const goToPage = (target: number) => {
+        setSearchParams(target === 1 ? {} : { p: String(target) }, { preventScrollReset: true });
+        scrollToTop("auto");
+    };
+
+    const openPhoto = useCallback(
+        (photo: GalleryPhoto) => setLightboxIndex(galleryPhotos.indexOf(photo)),
+        [],
+    );
 
     return (
-      <div 
-        ref={el => { photoRefs.current[photoId] = el; }}
-        className="group relative mb-4"
-        onMouseEnter={() => setHoveredPhoto(photoId)}
-        onMouseLeave={() => setHoveredPhoto(null)}
-      >
-        <div className="motion-lift relative overflow-hidden bg-bg1 border border-bg2 hover:border-fg4 transition-colors duration-500">
-          {isVisible && !isLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center z-10 bg-bg0">
-              <div className="flex items-center gap-1">
-                <div className="w-1.5 h-6 bg-red/60" />
-                <div className="w-1.5 h-6 bg-green/60" />
-                <div className="w-1.5 h-6 bg-yellow/60" />
-                <div className="w-1.5 h-6 bg-blue/60" />
-              </div>
+        <div className="ph">
+            <SEO
+                title="Photos"
+                description={strings.pages.photos.description}
+                url="https://exoad.net/photos"
+            />
+
+            <header className="ph-header">
+                <Link to="/" className="ph-label">← exoad.net</Link>
+                <nav className="ph-nav" aria-label="Site navigation">
+                    <Link to="/blog" className="ph-label">Blog</Link>
+                    <Link to="/photos" className="ph-label" aria-current="page">Photos</Link>
+                    <Link to="/guestbook" className="ph-label">Guestbook</Link>
+                </nav>
+            </header>
+
+            <div className="ph-meta">
+                <h1 className="ph-title">Photos</h1>
+                <span className="ph-count">
+                    {galleryPhotos.length} frames — page {pad(page)} / {pad(PAGE_COUNT)}
+                </span>
             </div>
-          )}
 
-          {isVisible ? (
-            <button
-              onClick={() => window.open(photo.src, '_blank')}
-              onFocus={() => setHoveredPhoto(photoId)}
-              onBlur={() => setHoveredPhoto(null)}
-              className="w-full block relative"
-              aria-label={`View larger image of ${photo.alt}. ${photo.location}, ${formatDate(photo.date)}`}
-            >
-              {hasFailed ? (
-                <div className="flex min-h-48 items-center justify-center bg-bg1 p-6 text-center text-sm text-fg4 font-sans">
-                  {strings.pages.photos.error}
-                </div>
-              ) : (
-                <img
-                  src={photo.thumbnailSrc}
-                  alt={photo.alt}
-                  className={`w-full h-auto object-cover transition-[opacity,transform] duration-300 ${
-                    isLoaded ? 'opacity-100' : 'opacity-0'
-                  } ${
-                    isHovered ? 'scale-[1.012]' : 'scale-100'
-                  }`}
-                  onLoad={() => handleImageLoad(photoId)}
-                  onError={() => setFailedImages(prev => ({ ...prev, [photoId]: true }))}
-                  decoding="async"
-                  loading={index < 2 ? 'eager' : 'lazy'}
-                />
-              )}
-
-              <div 
-                className={`absolute inset-0 bg-bg0/80 flex flex-col justify-end p-4 transition-opacity duration-300 ${
-                  isHovered ? 'opacity-100' : 'opacity-0'
-                }`}
-              >
-                <div className="flex items-end justify-between">
-                  <div>
-                    {photo.caption && (
-                      <h3 className="text-sm font-sans font-medium text-fg0 mb-1">{photo.caption}</h3>
-                    )}
-                    <div className="text-xs text-fg3 font-sans">
-                      {photo.location} · {formatDate(photo.date)}
+            <main id="main" className={`ph-grid${animate ? "" : " ph-static"}`}>
+                {galleryPhotos.length === 0 && (
+                    <p className="ph-label ph-empty">Nothing here yet — check back soon.</p>
+                )}
+                {balanced.map((column, columnIndex) => (
+                    <div className="ph-col" key={`${page}-${columnIndex}`}>
+                        {column.map((photo) => {
+                            const orderIndex = pagePhotos.indexOf(photo);
+                            return (
+                                <div
+                                    className={animate ? "ph-enter" : undefined}
+                                    style={{ "--ph-i": orderIndex } as CSSProperties}
+                                    key={photo.id}
+                                >
+                                    <Frame photo={photo} onOpen={openPhoto} />
+                                </div>
+                            );
+                        })}
                     </div>
-                  </div>
-                  <MdOutlineArrowOutward size={18} className="text-fg0 flex-shrink-0 ml-2" />
-                </div>
-              </div>
-            </button>
-          ) : (
-            <div className="w-full aspect-video bg-bg1 flex items-center justify-center">
-              <div className="w-1.5 h-6 bg-fg4/20" />
-            </div>
-          )}
+                ))}
+            </main>
+
+            {galleryPhotos.length > 0 && (
+                <nav className="ph-pagination" aria-label="Gallery pages">
+                    <button
+                        type="button"
+                        className="ph-label"
+                        onClick={() => goToPage(page - 1)}
+                        disabled={page === 1}
+                    >
+                        ← Prev
+                    </button>
+                    <span className="ph-page-indicator">
+                        {pad(page)} / {pad(PAGE_COUNT)}
+                    </span>
+                    <button
+                        type="button"
+                        className="ph-label"
+                        onClick={() => goToPage(page + 1)}
+                        disabled={page === PAGE_COUNT}
+                    >
+                        Next →
+                    </button>
+                </nav>
+            )}
+
+            <footer className="ph-footer">
+                <span className="ph-label">{strings.footer.legals}</span>
+                <button
+                    type="button"
+                    className="ph-label"
+                    onClick={() => scrollToTop(motionSafeScrollBehavior())}
+                >
+                    Top
+                </button>
+            </footer>
+
+            {lightboxIndex !== null &&
+                // Portaled out of ContentFade's transformed route wrapper, which
+                // would otherwise become the containing block for position:fixed.
+                createPortal(
+                    <Lightbox
+                        index={lightboxIndex}
+                        onNavigate={setLightboxIndex}
+                        onClose={() => setLightboxIndex(null)}
+                    />,
+                    document.body,
+                )}
         </div>
-      </div>
     );
-  };
-
-  return (
-    <>
-      <SEO
-        title="Photos"
-        description={strings.pages.photos.description}
-        url="https://exoad.net/photos"
-      />
-
-      <div className="min-h-screen bg-bg0">
-        <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between border-b border-bg2">
-          <div className="w-full">
-            <SubpageNav />
-          </div>
-        </div>
-
-        <main id="main" className="py-12 px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-12 max-w-xl">
-              <h2 className="text-[10px] uppercase tracking-[0.2em] text-fg4 mb-4 font-sans">Gallery</h2>
-              <p className="text-fg3 text-sm font-sans leading-relaxed">
-                {strings.pages.photos.description}
-              </p>
-            </div>
-            <div className="border-b border-bg2 mb-12" />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-4">
-                {leftColumn.map((photo, i) => (
-                  <PhotoCard key={`left-${i}`} photo={photo} index={i * 2} />
-                ))}
-              </div>
-
-              <div className="flex flex-col gap-4 md:mt-12">
-                {rightColumn.map((photo, i) => (
-                  <PhotoCard key={`right-${i}`} photo={photo} index={i * 2 + 1} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </main>
-
-        <footer className="border-t border-bg2 py-8 px-6">
-          <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <span className="text-fg4 text-[10px] font-sans">
-              {strings.footer.legals}
-            </span>
-            <a
-              href="#main"
-              className="text-fg4 hover:text-fg3 text-[10px] font-sans transition duration-300 uppercase tracking-wider"
-            >
-              Top
-            </a>
-          </div>
-        </footer>
-      </div>
-    </>
-  );
 }

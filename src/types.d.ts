@@ -27,15 +27,6 @@ export interface TTimelineEntry {
     gradientColor?: string;
 }
 
-export interface TShowcasePhoto {
-    src: string | any;
-    alt: string;
-    caption?: string;
-    location: string;
-    date: string;
-    thumbnailSrc: string | any;
-}
-
 export interface TStalkEntry {
     city: string;
     state?: string;

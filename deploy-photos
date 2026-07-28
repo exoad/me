@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Deploy photo updates end-to-end:
+#   1. Process ~/Pictures/Gallery Picks into web variants + manifest
+#   2. Push the variants to meng-jack/me-pictures-bucket (the public CDN repo)
+#   3. Commit the updated manifest here and push, which triggers the
+#      Cloudflare Pages deploy
+#
+# Full-res originals never leave this machine — only the webp variants are
+# uploaded. Run with --dry-run to process and see what would change without
+# pushing anything.
+
+set -euo pipefail
+cd "$(dirname "$0")"
+
+PICKS_DIR="$HOME/Pictures/Gallery Picks"
+STAGING_DIR=".photo-staging"
+BUCKET_DIR="$STAGING_DIR/bucket"
+BUCKET_REMOTE="https://github.com/meng-jack/me-pictures-bucket.git"
+
+DRY_RUN=0
+[[ "${1:-}" == "--dry-run" ]] && DRY_RUN=1
+
+if [[ ! -d "$PICKS_DIR" ]] || ! ls "$PICKS_DIR"/*.[jJ][pP]*[gG] >/dev/null 2>&1; then
+  echo "error: no JPEGs found in $PICKS_DIR" >&2
+  exit 1
+fi
+
+echo "==> Processing $(ls "$PICKS_DIR"/*.[jJ][pP]*[gG] | wc -l | tr -d ' ') photos from Gallery Picks"
+node scripts/process-photos.mjs "$PICKS_DIR" "$STAGING_DIR"
+
+echo "==> Syncing bucket repo clone"
+if [[ -d "$BUCKET_DIR/.git" ]]; then
+  git -C "$BUCKET_DIR" fetch --depth 1 origin main
+  git -C "$BUCKET_DIR" reset --hard origin/main
+else
+  git clone --depth 1 "$BUCKET_REMOTE" "$BUCKET_DIR"
+fi
+
+mkdir -p "$BUCKET_DIR/gallery"
+rsync -a --delete "$STAGING_DIR/gallery/thumb" "$STAGING_DIR/gallery/large" "$BUCKET_DIR/gallery/"
+
+if git -C "$BUCKET_DIR" status --porcelain | grep -q .; then
+  git -C "$BUCKET_DIR" add gallery
+  git -C "$BUCKET_DIR" commit -m "Update gallery variants ($(date +%Y-%m-%d))"
+  if [[ $DRY_RUN -eq 1 ]]; then
+    echo "==> [dry-run] Would push to me-pictures-bucket:"
+    git -C "$BUCKET_DIR" show --stat --oneline HEAD | head -20
+  else
+    echo "==> Pushing variants to me-pictures-bucket"
+    git -C "$BUCKET_DIR" push origin HEAD:main
+  fi
+else
+  echo "==> Bucket already up to date"
+fi
+
+if git status --porcelain src/data/gallery.json | grep -q .; then
+  if [[ $DRY_RUN -eq 1 ]]; then
+    echo "==> [dry-run] Would commit and push manifest:"
+    git diff --stat src/data/gallery.json
+  else
+    echo "==> Committing manifest and deploying site"
+    git add src/data/gallery.json
+    git commit -m "Update photo gallery"
+    git push
+  fi
+else
+  echo "==> Manifest unchanged; nothing to deploy"
+fi
+
+echo "==> Done"

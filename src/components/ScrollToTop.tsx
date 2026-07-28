@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MdKeyboardArrowUp } from 'react-icons/md';
 import { motionSafeScrollBehavior } from '../utils/motion';
 
 export default function ScrollToTop() {
   const [visible, setVisible] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     function onScroll() {
@@ -13,7 +15,8 @@ export default function ScrollToTop() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  if (!visible) return null;
+  // The photos page has its own monochrome chrome, including a Top control.
+  if (!visible || location.pathname.startsWith('/photos')) return null;
 
   return (
     <button

@@ -1,107 +1,358 @@
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+/* Photos page — self-contained monochrome contact-sheet system.
+   Deliberately does not use the site's gruvbox theme tokens. */
+
+.ph {
+    --ph-bg: #000000;
+    --ph-fg: #ffffff;
+    --ph-dim: #8a8a8a;
+    --ph-faint: #3a3a3a;
+    --ph-hairline: #1c1c1c;
+    --ph-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    background: var(--ph-bg);
+    color: var(--ph-fg);
+    min-height: 100vh;
+    font-family: var(--ph-mono);
 }
 
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+.ph a,
+.ph button {
+    font-family: var(--ph-mono);
+    color: inherit;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    cursor: pointer;
 }
 
+.ph ::selection {
+    background: var(--ph-fg);
+    color: var(--ph-bg);
+}
 
-.photo-aspect-ratio-container {
+/* ---- chrome type: everything that is not a photo ---- */
+
+.ph-label {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ph-dim);
+}
+
+.ph a.ph-label,
+.ph button.ph-label {
+    transition: color 0.25s ease;
+    /* Comfortable tap targets without disturbing the visual layout. */
+    padding: 14px 10px;
+    margin: -14px -10px;
+}
+
+.ph a.ph-label:hover,
+.ph button.ph-label:hover:not(:disabled) {
+    color: var(--ph-fg);
+}
+
+.ph a:focus-visible,
+.ph button:focus-visible {
+    outline: 1px solid var(--ph-fg);
+    outline-offset: 3px;
+}
+
+/* ---- header ---- */
+
+.ph-header {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 20px 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.ph-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.ph-nav [aria-current="page"] {
+    color: var(--ph-fg);
+}
+
+.ph-meta {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 64px 20px 40px;
+}
+
+.ph-title {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ph-fg);
+    margin: 0 0 10px;
+    font-weight: 400;
+}
+
+.ph-count {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ph-dim);
+}
+
+/* ---- grid ---- */
+
+.ph-grid {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+}
+
+.ph-col {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ph-frame {
     position: relative;
+    display: block;
     width: 100%;
-    height: 100%;
-}
-
-.photo-container {
-    position: relative;
     overflow: hidden;
-    background-color: #1a1a1a;
-    border-radius: 8px;
-    width: 100%;
-    box-sizing: border-box;
-    max-width: 100%;
+    background-color: var(--ph-hairline);
+    background-size: cover;
+    background-position: center;
 }
 
-.photo-image {
+.ph-frame img {
     display: block;
     width: 100%;
     height: auto;
-    object-fit: contain;
-    transition: all 0.3s ease;
-    animation: fadeIn 0.5s ease-in-out;
-    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.45s ease;
 }
 
-.loading-spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid rgba(255, 255, 255, 0.2);
-    border-top: 3px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+.ph-frame img.ph-loaded {
+    opacity: 1;
 }
 
-@media (max-width: 640px) {
-    .photo-container {
-        border-radius: 4px;
-        margin: 0;
-        width: 100%;
+/* Column rebalance on breakpoint change remounts frames; skip the fade so
+   already-cached thumbnails don't flash. */
+.ph-static .ph-frame img {
+    transition: none;
+}
+
+.ph-frame-meta {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--ph-fg);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+@media (hover: hover) {
+    .ph-frame:hover .ph-frame-meta,
+    .ph-frame:focus-visible .ph-frame-meta {
+        opacity: 1;
     }
 }
 
-img.photo-image {
-    max-width: 100%;
-    object-fit: contain;
-}
-
-.photo-image-wrapper {
-    box-sizing: border-box;
-    width: 100%;
-    overflow: hidden;
+.ph-frame-error {
     display: flex;
+    align-items: center;
     justify-content: center;
+    aspect-ratio: 3 / 2;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ph-faint);
 }
 
-.photo-container button:hover .photo-image {
-    transform: scale(1.01);
-}
+/* entrance: photos surface out of the black */
 
-dialog {
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    border: none;
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    overflow: hidden;
-    animation: dialogFadeIn 0.15s ease;
-}
-
-dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
-}
-
-@keyframes dialogFadeIn {
+@keyframes ph-surface {
     from {
         opacity: 0;
-        transform: scale(1);
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
-        transform: scale(1.05);
+        transform: translateY(0);
+    }
+}
+
+.ph-enter {
+    animation: ph-surface 0.55s ease both;
+    animation-delay: calc(var(--ph-i) * 40ms);
+}
+
+.ph-empty {
+    padding: 48px 0 96px;
+}
+
+/* ---- pagination ---- */
+
+.ph-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 72px 20px;
+}
+
+.ph-pagination button:disabled {
+    color: var(--ph-faint);
+    cursor: default;
+}
+
+.ph-page-indicator {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--ph-fg);
+}
+
+/* ---- footer ---- */
+
+.ph-footer {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    border-top: 1px solid var(--ph-hairline);
+    padding-top: 20px;
+}
+
+/* ---- lightbox ---- */
+
+.ph-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: var(--ph-bg);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--ph-mono);
+}
+
+.ph-lightbox-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+}
+
+.ph-lightbox-stage img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.ph-lightbox-stage img.ph-loaded {
+    opacity: 1;
+}
+
+.ph-lightbox-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+/* the loading signal: a single white line drawing itself */
+
+.ph-line {
+    width: 48px;
+    height: 1px;
+    background: var(--ph-faint);
+    position: relative;
+    overflow: hidden;
+}
+
+.ph-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--ph-fg);
+    transform: translateX(-100%);
+    animation: ph-line-sweep 1.1s ease-in-out infinite;
+}
+
+@keyframes ph-line-sweep {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+.ph-lightbox-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 20px 24px;
+}
+
+.ph-lightbox-bar-group {
+    display: flex;
+    gap: 24px;
+    align-items: baseline;
+}
+
+/* ---- responsive ---- */
+
+@media (max-width: 640px) {
+    .ph-meta {
+        padding-top: 44px;
+    }
+
+    .ph-pagination {
+        gap: 20px;
+        padding: 56px 20px;
+    }
+}
+
+/* ---- reduced motion ---- */
+
+@media (prefers-reduced-motion: reduce) {
+    .ph-enter {
+        animation: none;
+    }
+
+    .ph-frame img,
+    .ph-lightbox-stage img,
+    .ph-frame-meta {
+        transition: none;
+    }
+
+    .ph-line::after {
+        animation: none;
+        transform: none;
     }
 }
