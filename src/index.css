@@ -8,7 +8,7 @@ html, body, #root {
 
 body {
     font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-    background: #fff;
+    background: #faf6ec;
     color: #111;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -110,13 +110,32 @@ html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
 }
 
 .project-row {
-    background: #f8f3e7;
+    background: #f1e8d6;
     padding: 0.75rem 1rem;
     margin-bottom: 0.5rem;
 }
 
 .project-row summary {
     cursor: pointer;
+    list-style: none;
+}
+
+.project-row summary::-webkit-details-marker {
+    display: none;
+}
+
+.project-row summary::before {
+    content: "▸";
+    display: inline-block;
+    width: 1em;
+    margin-right: 0.25rem;
+    color: #999;
+    font-size: 0.7em;
+    vertical-align: middle;
+}
+
+.project-row[open] summary::before {
+    content: "▾";
 }
 
 .blog-post-card {
