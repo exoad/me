@@ -557,7 +557,7 @@ export const strings = {
             ],
             about: {
                 content:
-                    "I build software because I believe the best tools respect their users — local-first, deterministic, and free from surveillance. From custom audio engines and CPU rasterizers to file automation and programming languages, I work across the stack to make things that work reliably and stay yours. Most of my work is open source. Outside of code, I enjoy hiking, photography, and movies.",
+                    "I build local-first, deterministic software that respects its users — from custom audio engines and CPU rasterizers to file automation and new programming languages. Most of it is open source. Outside of code: hiking, photography, and movies.",
                 toolkit_title: "I Use:",
                 technologies: [
                     technologies.c,

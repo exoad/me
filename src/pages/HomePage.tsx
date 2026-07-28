@@ -83,10 +83,6 @@ function ContentSections() {
 
 			<section>
 				<h2>Writing</h2>
-				<Link to="/blog" style={{ textDecoration: "none", color: "inherit" }}>
-					<h3>{strings.pages.blog.title}</h3>
-					<p className="muted">{strings.pages.blog.description}</p>
-				</Link>
 				{latestPosts.length > 0 && (
 					<ul>
 						{latestPosts.slice(0, 2).map((post) => (
