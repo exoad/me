@@ -136,9 +136,8 @@ function Lightbox({ index, onNavigate, onClose }: {
     const prev = index > 0 ? index - 1 : null;
     const next = index < galleryPhotos.length - 1 ? index + 1 : null;
 
-    // Two rails: what it is on the left, how it was taken on the right.
-    const identity = [`Frame ${frameNo(index)}`, formatDate(photo.date), photo.camera, photo.lens]
-        .filter(Boolean) as string[];
+    // Two rails: the body on the left, the settings it was shot at on the right.
+    const identity = [photo.camera].filter(Boolean) as string[];
     const exposure = [
         formatAperture(photo.aperture),
         formatShutter(photo.shutter),

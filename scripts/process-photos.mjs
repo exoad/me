@@ -90,7 +90,6 @@ function cameraSettings(tags) {
   const photo = tags?.Photo ?? {};
   return {
     camera: cameraName(tags?.Image),
-    lens: (photo.LensModel ?? "").trim() || null,
     aperture: num(photo.FNumber),
     shutter: num(photo.ExposureTime),
     iso: num(photo.ISOSpeedRatings) ?? num(photo.PhotographicSensitivity),

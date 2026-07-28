@@ -12,7 +12,6 @@ export interface GalleryPhoto {
     thumbHeight: number;
     date: string | null;
     camera: string | null;
-    lens: string | null;
     /** f-number, e.g. 5.6 */
     aperture: number | null;
     /** exposure time in seconds, e.g. 0.0025 */
