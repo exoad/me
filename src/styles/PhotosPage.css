@@ -228,6 +228,16 @@
     }
 }
 
+/* Movement-free counterpart, used when reduced motion is requested. */
+@keyframes ph-fade-only {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 .ph-enter {
     animation: ph-surface 0.55s ease both;
     animation-delay: calc(var(--ph-i) * 40ms);
@@ -409,32 +419,41 @@
 
 /* ---- reduced motion ---- */
 
+/* Reduced motion asks for no movement — it does not ask for no fading, and an
+   opacity crossfade is the recommended substitute for a moving transition. So
+   the fades stay (they are what actually reveals the photos) while everything
+   that slides, scales or zooms is dropped. The durations need !important to
+   survive the site-wide reset in Animations.css. */
 @media (prefers-reduced-motion: reduce) {
+    /* Frames still fade in on their stagger, minus the upward slide. */
     .ph-enter {
-        animation: none;
+        animation-name: ph-fade-only;
+        animation-duration: 0.45s !important;
     }
 
-    /* The blur keeps its opacity crossfade — fading isn't motion, and cutting it
-       can leave a frame where neither layer is visible. */
-    .ph-media,
-    .ph-frame-meta,
-    .ph a.ph-step,
-    .ph button.ph-step {
-        transition: none;
-    }
-
-    /* Keep the reveal, drop the movement: photos still fade up from the blur. */
     .ph-photo.ph-loaded {
-        animation: ph-fade-only 0.3s ease forwards;
+        animation-name: ph-fade-only;
+        animation-duration: 0.5s !important;
     }
 
     .ph-lightbox-stage img.ph-loaded {
-        animation: ph-fade-only 0.2s ease forwards;
+        animation-name: ph-fade-only;
+        animation-duration: 0.35s !important;
     }
 
-    @keyframes ph-fade-only {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    .ph-blur {
+        transition: opacity 0.5s ease !important;
+    }
+
+    .ph-frame-meta {
+        transition: opacity 0.25s ease !important;
+    }
+
+    /* Everything below moves, so it goes. */
+    .ph-media,
+    .ph a.ph-step,
+    .ph button.ph-step {
+        transition: none;
     }
 
     .ph-frame:hover .ph-media,

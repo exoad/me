@@ -31,11 +31,10 @@
 
     html.is-photos-landing #veil.is-lifted {
       opacity: 0;
-      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html.is-photos-landing #veil.is-lifted { transition: none; }
+      /* !important so the site-wide reduced-motion reset can't cut the reveal to
+         nothing. This is an opacity fade with no movement, which is what that
+         preference asks for rather than what it asks to remove. */
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1) !important;
     }
   </style>
   <script>

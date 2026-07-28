@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { prefersReducedMotion } from "../utils/motion";
 
 const LANDING_CLASS = "is-photos-landing";
 const LIFTED_CLASS = "is-lifted";
@@ -45,12 +44,10 @@ export function usePhotosReveal() {
         const fonts = document.fonts?.ready ?? Promise.resolve();
         const dwell = new Promise((resolve) => setTimeout(resolve, MIN_DWELL_MS));
 
+        // The reveal is an opacity fade, so it runs under reduced motion too —
+        // the stylesheet keeps that fade and drops only the moving pieces.
         Promise.all([fonts, dwell]).then(() => {
             if (cancelled) return;
-            if (prefersReducedMotion()) {
-                lift();
-                return;
-            }
             frame = requestAnimationFrame(() => {
                 frame = requestAnimationFrame(lift);
             });
