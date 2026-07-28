@@ -7,6 +7,10 @@
 // Reads every JPEG in <source-dir>, writes into <staging-dir>:
 //   gallery/thumb/<id>.webp     (grid, 900px wide)
 //   gallery/large/<id>.webp     (lightbox, 2000px long edge)
+//   gallery/xl/<id>.webp        (on-demand "view full", 3200px long edge)
+//
+// The lightbox deliberately stays on the 2000px copy. Handing the browser a
+// 16MP image to shrink into a window aliases worse than resampling it here.
 // and writes src/data/gallery.json with dimensions, EXIF dates, and inline
 // blur placeholders so the grid can render with zero layout shift.
 //
@@ -30,13 +34,14 @@ const manifestPath = join(repoRoot, "src", "data", "gallery.json");
 
 const THUMB_WIDTH = 900;
 const LARGE_EDGE = 2000;
+const XL_EDGE = 3200;
 const CONCURRENCY = 4;
 
 const files = (await readdir(srcDir))
   .filter((f) => /\.jpe?g$/i.test(f))
   .sort();
 
-for (const sub of ["thumb", "large"]) {
+for (const sub of ["thumb", "large", "xl"]) {
   await mkdir(join(stagingDir, "gallery", sub), { recursive: true });
 }
 
@@ -50,17 +55,47 @@ function slugify(name) {
     .replace(/^-+|-+$/g, "");
 }
 
-function exifDate(metadata) {
-  if (!metadata.exif) return null;
+function readExif(metadata) {
+  if (!metadata.exif) return {};
   try {
-    const tags = exifReader(metadata.exif);
-    const d = tags?.Photo?.DateTimeOriginal ?? tags?.Image?.DateTime;
-    return d instanceof Date && !Number.isNaN(d.getTime())
-      ? d.toISOString().slice(0, 10)
-      : null;
+    return exifReader(metadata.exif) ?? {};
   } catch {
-    return null;
+    return {};
   }
+}
+
+function exifDate(tags) {
+  const d = tags?.Photo?.DateTimeOriginal ?? tags?.Image?.DateTime;
+  return d instanceof Date && !Number.isNaN(d.getTime())
+    ? d.toISOString().slice(0, 10)
+    : null;
+}
+
+/** "OLYMPUS CORPORATION" + "E-M10MarkII" -> "Olympus E-M10MarkII" */
+function cameraName(image) {
+  const rawMake = (image?.Make ?? "").trim().split(/\s+/)[0] ?? "";
+  const model = (image?.Model ?? "").trim();
+  if (!model) return null;
+  const make = rawMake
+    ? rawMake[0].toUpperCase() + rawMake.slice(1).toLowerCase()
+    : "";
+  if (!make || model.toLowerCase().startsWith(make.toLowerCase())) return model;
+  return `${make} ${model}`;
+}
+
+const num = (v) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+
+/** Raw values only — formatting for display happens in the UI. */
+function cameraSettings(tags) {
+  const photo = tags?.Photo ?? {};
+  return {
+    camera: cameraName(tags?.Image),
+    lens: (photo.LensModel ?? "").trim() || null,
+    aperture: num(photo.FNumber),
+    shutter: num(photo.ExposureTime),
+    iso: num(photo.ISOSpeedRatings) ?? num(photo.PhotographicSensitivity),
+    focalLength: num(photo.FocalLength),
+  };
 }
 
 async function processOne(file) {
@@ -75,6 +110,7 @@ async function processOne(file) {
 
   const thumbPath = join(stagingDir, "gallery", "thumb", `${id}.webp`);
   const largePath = join(stagingDir, "gallery", "large", `${id}.webp`);
+  const xlPath = join(stagingDir, "gallery", "xl", `${id}.webp`);
 
   const thumbInfo = await image
     .clone()
@@ -88,11 +124,19 @@ async function processOne(file) {
     .webp({ quality: 82 })
     .toFile(largePath);
 
+  await image
+    .clone()
+    .resize({ width: XL_EDGE, height: XL_EDGE, fit: "inside", withoutEnlargement: true })
+    .webp({ quality: 86 })
+    .toFile(xlPath);
+
   const blurBuffer = await image
     .clone()
     .resize({ width: 24 })
     .webp({ quality: 30 })
     .toBuffer();
+
+  const tags = readExif(metadata);
 
   return {
     id,
@@ -100,7 +144,8 @@ async function processOne(file) {
     height: largeInfo.height,
     thumbWidth: thumbInfo.width,
     thumbHeight: thumbInfo.height,
-    date: exifDate(metadata),
+    date: exifDate(tags),
+    ...cameraSettings(tags),
     blur: `data:image/webp;base64,${blurBuffer.toString("base64")}`,
   };
 }

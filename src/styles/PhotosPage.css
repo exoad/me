@@ -321,14 +321,56 @@
     font-family: var(--ph-mono);
 }
 
+/* Metadata rails flank the frame, each set flush to its own edge. */
 .ph-lightbox-stage {
     flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr) 160px;
+    /* Definite row, so the image's max-height: 100% has something real to
+       resolve against instead of feeding back into an auto row. */
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-areas: "left figure right";
+    align-items: stretch;
+    gap: 24px;
+    padding: 20px;
+}
+
+.ph-lightbox-figure {
+    grid-area: figure;
+    position: relative;
+    min-width: 0;
     min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    position: relative;
+}
+
+.ph-rail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 9px;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ph-dim);
+    line-height: 1.6;
+}
+
+.ph-rail-left {
+    grid-area: left;
+    text-align: left;
+}
+
+.ph-rail-right {
+    grid-area: right;
+    text-align: right;
+}
+
+/* The reading of the frame carries more weight than the label lines. */
+.ph-rail-right span:first-child {
+    color: var(--ph-fg);
 }
 
 .ph-lightbox-stage img {
@@ -405,6 +447,43 @@
 }
 
 /* ---- responsive ---- */
+
+/* Too narrow for side rails: drop them under the frame, each still flush to
+   its own side so the left/right split survives. */
+@media (max-width: 900px) {
+    .ph-lightbox-stage {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "figure figure"
+            "left right";
+        align-items: center;
+        gap: 16px 20px;
+    }
+
+    /* align-items: center un-stretches every grid item; the figure has to keep
+       filling its row or the image's max-height: 100% loses its basis and the
+       photo overflows across the controls. */
+    .ph-lightbox-figure {
+        align-self: stretch;
+    }
+
+    .ph-rail {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px 12px;
+    }
+
+    /* Now that the rails are rows, the base centring would govern the main
+       axis — each still needs to sit flush to its own side. */
+    .ph-rail-left {
+        justify-content: flex-start;
+    }
+
+    .ph-rail-right {
+        justify-content: flex-end;
+    }
+}
 
 @media (max-width: 640px) {
     .ph-meta {

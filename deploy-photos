@@ -37,7 +37,11 @@ else
 fi
 
 mkdir -p "$BUCKET_DIR/gallery"
-rsync -a --delete "$STAGING_DIR/gallery/thumb" "$STAGING_DIR/gallery/large" "$BUCKET_DIR/gallery/"
+rsync -a --delete \
+  "$STAGING_DIR/gallery/thumb" \
+  "$STAGING_DIR/gallery/large" \
+  "$STAGING_DIR/gallery/xl" \
+  "$BUCKET_DIR/gallery/"
 
 if git -C "$BUCKET_DIR" status --porcelain | grep -q .; then
   git -C "$BUCKET_DIR" add gallery

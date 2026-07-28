@@ -2,7 +2,14 @@ import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties }
 import { createPortal } from "react-dom";
 import { Link, useSearchParams } from "react-router-dom";
 import SEO from "../components/SEO";
-import { galleryPhotos, type GalleryPhoto } from "../data/gallery";
+import {
+    galleryPhotos,
+    formatAperture,
+    formatShutter,
+    formatIso,
+    formatFocalLength,
+    type GalleryPhoto,
+} from "../data/gallery";
 import { strings } from "../data/shared.ts";
 import { useLenis } from "../hooks/useLenis";
 import { usePhotosReveal } from "../hooks/usePhotosReveal";
@@ -129,6 +136,16 @@ function Lightbox({ index, onNavigate, onClose }: {
     const prev = index > 0 ? index - 1 : null;
     const next = index < galleryPhotos.length - 1 ? index + 1 : null;
 
+    // Two rails: what it is on the left, how it was taken on the right.
+    const identity = [`Frame ${frameNo(index)}`, formatDate(photo.date), photo.camera, photo.lens]
+        .filter(Boolean) as string[];
+    const exposure = [
+        formatAperture(photo.aperture),
+        formatShutter(photo.shutter),
+        formatIso(photo.iso),
+        formatFocalLength(photo.focalLength),
+    ].filter(Boolean) as string[];
+
     useEffect(() => {
         const img = imgRef.current;
         // Already cached (e.g. stepping back to a photo): skip straight to shown.
@@ -159,7 +176,9 @@ function Lightbox({ index, onNavigate, onClose }: {
             if (event.key === "Tab") {
                 // Keep Tab cycling inside the modal — the page behind stays in the DOM.
                 const focusables = Array.from(
-                    dialogRef.current?.querySelectorAll<HTMLElement>("button:not(:disabled)") ?? [],
+                    dialogRef.current?.querySelectorAll<HTMLElement>(
+                        "a[href], button:not(:disabled)",
+                    ) ?? [],
                 );
                 if (focusables.length === 0) return;
                 const first = focusables[0];
@@ -189,34 +208,64 @@ function Lightbox({ index, onNavigate, onClose }: {
             data-lenis-prevent
         >
             <div className="ph-lightbox-stage" onClick={onClose}>
-                {!loaded && !failed && (
-                    <div className="ph-lightbox-loading">
-                        <div className="ph-line" />
-                    </div>
-                )}
-                {failed ? (
-                    <span className="ph-label">Couldn't load this photo — close and try again.</span>
-                ) : (
-                    <img
-                        key={photo.id}
-                        ref={imgRef}
-                        src={photo.largeSrc}
-                        alt={`Photograph ${frameNo(index)}, ${formatDate(photo.date)}`}
-                        className={loaded ? "ph-loaded" : undefined}
-                        onLoad={() => setLoaded(true)}
-                        onError={() => setFailed(true)}
-                        onClick={(event) => event.stopPropagation()}
-                    />
-                )}
+                <div
+                    className="ph-rail ph-rail-left"
+                    onClick={(event) => event.stopPropagation()}
+                >
+                    {identity.map((line) => (
+                        <span key={line}>{line}</span>
+                    ))}
+                </div>
+
+                <div className="ph-lightbox-figure">
+                    {!loaded && !failed && (
+                        <div className="ph-lightbox-loading">
+                            <div className="ph-line" />
+                        </div>
+                    )}
+                    {failed ? (
+                        <span className="ph-label">
+                            Couldn't load this photo — close and try again.
+                        </span>
+                    ) : (
+                        <img
+                            key={photo.id}
+                            ref={imgRef}
+                            src={photo.largeSrc}
+                            alt={`Photograph ${frameNo(index)}, ${formatDate(photo.date)}`}
+                            className={loaded ? "ph-loaded" : undefined}
+                            onLoad={() => setLoaded(true)}
+                            onError={() => setFailed(true)}
+                            onClick={(event) => event.stopPropagation()}
+                        />
+                    )}
+                </div>
+
+                <div
+                    className="ph-rail ph-rail-right"
+                    onClick={(event) => event.stopPropagation()}
+                >
+                    {exposure.map((line) => (
+                        <span key={line}>{line}</span>
+                    ))}
+                </div>
             </div>
             <div className="ph-lightbox-bar">
                 <div className="ph-lightbox-bar-group">
                     <span className="ph-page-indicator">
                         {frameNo(index)} / {frameNo(galleryPhotos.length - 1)}
                     </span>
-                    <span className="ph-label">{formatDate(photo.date)}</span>
                 </div>
                 <div className="ph-lightbox-bar-group">
+                    <a
+                        className="ph-label"
+                        href={photo.xlSrc}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        View full
+                    </a>
                     <button
                         type="button"
                         className="ph-label ph-step ph-step-prev"
