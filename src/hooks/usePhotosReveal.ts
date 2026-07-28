@@ -3,7 +3,9 @@ import { useLocation } from "react-router-dom";
 
 const LANDING_CLASS = "is-photos-landing";
 const LIFTED_CLASS = "is-lifted";
-const MIN_DWELL_MS = 260;
+// Long enough that the mark completes one deliberate 45deg turn before the veil
+// starts to go — the slow turn is what makes the quick fade read as quick.
+const MIN_DWELL_MS = 700;
 
 /**
  * Drives the fade-from-black landing on the photos page.

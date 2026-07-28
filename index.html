@@ -31,11 +31,36 @@
 
     html.is-photos-landing #veil.is-lifted {
       opacity: 0;
-      /* !important so the site-wide reduced-motion reset can't cut the reveal to
-         nothing. This is an opacity fade with no movement, which is what that
+      /* Quick, to contrast with the slow turn of the mark that preceded it.
+         !important so a site-wide reduced-motion reset can't cut the reveal to
+         nothing — this is an opacity fade with no movement, which is what that
          preference asks for rather than what it asks to remove. */
-      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1) !important;
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1) !important;
     }
+
+    /* A single square, turning a quarter-notch at a time while the grid loads. */
+    html.is-photos-landing #veil-mark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 13px;
+      height: 13px;
+      margin: -7px 0 0 -7px;
+      border: 1px solid #6a6a6a;
+      animation: veil-turn 1.8s ease-in-out infinite;
+    }
+
+    /* Ends on 90deg, which for a square is indistinguishable from 0 — so the
+       loop repeats without a visible snap back. */
+    @keyframes veil-turn {
+      0%        { transform: rotate(0deg); }
+      35%, 60%  { transform: rotate(45deg); }
+      95%, 100% { transform: rotate(90deg); }
+    }
+
+    /* Deliberately still turns under prefers-reduced-motion: it is a 13px mark
+       turning in place, and it is the only signal that the page is working.
+       That preference targets large or decorative movement, not this. */
   </style>
   <script>
     (function () {
@@ -51,7 +76,7 @@
   </script>
 </head>
 <body>
-  <div id="veil"></div>
+  <div id="veil"><span id="veil-mark"></span></div>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
