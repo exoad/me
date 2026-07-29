@@ -1,4 +1,13 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties } from "react";
+import {
+    useCallback,
+    useEffect,
+    useMemo,
+    useReducer,
+    useRef,
+    useState,
+    type CSSProperties,
+    type TouchEvent as ReactTouchEvent,
+} from "react";
 import { createPortal } from "react-dom";
 import { Link, useSearchParams } from "react-router-dom";
 import SEO from "../components/SEO";
@@ -24,6 +33,13 @@ const PRIORITY_COUNT = 6;
 const CLOSE_MS = 260;
 // Keep in step with the .ph-lightbox-slide animations.
 const SLIDE_MS = 420;
+// Swipe thresholds. Sideways is short — the frames sit close to the screen
+// edges, so the gesture is over quickly. Dismissing asks for more travel, since
+// it costs you the frame you were looking at.
+const SWIPE_MIN_PX = 48;
+const SWIPE_CLOSE_PX = 90;
+// Past this it stops reading as a flick and starts reading as a stray drag.
+const SWIPE_MAX_MS = 800;
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const frameNo = (i: number) => String(i + 1).padStart(3, "0");
@@ -194,6 +210,57 @@ function Lightbox({ index, onNavigate, onClose }: {
     const prev = index > 0 ? index - 1 : null;
     const next = index < galleryPhotos.length - 1 ? index + 1 : null;
 
+    // Touch navigation. On a phone the natural gesture for a full-screen photo
+    // is a swipe — sideways to step, which is also the axis the small-screen
+    // breakpoint animates along, and down to dismiss back to the grid.
+    const touchStart = useRef<{ x: number; y: number; t: number } | null>(null);
+    const swiped = useRef(false);
+
+    const onTouchStart = useCallback((event: ReactTouchEvent) => {
+        swiped.current = false;
+        // A second finger is a pinch, not a swipe.
+        if (event.touches.length !== 1) {
+            touchStart.current = null;
+            return;
+        }
+        const touch = event.touches[0];
+        touchStart.current = { x: touch.clientX, y: touch.clientY, t: event.timeStamp };
+    }, []);
+
+    const onTouchEnd = useCallback(
+        (event: ReactTouchEvent) => {
+            const start = touchStart.current;
+            touchStart.current = null;
+            if (!start || event.timeStamp - start.t > SWIPE_MAX_MS) return;
+
+            const touch = event.changedTouches[0];
+            const dx = touch.clientX - start.x;
+            const dy = touch.clientY - start.y;
+
+            // Whichever axis the finger actually travelled along decides which
+            // gesture this was, so a slightly diagonal flick still lands.
+            if (Math.abs(dx) > Math.abs(dy)) {
+                if (Math.abs(dx) < SWIPE_MIN_PX) return;
+                const target = dx < 0 ? next : prev;
+                if (target === null) return;
+                swiped.current = true;
+                go(target);
+            } else if (dy > SWIPE_CLOSE_PX) {
+                swiped.current = true;
+                requestClose();
+            }
+        },
+        [next, prev, go, requestClose],
+    );
+
+    // A swipe that ends over the backdrop must not also register as the tap that
+    // dismisses it — most browsers suppress the click after that much travel,
+    // but not all of them, and closing twice over is not a recoverable mistake.
+    const onStageClick = useCallback(() => {
+        if (swiped.current) return;
+        requestClose();
+    }, [requestClose]);
+
     // Two rails: the body on the left, the settings it was shot at on the right.
     const identity = [photo.camera].filter(Boolean) as string[];
     const exposure = [
@@ -282,8 +349,10 @@ function Lightbox({ index, onNavigate, onClose }: {
             ref={dialogRef}
             tabIndex={-1}
             data-lenis-prevent
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
         >
-            <div className="ph-lightbox-stage" onClick={requestClose}>
+            <div className="ph-lightbox-stage" onClick={onStageClick}>
                 <div
                     className="ph-rail ph-rail-left"
                     onClick={(event) => event.stopPropagation()}

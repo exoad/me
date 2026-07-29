@@ -352,8 +352,23 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
 
 .ph-lightbox {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* Deliberately not inset: 0 (or 100vh). A phone's layout viewport is its
+       toolbar-hidden height, so a full-height fixed element runs the bottom
+       ~100px of itself — the metadata rails and every control — underneath the
+       URL bar, where none of it can be seen or tapped. dvh is the visible
+       height; vh stays first as the fallback for browsers without it. */
+    height: 100vh;
+    height: 100dvh;
     z-index: 80;
+    /* A swipe that reaches an edge must not turn into a page-level gesture.
+       Sideways is ours — claiming that axis is what stops a step between frames
+       being read as a back/forward navigation. Vertical and pinch stay with the
+       browser, so the photo can still be zoomed into. */
+    overscroll-behavior: contain;
+    touch-action: pan-y pinch-zoom;
     background: var(--ph-bg);
     display: flex;
     flex-direction: column;
@@ -542,6 +557,10 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
     justify-content: space-between;
     gap: 16px;
     padding: 0 20px 24px;
+    /* Clears the home indicator on a phone; the second declaration is simply
+       ignored where env() is not understood. */
+    padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
+    flex-shrink: 0;
 }
 
 .ph-lightbox-bar-group {
@@ -607,6 +626,29 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
     .ph-pagination {
         gap: 20px;
         padding: 56px 20px;
+    }
+
+    .ph-lightbox-stage {
+        padding: 16px 14px;
+    }
+
+    /* Five labels across a phone. Tightened rather than wrapped: a control that
+       breaks onto a second line reads as a stray word, and "View full" losing
+       its second half is worse than the whole row being close together. */
+    .ph-lightbox-bar {
+        gap: 10px;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .ph-lightbox-bar-group {
+        gap: 14px;
+    }
+
+    .ph-lightbox-bar .ph-label,
+    .ph-lightbox-bar .ph-page-indicator {
+        white-space: nowrap;
+        letter-spacing: 0.14em;
     }
 }
 
