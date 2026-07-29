@@ -551,6 +551,113 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
 .ph-enter-prev { animation: ph-slide-enter-prev 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .ph-exit-prev  { animation: ph-slide-exit-prev  0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+/* ---- touch controls ----
+   Chevrons, a swipe hint and a dismiss arrow, living in the dead space under
+   the frame. Off entirely on desktop, where the keyboard and the bar already
+   do this — the small-screen block below is what switches it on. */
+
+.ph-touchbar {
+    display: none;
+    grid-area: nav;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* Drawn from two borders rather than set as a glyph: the arrow characters
+   carry their own weight and metrics, and none of them match a 1px hairline. */
+.ph-chev {
+    position: relative;
+    flex: none;
+    /* A real tap target that still sits in a compact row. */
+    width: 44px;
+    height: 44px;
+    margin: -12px 0;
+}
+
+.ph-chev::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 9px;
+    height: 9px;
+    border-left: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+}
+
+.ph-chev-prev::before {
+    transform: translate(-30%, -50%) rotate(45deg);
+}
+
+.ph-chev-next::before {
+    transform: translate(-70%, -50%) rotate(-135deg);
+}
+
+/* Beats the .ph button colour reset, which is a class plus an element. */
+.ph button.ph-chev {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ph button.ph-chev:disabled {
+    color: var(--ph-faint);
+    cursor: default;
+}
+
+.ph button.ph-chev-prev:active:not(:disabled) {
+    transform: translateX(-3px);
+}
+
+.ph button.ph-chev-next:active:not(:disabled) {
+    transform: translateX(3px);
+}
+
+.ph-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ph-dim);
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+.ph-hint-out {
+    opacity: 0;
+}
+
+/* The same square that turns while the page loads, here travelling a short
+   rail — the gesture stated in the vocabulary the rest of the page uses. */
+.ph-hint-track {
+    position: relative;
+    display: block;
+    flex: none;
+    width: 26px;
+    height: 1px;
+    background: var(--ph-faint);
+}
+
+.ph-hint-dot {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    background: var(--ph-dim);
+    animation: ph-hint-slide 2.6s ease-in-out infinite;
+}
+
+/* Out and back, because the gesture goes both ways. */
+@keyframes ph-hint-slide {
+    0%, 100% { transform: translateX(0); opacity: 0.3; }
+    18% { opacity: 1; }
+    50% { transform: translateX(21px); opacity: 1; }
+    82% { opacity: 0.3; }
+}
+
 .ph-lightbox-bar {
     display: flex;
     align-items: baseline;
@@ -576,12 +683,37 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
 @media (max-width: 900px) {
     .ph-lightbox-stage {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: minmax(0, 1fr) auto;
+        grid-template-rows: minmax(0, 1fr) auto auto;
         grid-template-areas:
             "figure figure"
-            "left right";
+            "nav    nav"
+            "left   right";
         align-items: center;
-        gap: 16px 20px;
+        gap: 12px 20px;
+    }
+
+    .ph-touchbar {
+        display: flex;
+    }
+
+    /* The chevrons say this now, and saying it twice is what makes a control
+       row feel crowded. */
+    .ph-lightbox-bar .ph-step {
+        display: none;
+    }
+
+    /* A downward arrow rather than a cross: this is the same dismissal the
+       swipe performs, and pointing the way out teaches the gesture. */
+    .ph-close::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        margin-right: 7px;
+        vertical-align: 1px;
+        border-left: 1px solid currentColor;
+        border-bottom: 1px solid currentColor;
+        transform: rotate(-45deg);
     }
 
     /* align-items: center un-stretches every grid item; the figure has to keep
@@ -686,10 +818,16 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
         transition: opacity 0.25s ease !important;
     }
 
+    /* The hint deliberately keeps travelling, on the same reasoning as the
+       loading mark in index.html: it is a 5px square crossing 26px, and the
+       movement is not decoration around the message — it IS the message. A
+       stationary dot next to "swipe to navigate" demonstrates nothing. */
+
     /* Everything below moves, so it goes. */
     .ph-media,
     .ph a.ph-step,
-    .ph button.ph-step {
+    .ph button.ph-step,
+    .ph button.ph-chev {
         transition: none;
     }
 
@@ -698,7 +836,9 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
     .ph-step-prev:hover:not(:disabled),
     .ph-step-prev:focus-visible:not(:disabled),
     .ph-step-next:hover:not(:disabled),
-    .ph-step-next:focus-visible:not(:disabled) {
+    .ph-step-next:focus-visible:not(:disabled),
+    .ph button.ph-chev-prev:active:not(:disabled),
+    .ph button.ph-chev-next:active:not(:disabled) {
         transform: none;
     }
 

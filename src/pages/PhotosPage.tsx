@@ -40,6 +40,13 @@ const SWIPE_MIN_PX = 48;
 const SWIPE_CLOSE_PX = 90;
 // Past this it stops reading as a flick and starts reading as a stray drag.
 const SWIPE_MAX_MS = 800;
+// How long the swipe hint stays up before retiring on its own.
+const HINT_MS = 4500;
+
+// Once you have swiped, you know you can swipe. Module scope so the hint is a
+// property of the visit rather than of one viewer — opening a tenth photo
+// should not re-explain the gesture you have been using all along.
+let swipeHintRetired = false;
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const frameNo = (i: number) => String(i + 1).padStart(3, "0");
@@ -216,6 +223,17 @@ function Lightbox({ index, onNavigate, onClose }: {
     const touchStart = useRef<{ x: number; y: number; t: number } | null>(null);
     const swiped = useRef(false);
 
+    const [hint, setHint] = useState(!swipeHintRetired);
+
+    // Gone after a few seconds even if it goes unread — it has said its piece,
+    // and a line that animates forever under every photo is the clutter this is
+    // meant to avoid.
+    useEffect(() => {
+        if (!hint) return;
+        const timer = window.setTimeout(() => setHint(false), HINT_MS);
+        return () => clearTimeout(timer);
+    }, [hint]);
+
     const onTouchStart = useCallback((event: ReactTouchEvent) => {
         swiped.current = false;
         // A second finger is a pinch, not a swipe.
@@ -244,6 +262,8 @@ function Lightbox({ index, onNavigate, onClose }: {
                 const target = dx < 0 ? next : prev;
                 if (target === null) return;
                 swiped.current = true;
+                swipeHintRetired = true;
+                setHint(false);
                 go(target);
             } else if (dy > SWIPE_CLOSE_PX) {
                 swiped.current = true;
@@ -322,7 +342,10 @@ function Lightbox({ index, onNavigate, onClose }: {
                     dialogRef.current?.querySelectorAll<HTMLElement>(
                         "a[href], button:not(:disabled)",
                     ) ?? [],
-                );
+                    // The breakpoint hides one set of controls or the other, and
+                    // a display:none button still answers the selector while
+                    // refusing focus — which would strand Tab on it.
+                ).filter((el) => el.getClientRects().length > 0);
                 if (focusables.length === 0) return;
                 const first = focusables[0];
                 const last = focusables[focusables.length - 1];
@@ -430,6 +453,31 @@ function Lightbox({ index, onNavigate, onClose }: {
                     </div>
                 </div>
 
+                {/* Small screens only — CSS keeps it out of the desktop layout,
+                    where the keyboard and the bar already cover this. */}
+                <div className="ph-touchbar" onClick={(event) => event.stopPropagation()}>
+                    <button
+                        type="button"
+                        className="ph-chev ph-chev-prev"
+                        onClick={() => prev !== null && go(prev)}
+                        disabled={prev === null}
+                        aria-label="Previous photo"
+                    />
+                    <span className={`ph-hint${hint ? "" : " ph-hint-out"}`} aria-hidden="true">
+                        <span className="ph-hint-track">
+                            <span className="ph-hint-dot" />
+                        </span>
+                        Swipe to navigate
+                    </span>
+                    <button
+                        type="button"
+                        className="ph-chev ph-chev-next"
+                        onClick={() => next !== null && go(next)}
+                        disabled={next === null}
+                        aria-label="Next photo"
+                    />
+                </div>
+
                 <div
                     className="ph-rail ph-rail-right"
                     onClick={(event) => event.stopPropagation()}
@@ -471,7 +519,7 @@ function Lightbox({ index, onNavigate, onClose }: {
                     >
                         Next
                     </button>
-                    <button type="button" className="ph-label" onClick={requestClose}>
+                    <button type="button" className="ph-label ph-close" onClick={requestClose}>
                         Close
                     </button>
                 </div>
