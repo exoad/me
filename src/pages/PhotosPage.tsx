@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { Link, useSearchParams } from "react-router-dom";
 import SEO from "../components/SEO";
@@ -132,8 +132,33 @@ function Lightbox({ index, onNavigate, onClose }: {
     onClose: () => void;
 }) {
     const photo = galleryPhotos[index];
-    const [loaded, setLoaded] = useState(false);
-    const [failed, setFailed] = useState(false);
+
+    // Readiness is remembered per frame rather than held as one flag that has to
+    // be reset on every step. A frame you have already seen is ready by
+    // definition, so stepping back to it can never flash its placeholder — the
+    // old flag depended on a fresh <img> reporting .complete in time, which it
+    // usually does not, even straight from cache.
+    const readyRef = useRef<Set<string>>(new Set());
+    const failedRef = useRef<Set<string>>(new Set());
+    const [, bump] = useReducer((n: number) => n + 1, 0);
+
+    const ready = readyRef.current.has(photo.id);
+    const failed = failedRef.current.has(photo.id);
+
+    const markReady = useCallback((id: string) => {
+        // A frame that arrives on a later attempt supersedes an earlier failure.
+        // The neighbour preload re-fetches anything not yet ready, so this is how
+        // a frame that blipped recovers — without it the retry would succeed and
+        // the error card would still be what you see.
+        const wasFailed = failedRef.current.delete(id);
+        if (readyRef.current.has(id)) {
+            if (wasFailed) bump();
+            return;
+        }
+        readyRef.current.add(id);
+        bump();
+    }, []);
+
     const [closing, setClosing] = useState(false);
     const dialogRef = useRef<HTMLDivElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);
@@ -178,17 +203,36 @@ function Lightbox({ index, onNavigate, onClose }: {
         formatFocalLength(photo.focalLength),
     ].filter(Boolean) as string[];
 
+    // Safety net for the first sight of a frame: a cached image can finish
+    // before React attaches onLoad.
     useEffect(() => {
         const img = imgRef.current;
-        // Already cached (e.g. stepping back to a photo): skip straight to shown.
-        if (img?.complete && img.naturalWidth > 0) {
-            setLoaded(true);
-            setFailed(false);
-            return;
+        if (img?.complete && img.naturalWidth > 0) markReady(photo.id);
+    }, [photo.id, markReady]);
+
+    // Decode the neighbours ahead of time so a step usually lands on a sharp
+    // frame and the placeholder is only ever seen when you outrun the network.
+    useEffect(() => {
+        let cancelled = false;
+        for (const neighbour of [prev, next]) {
+            if (neighbour === null) continue;
+            const target = galleryPhotos[neighbour];
+            if (readyRef.current.has(target.id)) continue;
+            const preload = new Image();
+            preload.src = target.largeSrc;
+            preload
+                .decode?.()
+                .then(() => {
+                    if (!cancelled) markReady(target.id);
+                })
+                .catch(() => {
+                    /* a failed preload just means the real one shows its blur */
+                });
         }
-        setLoaded(false);
-        setFailed(false);
-    }, [index]);
+        return () => {
+            cancelled = true;
+        };
+    }, [prev, next, markReady]);
 
     useEffect(() => {
         const previouslyFocused = document.activeElement as HTMLElement | null;
@@ -280,7 +324,7 @@ function Lightbox({ index, onNavigate, onClose }: {
                             <>
                                 {/* Stands in until the frame arrives, then hands over. */}
                                 <img
-                                    className={`ph-lightbox-blur${loaded ? " ph-hidden" : ""}`}
+                                    className={`ph-lightbox-blur${ready ? " ph-hidden" : ""}`}
                                     src={photo.blur}
                                     // object-fit will happily upscale, while the
                                     // photo's max-* only ever shrinks. Capping at
@@ -291,7 +335,7 @@ function Lightbox({ index, onNavigate, onClose }: {
                                     // so without this a tap on the photo you are
                                     // waiting for would dismiss the viewer.
                                     onClick={(event) => {
-                                        if (!loaded) event.stopPropagation();
+                                        if (!ready) event.stopPropagation();
                                     }}
                                     alt=""
                                     aria-hidden="true"
@@ -300,9 +344,16 @@ function Lightbox({ index, onNavigate, onClose }: {
                                     ref={imgRef}
                                     src={photo.largeSrc}
                                     alt={`Photograph ${frameNo(index)}, ${formatDate(photo.date)}`}
-                                    className={`ph-lightbox-photo${loaded ? " ph-loaded" : ""}`}
-                                    onLoad={() => setLoaded(true)}
-                                    onError={() => setFailed(true)}
+                                    className={`ph-lightbox-photo${ready ? " ph-loaded" : ""}`}
+                                    onLoad={() => markReady(photo.id)}
+                                    onError={() => {
+                                        // Keep the two sets disjoint, so the
+                                        // render never has to arbitrate between
+                                        // "ready" and "failed" for one frame.
+                                        readyRef.current.delete(photo.id);
+                                        failedRef.current.add(photo.id);
+                                        bump();
+                                    }}
                                     onClick={(event) => event.stopPropagation()}
                                 />
                             </>

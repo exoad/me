@@ -495,6 +495,10 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
 
 .ph-lightbox-blur.ph-hidden {
     opacity: 0;
+    /* The entering layer remounts on every step, so without this the fade-up
+       replays over a frame that is already sharp — an animation outranks the
+       opacity above it, which is exactly the flash this kills. */
+    animation: none;
 }
 
 .ph-lightbox-photo {
