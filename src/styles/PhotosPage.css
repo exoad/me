@@ -450,64 +450,87 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
     color: var(--ph-fg);
 }
 
-.ph-lightbox-stage img {
+/* One frame's worth of layers, stacked in a single grid cell so the placeholder
+   and the photograph occupy exactly the same box. Both carry the photo's real
+   pixel dimensions, so the same max-* constraints resolve them identically. */
+.ph-lightbox-slide {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    /* Definite tracks. An auto track sizes itself FROM its items, so the photo's
+       max-height: 100% would have nothing real to resolve against and a tall
+       frame would grow the track and spill over the controls. */
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    place-items: center;
+    /* Travel vector for a forward step; the media query below swaps the axis. */
+    --ph-slide-x: 0px;
+    --ph-slide-y: 30px;
+}
+
+.ph-lightbox-slide > * {
+    grid-area: 1 / 1;
+}
+
+.ph-lightbox-slide img {
     max-width: 100%;
     max-height: 100%;
     display: block;
+}
+
+/* The placeholder bitmap is only 24px wide, so it cannot be sized by its own
+   intrinsic dimensions. Filling the cell and letterboxing with object-fit lands
+   it on exactly the rectangle the photograph will occupy — the same fit-inside
+   result max-width/max-height gives the real frame. */
+.ph-lightbox-blur {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: blur(22px);
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    /* Fades up rather than appearing, so the wait is never a hard cut either. */
+    animation: ph-fade-only 0.3s ease;
+}
+
+.ph-lightbox-blur.ph-hidden {
     opacity: 0;
 }
 
-.ph-lightbox-stage img.ph-loaded {
-    animation: ph-lightbox-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.ph-lightbox-photo {
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
-@keyframes ph-lightbox-in {
-    from {
-        opacity: 0;
-        transform: scale(0.985);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+.ph-lightbox-photo.ph-loaded {
+    opacity: 1;
 }
 
-.ph-lightbox-loading {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
+/* Stepping forward: the frame you were on leaves upward, the next rises in. */
+@keyframes ph-slide-enter-next {
+    from { opacity: 0; transform: translate(var(--ph-slide-x), var(--ph-slide-y)); }
+    to   { opacity: 1; transform: none; }
 }
 
-/* the loading signal: a single white line drawing itself */
-
-.ph-line {
-    width: 48px;
-    height: 1px;
-    background: var(--ph-faint);
-    position: relative;
-    overflow: hidden;
+@keyframes ph-slide-exit-next {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translate(calc(var(--ph-slide-x) * -1), calc(var(--ph-slide-y) * -1)); }
 }
 
-.ph-line::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--ph-fg);
-    transform: translateX(-100%);
-    animation: ph-line-sweep 1.1s ease-in-out infinite;
+@keyframes ph-slide-enter-prev {
+    from { opacity: 0; transform: translate(calc(var(--ph-slide-x) * -1), calc(var(--ph-slide-y) * -1)); }
+    to   { opacity: 1; transform: none; }
 }
 
-@keyframes ph-line-sweep {
-    from {
-        transform: translateX(-100%);
-    }
-    to {
-        transform: translateX(100%);
-    }
+@keyframes ph-slide-exit-prev {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translate(var(--ph-slide-x), var(--ph-slide-y)); }
 }
+
+.ph-enter-next { animation: ph-slide-enter-next 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ph-exit-next  { animation: ph-slide-exit-next  0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ph-enter-prev { animation: ph-slide-enter-prev 0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ph-exit-prev  { animation: ph-slide-exit-prev  0.42s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
 .ph-lightbox-bar {
     display: flex;
@@ -543,6 +566,13 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
        photo overflows across the controls. */
     .ph-lightbox-figure {
         align-self: stretch;
+    }
+
+    /* Sideways here, and a shorter throw — on a phone the frames sit close to
+       the edges, so a large vertical shove reads as a glitch. */
+    .ph-lightbox-slide {
+        --ph-slide-x: 18px;
+        --ph-slide-y: 0px;
     }
 
     /* Back to caption scale where there is no room for the larger setting. */
@@ -595,9 +625,11 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
         animation-duration: 0.5s !important;
     }
 
-    .ph-lightbox-stage img.ph-loaded {
-        animation-name: ph-fade-only;
-        animation-duration: 0.35s !important;
+    /* Zeroing the travel vector turns every slide into a pure crossfade — the
+       keyframes stay, they simply stop moving anything. */
+    .ph-lightbox-slide {
+        --ph-slide-x: 0px;
+        --ph-slide-y: 0px;
     }
 
     .ph-blur {
@@ -624,8 +656,4 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
         transform: none;
     }
 
-    .ph-line::after {
-        animation: none;
-        transform: none;
-    }
 }

@@ -22,6 +22,8 @@ const PAGE_COUNT = Math.max(1, Math.ceil(galleryPhotos.length / PAGE_SIZE));
 const PRIORITY_COUNT = 6;
 // Keep in step with the .ph-lightbox-close animation.
 const CLOSE_MS = 260;
+// Keep in step with the .ph-lightbox-slide animations.
+const SLIDE_MS = 420;
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const frameNo = (i: number) => String(i + 1).padStart(3, "0");
@@ -146,6 +148,24 @@ function Lightbox({ index, onNavigate, onClose }: {
 
     useEffect(() => () => clearTimeout(closeTimer.current), []);
 
+    // Holds the frame being left behind so it can travel out while the next one
+    // travels in. Null on first open, so opening is a plain fade.
+    const [slide, setSlide] = useState<{ dir: "next" | "prev"; from: GalleryPhoto } | null>(null);
+
+    const go = useCallback(
+        (target: number) => {
+            setSlide({ dir: target > index ? "next" : "prev", from: galleryPhotos[index] });
+            onNavigate(target);
+        },
+        [index, onNavigate],
+    );
+
+    useEffect(() => {
+        if (!slide) return;
+        const timer = window.setTimeout(() => setSlide(null), SLIDE_MS);
+        return () => clearTimeout(timer);
+    }, [slide]);
+
     const prev = index > 0 ? index - 1 : null;
     const next = index < galleryPhotos.length - 1 ? index + 1 : null;
 
@@ -183,8 +203,8 @@ function Lightbox({ index, onNavigate, onClose }: {
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Escape") requestClose();
-            if (event.key === "ArrowLeft" && prev !== null) onNavigate(prev);
-            if (event.key === "ArrowRight" && next !== null) onNavigate(next);
+            if (event.key === "ArrowLeft" && prev !== null) go(prev);
+            if (event.key === "ArrowRight" && next !== null) go(next);
             if (event.key === "Tab") {
                 // Keep Tab cycling inside the modal — the page behind stays in the DOM.
                 const focusables = Array.from(
@@ -207,7 +227,7 @@ function Lightbox({ index, onNavigate, onClose }: {
         };
         window.addEventListener("keydown", onKeyDown);
         return () => window.removeEventListener("keydown", onKeyDown);
-    }, [prev, next, onNavigate, requestClose]);
+    }, [prev, next, go, requestClose]);
 
     return (
         <div
@@ -230,27 +250,64 @@ function Lightbox({ index, onNavigate, onClose }: {
                 </div>
 
                 <div className="ph-lightbox-figure">
-                    {!loaded && !failed && (
-                        <div className="ph-lightbox-loading">
-                            <div className="ph-line" />
+                    {slide && (
+                        <div
+                            // Without a key React reuses this node when you step
+                            // twice the same way, and an unchanged class means the
+                            // exit animation never restarts. Prefixed so it can't
+                            // collide with the entering layer's key on a reversal.
+                            key={`exit-${slide.from.id}`}
+                            className={`ph-lightbox-slide ph-exit-${slide.dir}`}
+                            aria-hidden="true"
+                        >
+                            <img
+                                className="ph-lightbox-photo ph-loaded"
+                                src={slide.from.largeSrc}
+                                alt=""
+                            />
                         </div>
                     )}
-                    {failed ? (
-                        <span className="ph-label">
-                            Couldn't load this photo — close and try again.
-                        </span>
-                    ) : (
-                        <img
-                            key={photo.id}
-                            ref={imgRef}
-                            src={photo.largeSrc}
-                            alt={`Photograph ${frameNo(index)}, ${formatDate(photo.date)}`}
-                            className={loaded ? "ph-loaded" : undefined}
-                            onLoad={() => setLoaded(true)}
-                            onError={() => setFailed(true)}
-                            onClick={(event) => event.stopPropagation()}
-                        />
-                    )}
+
+                    <div
+                        key={photo.id}
+                        className={`ph-lightbox-slide${slide ? ` ph-enter-${slide.dir}` : ""}`}
+                    >
+                        {failed ? (
+                            <span className="ph-label">
+                                Couldn't load this photo — close and try again.
+                            </span>
+                        ) : (
+                            <>
+                                {/* Stands in until the frame arrives, then hands over. */}
+                                <img
+                                    className={`ph-lightbox-blur${loaded ? " ph-hidden" : ""}`}
+                                    src={photo.blur}
+                                    // object-fit will happily upscale, while the
+                                    // photo's max-* only ever shrinks. Capping at
+                                    // the photo's own pixels keeps both layers on
+                                    // the exact same rectangle on large displays.
+                                    style={{ maxWidth: photo.width, maxHeight: photo.height }}
+                                    // While loading this covers the whole figure,
+                                    // so without this a tap on the photo you are
+                                    // waiting for would dismiss the viewer.
+                                    onClick={(event) => {
+                                        if (!loaded) event.stopPropagation();
+                                    }}
+                                    alt=""
+                                    aria-hidden="true"
+                                />
+                                <img
+                                    ref={imgRef}
+                                    src={photo.largeSrc}
+                                    alt={`Photograph ${frameNo(index)}, ${formatDate(photo.date)}`}
+                                    className={`ph-lightbox-photo${loaded ? " ph-loaded" : ""}`}
+                                    onLoad={() => setLoaded(true)}
+                                    onError={() => setFailed(true)}
+                                    onClick={(event) => event.stopPropagation()}
+                                />
+                            </>
+                        )}
+                    </div>
                 </div>
 
                 <div
@@ -281,7 +338,7 @@ function Lightbox({ index, onNavigate, onClose }: {
                     <button
                         type="button"
                         className="ph-label ph-step ph-step-prev"
-                        onClick={() => prev !== null && onNavigate(prev)}
+                        onClick={() => prev !== null && go(prev)}
                         disabled={prev === null}
                     >
                         Prev
@@ -289,7 +346,7 @@ function Lightbox({ index, onNavigate, onClose }: {
                     <button
                         type="button"
                         className="ph-label ph-step ph-step-next"
-                        onClick={() => next !== null && onNavigate(next)}
+                        onClick={() => next !== null && go(next)}
                         disabled={next === null}
                     >
                         Next
