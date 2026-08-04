@@ -1,0 +1,30 @@
+# Discovery headers. A reader that only ever issues a HEAD request should still
+# be able to find the markdown copy of a page and the site's llms.txt index,
+# without parsing any HTML first.
+
+/*
+  Link: <https://exoad.net/llms.txt>; rel="llms-txt"; type="text/markdown"
+  X-Content-Type-Options: nosniff
+
+/
+  Link: <https://exoad.net/index.md>; rel="alternate"; type="text/markdown"; title="Markdown"
+
+/photos
+  Link: <https://exoad.net/photos.md>; rel="alternate"; type="text/markdown"; title="Markdown"
+
+/blog
+  Link: <https://exoad.net/blog.md>; rel="alternate"; type="text/markdown"; title="Markdown"
+
+/blog/:slug
+  Link: <https://exoad.net/blog/:slug.md>; rel="alternate"; type="text/markdown"; title="Markdown"
+
+# Markdown twins are served as text/markdown rather than as a download, so a
+# reader gets the content inline and a browser shows it as text.
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+
+/llms.txt
+  Content-Type: text/markdown; charset=utf-8
+
+/llms-full.txt
+  Content-Type: text/markdown; charset=utf-8
