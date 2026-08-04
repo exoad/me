@@ -362,6 +362,10 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
        height; vh stays first as the fallback for browsers without it. */
     height: 100vh;
     height: 100dvh;
+    /* Last word goes to the measured height. The two above remain as the floor
+       for the first paint and for anything without visualViewport; --ph-vh is
+       set inline from the very first render, so the fallback never runs. */
+    height: var(--ph-vh, 100dvh);
     z-index: 80;
     /* A swipe that reaches an edge must not turn into a page-level gesture.
        Sideways is ours — claiming that axis is what stops a step between frames

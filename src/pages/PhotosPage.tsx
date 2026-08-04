@@ -48,6 +48,25 @@ const HINT_MS = 4500;
 // should not re-explain the gesture you have been using all along.
 let swipeHintRetired = false;
 
+/**
+ * The height actually on screen, in CSS pixels.
+ *
+ * 100dvh is meant to be exactly this, but mobile browsers disagree about it
+ * often enough that the viewer's controls kept ending up behind the URL bar.
+ * visualViewport reports what is really visible, so the viewer is sized from a
+ * measurement rather than from a unit we have to trust.
+ *
+ * Returns null while pinch-zoomed: the visual viewport is then a window onto a
+ * magnified page rather than the page's own height, and following it would
+ * collapse the viewer as you zoom into a photo.
+ */
+function visibleHeight(): number | null {
+    const vv = window.visualViewport;
+    if (!vv) return window.innerHeight;
+    if (vv.scale > 1.01) return null;
+    return vv.height;
+}
+
 const pad = (n: number) => String(n).padStart(2, "0");
 const frameNo = (i: number) => String(i + 1).padStart(3, "0");
 const formatDate = (date: string | null) => (date ? date.replaceAll("-", ".") : "—");
@@ -183,6 +202,31 @@ function Lightbox({ index, onNavigate, onClose }: {
     }, []);
 
     const [closing, setClosing] = useState(false);
+
+    // Measured on mount so the very first paint is already the right height —
+    // a viewer that resizes after it opens would be its own kind of wrong.
+    const [viewportHeight, setViewportHeight] = useState(
+        () => visibleHeight() ?? window.innerHeight,
+    );
+
+    useEffect(() => {
+        const update = () => {
+            const height = visibleHeight();
+            if (height !== null) setViewportHeight(height);
+        };
+        update();
+        const vv = window.visualViewport;
+        // The URL bar sliding in or out fires this, which is the whole point.
+        vv?.addEventListener("resize", update);
+        window.addEventListener("resize", update);
+        window.addEventListener("orientationchange", update);
+        return () => {
+            vv?.removeEventListener("resize", update);
+            window.removeEventListener("resize", update);
+            window.removeEventListener("orientationchange", update);
+        };
+    }, []);
+
     const dialogRef = useRef<HTMLDivElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);
     const closeTimer = useRef(0);
@@ -324,9 +368,33 @@ function Lightbox({ index, onNavigate, onClose }: {
     useEffect(() => {
         const previouslyFocused = document.activeElement as HTMLElement | null;
         dialogRef.current?.focus();
-        document.body.style.overflow = "hidden";
+
+        // overflow: hidden does not stop iOS Safari scrolling the page behind a
+        // fixed overlay, and a document that drifts underneath takes the
+        // overlay's frame of reference with it. Pinning the body at the offset
+        // it already had is the lock that holds there too.
+        const { body } = document;
+        const offsetY = window.scrollY;
+        const restore = {
+            position: body.style.position,
+            top: body.style.top,
+            left: body.style.left,
+            right: body.style.right,
+            overflow: body.style.overflow,
+        };
+        Object.assign(body.style, {
+            position: "fixed",
+            top: `-${offsetY}px`,
+            left: "0",
+            right: "0",
+            overflow: "hidden",
+        });
+
         return () => {
-            document.body.style.overflow = "";
+            Object.assign(body.style, restore);
+            // Pinning the body sent the document to the top; put it back before
+            // the grid is visible again, or closing loses your place in it.
+            window.scrollTo(0, offsetY);
             previouslyFocused?.focus();
         };
     }, []);
@@ -372,6 +440,7 @@ function Lightbox({ index, onNavigate, onClose }: {
             ref={dialogRef}
             tabIndex={-1}
             data-lenis-prevent
+            style={{ "--ph-vh": `${viewportHeight}px` } as CSSProperties}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
         >
