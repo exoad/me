@@ -8,7 +8,7 @@
 // markdown for readers that would rather not parse markup at all.
 //
 // Emitted per build:
-//   dist/<route>/index.html   per-route title, description, OG, JSON-LD, noscript
+//   dist/<route>.html         per-route title, description, OG, JSON-LD, noscript
 //   dist/<route>.md           the same content as markdown
 //   dist/llms.txt             index of the above, llms.txt convention
 //   dist/llms-full.txt        every page inlined, for a single fetch
@@ -140,9 +140,13 @@ function buildPages({ shared, posts, gallery }) {
         `${p.technologies?.length ? ` _[${p.technologies.map((t) => t.name).join(", ")}]_` : ""}` +
         `${p.link ? ` — ${p.link}` : ""}`;
 
+    // html is a sibling file rather than a directory index on purpose: Pages
+    // serves /photos straight from photos.html, but 308-redirects /photos to
+    // /photos/ when it has to reach through a directory. One is a page, the
+    // other is a page plus a round trip on every direct visit.
     const home = {
         route: "/",
-        dir: null, // the root index.html itself
+        html: "index.html",
         md: "index.md",
         title: "exoad — Jiaming Meng",
         description: about,
@@ -205,7 +209,7 @@ function buildPages({ shared, posts, gallery }) {
 
     const photos = {
         route: "/photos",
-        dir: "photos",
+        html: "photos.html",
         md: "photos.md",
         title: "Photographs | exoad",
         description: oneLine(strings.pages.photos.description),
@@ -252,7 +256,7 @@ function buildPages({ shared, posts, gallery }) {
 
     const blogIndex = {
         route: "/blog",
-        dir: "blog",
+        html: "blog.html",
         md: "blog.md",
         title: "Writing | exoad",
         description: oneLine(strings.pages.blog.description),
@@ -294,7 +298,7 @@ function buildPages({ shared, posts, gallery }) {
 
     const postPages = posts.map((post) => ({
         route: `/blog/${post.slug}`,
-        dir: `blog/${post.slug}`,
+        html: `blog/${post.slug}.html`,
         md: `blog/${post.slug}.md`,
         title: `${post.title} | exoad`,
         description: oneLine(post.excerpt),
@@ -462,7 +466,7 @@ export default function agentSurfacePlugin() {
 
             for (const page of pages) {
                 const html = pageHtml(page, baseHtml);
-                write(page.dir ? `${page.dir}/index.html` : "index.html", html);
+                write(page.html, html);
                 write(page.md, `${page.markdown}\n`);
             }
 
