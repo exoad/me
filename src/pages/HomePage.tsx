@@ -2,6 +2,7 @@ import { strings, featuredProjects, projects } from "../data/shared.ts";
 import SEO from "../components/SEO.tsx";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import PhotoStrip from "../components/PhotoStrip";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BlogPostData, loadAllBlogPosts } from "../utils/markdown";
@@ -66,6 +67,10 @@ function ContentSections() {
 					{strings.pages.home.about.content.split("photography")[1]}
 				</p>
 			</section>
+
+			{/* Straight after the paragraph that mentions it, so the word and the
+			    frames arrive together. */}
+			<PhotoStrip />
 
 			{biboProject && (
 				<section>

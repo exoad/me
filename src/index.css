@@ -138,6 +138,42 @@ html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
     content: "▾";
 }
 
+/* Contact strip of recent photographs. Uniform height, hairline gaps, square
+   corners — a row of frames, not a carousel. */
+.photo-strip {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 0.75rem;
+}
+
+.photo-strip img {
+    /* Definite basis, so six frames divide the column evenly regardless of
+       their own aspect ratios. */
+    flex: 1 1 0;
+    min-width: 0;
+    height: 92px;
+    object-fit: cover;
+    display: block;
+    background: #e8e0cd;
+    transition: opacity 0.2s ease;
+}
+
+.photo-strip:hover img,
+.photo-strip:focus-visible img {
+    opacity: 0.82;
+}
+
+@media (max-width: 480px) {
+    .photo-strip img {
+        height: 74px;
+    }
+
+    /* Six across a phone is six slivers. */
+    .photo-strip img:nth-child(n + 5) {
+        display: none;
+    }
+}
+
 .blog-post-card {
     display: block;
     width: 100%;
