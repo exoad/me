@@ -16,6 +16,8 @@ export interface TProject {
     demoImage?: string;
     technologies: TTechnology[];
     state: TProjectState;
+    /** The year the work started, taken from the repository's creation date. */
+    year: number;
 }
 
 export interface TTimelineEntry {

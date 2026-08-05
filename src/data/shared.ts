@@ -185,6 +185,7 @@ export const projects: TProject[] = [
         technologies: [technologies.flutter, technologies.c],
         featured: true,
         state: "finished",
+        year: 2026,
     },
     {
         title: "Kira",
@@ -196,6 +197,7 @@ export const projects: TProject[] = [
         featured: true,
         logo: kiraProjectLogo,
         state: "finished",
+        year: 2025,
     },
     {
         title: "Halcyon",
@@ -209,6 +211,7 @@ export const projects: TProject[] = [
             "https://github.com/exoad/Halcyon.c/blob/master/repo/img/upload.png?raw=true",
         logo: halcyonProjectLogo,
         state: "archived",
+        year: 2022,
     },
     {
         title: "Mori",
@@ -222,6 +225,7 @@ export const projects: TProject[] = [
         featured: false,
         logo: moriLogo,
         state: "finished",
+        year: 2025,
     },
     {
         title: "software_3d",
@@ -233,6 +237,7 @@ export const projects: TProject[] = [
         demoImage:
             "https://github.com/exoad/software_3d/raw/main/repo/screenshot_10.png",
         state: "finished",
+        year: 2026,
         featured: false,
     },
     {
@@ -244,6 +249,7 @@ export const projects: TProject[] = [
         technologies: [technologies.python, technologies.torch],
         featured: false,
         state: "finished",
+        year: 2025,
     },
     {
         title: "ShipDSL",
@@ -254,6 +260,7 @@ export const projects: TProject[] = [
         technologies: [technologies.python],
         featured: false,
         state: "finished",
+        year: 2025,
     },
     {
         title: "Lair33",
@@ -266,6 +273,7 @@ export const projects: TProject[] = [
         demoImage:
             "https://github.com/meng-jack/me-pictures-bucket/blob/main/2025-11-06%2013_24_47-Friends%20-%20Discord.png?raw=true",
         state: "archived",
+        year: 2025,
     },
     {
         title: "OnTheFly",
@@ -279,6 +287,7 @@ export const projects: TProject[] = [
             "https://github.com/exoad/on_the_fly/raw/master/repo/sc_1.png?raw=true",
         logo: ontheflyProjectLogo,
         state: "finished",
+        year: 2024,
     },
     {
         title: "Filewatch",
@@ -290,6 +299,7 @@ export const projects: TProject[] = [
         featured: false,
         logo: filewatchProjectLogo,
         state: "archived",
+        year: 2025,
     },
     {
         title: "GTFO-RundownRoulette",
@@ -302,6 +312,7 @@ export const projects: TProject[] = [
         demoImage:
             "https://github.com/exoad/GTFO-RundownRoulette/raw/main/repository/screenshot2.png",
         state: "archived",
+        year: 2025,
     },
     {
         title: "software_rasterizer",
@@ -313,6 +324,7 @@ export const projects: TProject[] = [
         logo: softwareRasterizerLogo,
         featured: false,
         state: "finished",
+        year: 2025,
     },
     {
         title: "windowed_file_reader",
@@ -324,6 +336,7 @@ export const projects: TProject[] = [
         logo: windowedFileReaderLogo,
         featured: false,
         state: "finished",
+        year: 2025,
     },
     {
         title: "Visus",
@@ -336,6 +349,7 @@ export const projects: TProject[] = [
         featured: false,
         technologies: [technologies.lens_studio, technologies.javascript],
         state: "finished",
+        year: 2023,
     },
     {
         title: "Nukleon",
@@ -347,6 +361,7 @@ export const projects: TProject[] = [
         color: "#d1cdb5",
         featured: false,
         state: "finished",
+        year: 2025,
     },
     {
         title: "Toasterify",
@@ -360,6 +375,7 @@ export const projects: TProject[] = [
         featured: false,
         technologies: [technologies.android, technologies.flutter],
         state: "finished",
+        year: 2023,
     },
     {
         title: "Halite",
@@ -370,6 +386,7 @@ export const projects: TProject[] = [
         technologies: [technologies.java],
         featured: false,
         state: "finished",
+        year: 2023,
     },
     {
         title: "big_double.dart",
@@ -380,6 +397,7 @@ export const projects: TProject[] = [
         featured: false,
         technologies: [technologies.dart],
         state: "finished",
+        year: 2025,
     },
     {
         title: "Prismix",
@@ -392,6 +410,7 @@ export const projects: TProject[] = [
             "https://github.com/exoad/prismix/raw/master/repo/screenshot.png",
         technologies: [technologies.java, technologies.kotlin],
         state: "finished",
+        year: 2023,
         featured: false,
     },
     {
@@ -402,6 +421,7 @@ export const projects: TProject[] = [
         link: "https://github.com/exoad/ansicolor",
         technologies: [technologies.java],
         state: "finished",
+        year: 2023,
         featured: false,
     },
     {
@@ -412,6 +432,7 @@ export const projects: TProject[] = [
         link: "https://github.com/exoad/cpp-runner",
         technologies: [technologies.nodejs, technologies.javascript],
         state: "finished",
+        year: 2021,
         featured: false,
     },
     {
@@ -425,6 +446,7 @@ export const projects: TProject[] = [
         featured: false,
         technologies: [technologies.android, technologies.flutter],
         state: "finished",
+        year: 2024,
     },
     {
         title: "USACO Mashup Bot",
@@ -441,6 +463,7 @@ export const projects: TProject[] = [
             technologies.nodejs,
         ],
         state: "finished",
+        year: 2022,
     },
     {
         title: "Rebels Scouting App 2024 'Argus'",
@@ -448,6 +471,7 @@ export const projects: TProject[] = [
             "The scouting app created by team 2638 Rebel Robotics for the 2024 FRC Game CRESCENDO.",
         featured: false,
         state: "finished",
+        year: 2024,
         link: "https://github.com/rebels2638/ScoutingApp2024",
         color: "#000000",
         technologies: [technologies.flutter, technologies.android],
@@ -463,6 +487,7 @@ export const projects: TProject[] = [
         color: "#000000",
         technologies: [technologies.kotlin, technologies.java],
         state: "archived",
+        year: 2023,
     },
     {
         title: "f_off",
@@ -473,6 +498,7 @@ export const projects: TProject[] = [
         featured: false,
         technologies: [technologies.javascript],
         state: "finished",
+        year: 2023,
     },
 ];
 

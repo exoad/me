@@ -36,6 +36,7 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 			<summary>
 				<strong>{proj.title}</strong>{" "}
 				<span className="muted">{proj.technologies.map((t) => t.name).join(" · ")}</span>{" "}
+				<span className="muted">{proj.year}</span>{" "}
 				<span className="muted">[{proj.state}]</span>
 			</summary>
 			<p className="muted">{proj.description}</p>
@@ -49,7 +50,11 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 }
 
 function ContentSections() {
-	const allOtherProjects = projects.filter((p) => !p.featured);
+	// A list that shows years should be ordered by them, or the numbers just
+	// jump around. Featured still lead; each group runs newest first.
+	const byYear = (a: { year: number }, b: { year: number }) => b.year - a.year;
+	const featured = [...featuredProjects].sort(byYear);
+	const allOtherProjects = projects.filter((p) => !p.featured).sort(byYear);
 	const [latestPosts, setLatestPosts] = useState<BlogPostData[]>([]);
 
 	useEffect(() => {
@@ -93,7 +98,7 @@ function ContentSections() {
 			<section>
 				<h2>Projects</h2>
 				<div>
-					{[...featuredProjects, ...allOtherProjects].map((proj) => (
+					{[...featured, ...allOtherProjects].map((proj) => (
 						<ProjectRow key={proj.title} proj={proj} />
 					))}
 				</div>

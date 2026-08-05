@@ -135,8 +135,12 @@ function buildPages({ shared, posts, gallery }) {
     const about = oneLine(strings.pages.home.about.content);
     const newest = gallery[0]?.date ?? null;
 
+    const byYear = (a, b) => (b.year ?? 0) - (a.year ?? 0);
+
     const projectLine = (p) =>
-        `- **${p.title}** (${p.state}) — ${oneLine(p.description)}` +
+        `- **${p.title}**${p.year ? ` (${p.year}, ${p.state})` : ` (${p.state})`} — ${oneLine(
+            p.description,
+        )}` +
         `${p.technologies?.length ? ` _[${p.technologies.map((t) => t.name).join(", ")}]_` : ""}` +
         `${p.link ? ` — ${p.link}` : ""}`;
 
@@ -172,11 +176,11 @@ function buildPages({ shared, posts, gallery }) {
             "",
             "## Featured projects",
             "",
-            ...featuredProjects.map(projectLine),
+            ...[...featuredProjects].sort(byYear).map(projectLine),
             "",
             "## All projects",
             "",
-            ...projects.filter((p) => !p.featured).map(projectLine),
+            ...projects.filter((p) => !p.featured).sort(byYear).map(projectLine),
             "",
             "## Elsewhere on this site",
             "",
