@@ -49,9 +49,7 @@ function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
 }
 
 function ContentSections() {
-	const biboProject = projects.find((p) => p.title === "bibo");
-	const otherFeatured = featuredProjects.filter((p) => p.title !== "bibo");
-	const allOtherProjects = projects.filter((p) => !p.featured && p.title !== "bibo");
+	const allOtherProjects = projects.filter((p) => !p.featured);
 	const [latestPosts, setLatestPosts] = useState<BlogPostData[]>([]);
 
 	useEffect(() => {
@@ -72,19 +70,6 @@ function ContentSections() {
 			    frames arrive together. */}
 			<PhotoStrip />
 
-			{biboProject && (
-				<section>
-					<h2>Active Project</h2>
-					<p className="muted">[{biboProject.state}]</p>
-					<h3>{biboProject.title}</h3>
-					<p className="muted">{biboProject.description}</p>
-					<p>
-						<a href={biboProject.link} target="_blank" rel="noopener noreferrer">
-							view project
-						</a>
-					</p>
-				</section>
-			)}
 
 			<section>
 				<h2>Writing</h2>
@@ -108,7 +93,7 @@ function ContentSections() {
 			<section>
 				<h2>Projects</h2>
 				<div>
-					{[...otherFeatured, ...allOtherProjects].map((proj) => (
+					{[...featuredProjects, ...allOtherProjects].map((proj) => (
 						<ProjectRow key={proj.title} proj={proj} />
 					))}
 				</div>

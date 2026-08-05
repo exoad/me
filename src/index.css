@@ -109,10 +109,12 @@ html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
     font-weight: 700;
 }
 
+/* No panel behind these: a filled box in a second colour reads as a control,
+   and this is a list. Separated the way the rest of the page separates things,
+   with the same hairline the header, footer and post list use. */
 .project-row {
-    background: #f1e8d6;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.5rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #ddd;
 }
 
 .project-row summary {

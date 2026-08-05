@@ -184,7 +184,7 @@ export const projects: TProject[] = [
         link: "https://drosk.net",
         technologies: [technologies.flutter, technologies.c],
         featured: true,
-        state: "active",
+        state: "finished",
     },
     {
         title: "Kira",
@@ -195,7 +195,7 @@ export const projects: TProject[] = [
         technologies: [technologies.kotlin, technologies.c],
         featured: true,
         logo: kiraProjectLogo,
-        state: "active",
+        state: "finished",
     },
     {
         title: "Halcyon",
@@ -232,7 +232,7 @@ export const projects: TProject[] = [
         technologies: [technologies.c],
         demoImage:
             "https://github.com/exoad/software_3d/raw/main/repo/screenshot_10.png",
-        state: "active",
+        state: "finished",
         featured: false,
     },
     {
@@ -346,7 +346,7 @@ export const projects: TProject[] = [
         technologies: [technologies.flutter, technologies.c],
         color: "#d1cdb5",
         featured: false,
-        state: "active",
+        state: "finished",
     },
     {
         title: "Toasterify",
