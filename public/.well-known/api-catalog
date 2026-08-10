@@ -1,0 +1,21 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://exoad.net/photos.json",
+      "service-desc": [
+        {
+          "href": "https://exoad.net/photos.md",
+          "type": "text/markdown",
+          "title": "The photograph set, described: one row per frame, with the camera settings and the image URL"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://exoad.net/llms.txt",
+          "type": "text/markdown",
+          "title": "What this site is and where each part of it is published"
+        }
+      ]
+    }
+  ]
+}
