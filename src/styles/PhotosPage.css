@@ -8,8 +8,10 @@
     --ph-faint: #3a3a3a;
     --ph-hairline: #1c1c1c;
     /* The only colour on the page, spent on one thing: marking a frame worth
-       stopping on. It reads because nothing else here is coloured at all. */
-    --ph-gold: #e3b23c;
+       stopping on. It reads because nothing else here is coloured at all.
+       Flat mustard, and it stays flat — no gradient, no gloss, nothing that
+       would make it look like a sticker laid on top of the photograph. */
+    --ph-gold: #d8a62b;
     --ph-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
     background: var(--ph-bg);
@@ -246,18 +248,20 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
     }
 }
 
-/* A solid corner rather than a badge sitting on the photograph: it occupies the
-   dead pixel of the frame, cannot cover anything, and needs no border to read.
-   Top-left, because the frame's number and date already live along the bottom. */
+/* A solid corner rather than a badge sitting on the photograph. Top-left,
+   because the frame's number and date already live along the bottom.
+   Held a few pixels clear of the corner rather than flush into it: the sliver
+   of photograph left showing on two sides makes it read as something gripping
+   the frame instead of a chunk taken out of it. */
 .ph-frame-pick::after {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 4px;
+    left: 4px;
     width: 0;
     height: 0;
-    border-top: 20px solid var(--ph-gold);
-    border-right: 20px solid transparent;
+    border-top: 18px solid var(--ph-gold);
+    border-right: 18px solid transparent;
     /* Above the photo layers, which are stacked in the same box. */
     z-index: 1;
     pointer-events: none;
