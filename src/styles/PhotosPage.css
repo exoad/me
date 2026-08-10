@@ -7,6 +7,9 @@
     --ph-dim: #8a8a8a;
     --ph-faint: #3a3a3a;
     --ph-hairline: #1c1c1c;
+    /* The only colour on the page, spent on one thing: marking a frame worth
+       stopping on. It reads because nothing else here is coloured at all. */
+    --ph-gold: #e3b23c;
     --ph-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
     background: var(--ph-bg);
@@ -243,6 +246,48 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
     }
 }
 
+/* A solid corner rather than a badge sitting on the photograph: it occupies the
+   dead pixel of the frame, cannot cover anything, and needs no border to read.
+   Top-left, because the frame's number and date already live along the bottom. */
+.ph-frame-pick::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 20px solid var(--ph-gold);
+    border-right: 20px solid transparent;
+    /* Above the photo layers, which are stacked in the same box. */
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* The reason the frame was picked, under the photograph in the viewer. */
+.ph-note {
+    grid-area: note;
+    margin: 0;
+    max-width: 56ch;
+    justify-self: center;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.6;
+    letter-spacing: 0.06em;
+    color: var(--ph-dim);
+}
+
+/* Ties the line back to the mark that led you here. */
+.ph-note::before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-right: 9px;
+    vertical-align: 1px;
+    border-top: 8px solid var(--ph-gold);
+    border-right: 8px solid transparent;
+}
+
 .ph-frame-error {
     display: flex;
     align-items: center;
@@ -414,10 +459,13 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
         clamp(160px, 16vw, 220px)
         minmax(0, 1fr)
         clamp(160px, 16vw, 220px);
-    /* Definite row, so the image's max-height: 100% has something real to
-       resolve against instead of feeding back into an auto row. */
-    grid-template-rows: minmax(0, 1fr);
-    grid-template-areas: "left figure right";
+    /* Definite row for the frame, so the image's max-height: 100% has something
+       real to resolve against instead of feeding back into an auto row. The
+       note's row is auto and collapses to nothing when there is no note. */
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "left figure right"
+        "left note   right";
     align-items: stretch;
     gap: 24px;
     padding: 20px;
@@ -687,13 +735,19 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
 @media (max-width: 900px) {
     .ph-lightbox-stage {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: minmax(0, 1fr) auto auto;
+        grid-template-rows: minmax(0, 1fr) auto auto auto;
         grid-template-areas:
             "figure figure"
+            "note   note"
             "nav    nav"
             "left   right";
         align-items: center;
         gap: 12px 20px;
+    }
+
+    .ph-note {
+        font-size: 11px;
+        letter-spacing: 0.04em;
     }
 
     .ph-touchbar {

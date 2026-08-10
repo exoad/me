@@ -25,6 +25,16 @@ const INDEX_HTML = resolve("dist/index.html");
 
 /* ---------- reading the site's own data ---------- */
 
+/** The hand-written notes on the picked frames, keyed by photo id. */
+async function loadPicks() {
+    try {
+        const mod = await loadTsModule(resolve("src/data/picks.ts"));
+        return mod.picks ?? {};
+    } catch {
+        return {};
+    }
+}
+
 /**
  * shared.ts is TypeScript that imports React icon components and image assets,
  * so Node cannot require it directly. Bundling it with those imports swapped
@@ -47,14 +57,19 @@ async function loadShared() {
         },
     };
 
+    return loadTsModule(resolve("src/data/shared.ts"), stub);
+}
+
+/** Bundles a TypeScript module and evaluates it here, with optional stubs. */
+async function loadTsModule(entry, ...plugins) {
     const result = await esbuild({
-        entryPoints: [resolve("src/data/shared.ts")],
+        entryPoints: [entry],
         bundle: true,
         write: false,
         format: "esm",
         platform: "node",
         logLevel: "silent",
-        plugins: [stub],
+        plugins,
     });
 
     const source = Buffer.from(result.outputFiles[0].text).toString("base64");
@@ -130,7 +145,7 @@ function exposureLine(photo) {
 
 /* ---------- page definitions ---------- */
 
-function buildPages({ shared, posts, gallery }) {
+function buildPages({ shared, posts, gallery, picks }) {
     const { strings, projects, featuredProjects } = shared;
     const about = oneLine(strings.pages.home.about.content);
     const newest = gallery[0]?.date ?? null;
@@ -226,13 +241,13 @@ function buildPages({ shared, posts, gallery }) {
             `${gallery.length} frames${newest ? `, most recent ${newest}` : ""}. ` +
                 "Shot by Jiaming Meng. Each entry lists its capture date and camera settings.",
             "",
-            "| # | Date | Settings | Image |",
-            "| --- | --- | --- | --- |",
+            "| # | Date | Settings | Note | Image |",
+            "| --- | --- | --- | --- | --- |",
             ...gallery.map(
                 (p, i) =>
                     `| ${String(i + 1).padStart(3, "0")} | ${p.date ?? "—"} | ${
                         exposureLine(p) || "—"
-                    } | ${cdn("large", p.id)} |`,
+                    } | ${picks[p.id] ?? "—"} | ${cdn("large", p.id)} |`,
             ),
         ].join("\n"),
         jsonLd: [
@@ -252,6 +267,7 @@ function buildPages({ shared, posts, gallery }) {
                     height: p.height,
                     ...(p.date ? { dateCreated: p.date } : {}),
                     ...(p.camera ? { exifData: exposureLine(p) } : {}),
+                    ...(picks[p.id] ? { description: picks[p.id], caption: picks[p.id] } : {}),
                     creator: { "@type": "Person", name: "Jiaming Meng" },
                 })),
             },
@@ -464,9 +480,10 @@ export default function agentSurfacePlugin() {
             }
 
             const posts = loadBlogPosts();
+            const picks = await loadPicks();
             const gallery = loadGallery();
             const baseHtml = readFileSync(INDEX_HTML, "utf8");
-            const pages = buildPages({ shared, posts, gallery });
+            const pages = buildPages({ shared, posts, gallery, picks });
 
             for (const page of pages) {
                 const html = pageHtml(page, baseHtml);

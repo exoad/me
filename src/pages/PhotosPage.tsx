@@ -132,9 +132,12 @@ function Frame({ photo, onOpen }: { photo: GalleryPhoto; onOpen: (photo: Gallery
     return (
         <button
             type="button"
-            className="ph-frame"
+            className={`ph-frame${photo.note ? " ph-frame-pick" : ""}`}
             onClick={() => onOpen(photo)}
-            aria-label={`Open photo ${frameNo(globalIndex)}, taken ${formatDate(photo.date)}`}
+            aria-label={
+                `Open photo ${frameNo(globalIndex)}, taken ${formatDate(photo.date)}` +
+                (photo.note ? ` — picked: ${photo.note}` : "")
+            }
         >
             <span
                 className="ph-media"
@@ -521,6 +524,12 @@ function Lightbox({ index, onNavigate, onClose }: {
                         )}
                     </div>
                 </div>
+
+                {photo.note && (
+                    <p className="ph-note" onClick={(event) => event.stopPropagation()}>
+                        {photo.note}
+                    </p>
+                )}
 
                 {/* Small screens only — CSS keeps it out of the desktop layout,
                     where the keyboard and the bar already cover this. */}

@@ -1,4 +1,5 @@
 import manifest from "./gallery.json";
+import { picks } from "./picks";
 
 // Web variants only — the bucket repo is public, so full-res originals are
 // never uploaded to it; they stay on the local machine.
@@ -24,6 +25,8 @@ export interface GalleryPhoto {
     largeSrc: string;
     /** Only fetched when the reader explicitly asks to view the full frame. */
     xlSrc: string;
+    /** Set on the handful worth stopping on; the reason, in one line. */
+    note: string | null;
 }
 
 export const galleryPhotos: GalleryPhoto[] = manifest.map((entry) => ({
@@ -31,6 +34,7 @@ export const galleryPhotos: GalleryPhoto[] = manifest.map((entry) => ({
     thumbSrc: `${CDN_BASE}/thumb/${entry.id}.webp`,
     largeSrc: `${CDN_BASE}/large/${entry.id}.webp`,
     xlSrc: `${CDN_BASE}/xl/${entry.id}.webp`,
+    note: picks[entry.id] ?? null,
 }));
 
 export function formatAperture(value: number | null) {
