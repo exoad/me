@@ -720,11 +720,34 @@ html.is-photos-landing ::-webkit-scrollbar-corner {
         transform: rotate(-45deg);
     }
 
-    /* align-items: center un-stretches every grid item; the figure has to keep
-       filling its row or the image's max-height: 100% loses its basis and the
-       photo overflows across the controls. */
+    /* The viewer no longer trusts its own height to place anything against the
+       bottom of the screen. Mobile browsers disagree about what that height is
+       — dvh and visualViewport both reported the toolbar-hidden figure here —
+       and the price of being wrong was the metadata and every control sitting
+       behind the URL bar.
+       So nothing is pinned to the bottom edge any more. The frame takes a
+       fraction of the height and the whole group is centred under it, which
+       means a bad estimate costs empty space at the bottom instead of costing
+       the controls. */
+    .ph-lightbox {
+        justify-content: center;
+        /* Centring alone still puts the last row near the bottom edge. Reserving
+           a band below the group lifts everything clear of whatever the browser
+           is about to draw over it — a bottom toolbar, a home indicator, or the
+           gesture bar. Nothing is laid out in here. */
+        padding-bottom: 76px;
+    }
+
+    .ph-lightbox-stage {
+        flex: 0 1 auto;
+    }
+
+    /* The slides inside are absolutely positioned, so the figure has no content
+       height of its own and has to be given one for the photo's max-height to
+       have any basis. The fraction is what buys the slack: the smaller it is,
+       the further out the height estimate can be before anything is lost. */
     .ph-lightbox-figure {
-        align-self: stretch;
+        height: calc(var(--ph-vh, 100dvh) * 0.48);
     }
 
     /* Sideways here, and a shorter throw — on a phone the frames sit close to
