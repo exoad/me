@@ -6,6 +6,9 @@
   Link: <https://exoad.net/llms.txt>; rel="llms-txt"; type="text/markdown"
   X-Content-Type-Options: nosniff
 
+/photos
+  Link: <https://exoad.net/photos.json>; rel="alternate"; type="application/json"; title="Gallery data"
+
 /
   Link: <https://exoad.net/index.md>; rel="alternate"; type="text/markdown"; title="Markdown"
 

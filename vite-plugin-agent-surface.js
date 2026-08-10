@@ -12,6 +12,7 @@
 //   dist/<route>.md           the same content as markdown
 //   dist/llms.txt             index of the above, llms.txt convention
 //   dist/llms-full.txt        every page inlined, for a single fetch
+//   dist/photos.json          every frame: all variant URLs, EXIF, notes
 //   dist/sitemap.xml          real lastmod dates, every route and post
 
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "fs";
@@ -238,14 +239,27 @@ function buildPages({ shared, posts, gallery, picks }) {
             "",
             `> ${oneLine(strings.pages.photos.description)}`,
             "",
-            `${gallery.length} frames${newest ? `, most recent ${newest}` : ""}. ` +
-                "Shot by Jiaming Meng. Each entry lists its capture date and camera settings.",
+            `${gallery.length} frames${newest ? `, most recent ${newest}` : ""}, ` +
+                "shot by Jiaming Meng.",
             "",
-            "| # | Date | Settings | Note | Image |",
-            "| --- | --- | --- | --- | --- |",
+            "**This is the complete list.** The gallery page paginates for people;",
+            "nothing here does, and there is no second request to make.",
+            "",
+            "Every frame is served at three sizes — swap the segment in the URL:",
+            "",
+            "```",
+            `${cdn("thumb", "<id>")}   900px wide`,
+            `${cdn("large", "<id>")}   2000px long edge  (linked in the table)`,
+            `${cdn("xl", "<id>")}      3200px long edge`,
+            "```",
+            "",
+            `The same data as JSON, with every variant URL spelled out: ${ORIGIN}/photos.json`,
+            "",
+            "| # | ID | Date | Settings | Note | Image (2000px) |",
+            "| --- | --- | --- | --- | --- | --- |",
             ...gallery.map(
                 (p, i) =>
-                    `| ${String(i + 1).padStart(3, "0")} | ${p.date ?? "—"} | ${
+                    `| ${String(i + 1).padStart(3, "0")} | ${p.id} | ${p.date ?? "—"} | ${
                         exposureLine(p) || "—"
                     } | ${picks[p.id] ?? "—"} | ${cdn("large", p.id)} |`,
             ),
@@ -361,7 +375,39 @@ function buildPages({ shared, posts, gallery, picks }) {
  * The noscript block is the page's real content, not a "please enable
  * JavaScript" notice — it is what a reader without a renderer gets.
  */
-function pageHtml(page, baseHtml) {
+/**
+ * The banner every page opens with.
+ *
+ * A reader that fetches this HTML gets a shell with no content in it, and no
+ * way to know that from the markup alone. This says so in the first thing it
+ * will read, and says where the content actually is — including that the
+ * gallery is enumerated in full, so there is no pagination to work out.
+ */
+function agentBanner(page, galleryCount) {
+    return [
+        "<!--",
+        "  exoad.net — notes for automated readers",
+        "",
+        "  This page is client-rendered. The HTML below is a shell; the content",
+        "  is not in it. Plain-text copies of everything are published instead:",
+        "",
+        `    ${ORIGIN}/llms.txt        index of every page on the site`,
+        `    ${ORIGIN}/llms-full.txt   every page inlined, one request`,
+        `    ${ORIGIN}${`/${page.md}`.padEnd(16)} this page, as markdown`,
+        "",
+        `  Photographs (${galleryCount}), with capture date and camera settings:`,
+        "",
+        `    ${ORIGIN}/photos.md       the complete table, one row per frame`,
+        `    ${ORIGIN}/photos.json     the same, structured, every variant URL`,
+        "",
+        "  The gallery paginates on screen. Those files do not — each lists all",
+        `  ${galleryCount} frames, so one request is the whole set. Images are served at`,
+        "  three sizes: thumb (900px), large (2000px), xl (3200px).",
+        "-->",
+    ].join("\n");
+}
+
+function pageHtml(page, baseHtml, galleryCount) {
     const url = `${ORIGIN}${page.route}`;
     const image = page.image ?? null;
 
@@ -371,6 +417,7 @@ function pageHtml(page, baseHtml) {
         `<meta name="author" content="Jiaming Meng" />`,
         // How a reader asks for this page as markdown instead.
         `<link rel="alternate" type="text/markdown" href="${esc(`${ORIGIN}/${page.md}`)}" title="Markdown" />`,
+        `<link rel="alternate" type="application/json" href="${esc(`${ORIGIN}/photos.json`)}" title="Gallery data" />`,
         `<meta property="og:type" content="${esc(page.ogType ?? "website")}" />`,
         `<meta property="og:title" content="${esc(page.title)}" />`,
         `<meta property="og:description" content="${esc(page.description)}" />`,
@@ -392,7 +439,14 @@ function pageHtml(page, baseHtml) {
 
     // Markdown is the canonical machine copy; the noscript carries a readable
     // digest and says where the full text lives.
-    const digest = page.markdown.split("\n").slice(0, 40).join("\n");
+    const lines = page.markdown.split("\n");
+    const shown = lines.slice(0, 60);
+    const omitted = lines.length - shown.length;
+    const digest =
+        shown.join("\n") +
+        (omitted > 0
+            ? `\n\n… ${omitted} more lines. This is an excerpt, not the whole page — the complete text is at ${ORIGIN}/${page.md}`
+            : "");
     const noscript =
         `<noscript>\n<article>\n<h1>${esc(page.title)}</h1>\n` +
         `<p>${esc(page.description)}</p>\n` +
@@ -402,9 +456,57 @@ function pageHtml(page, baseHtml) {
         )}</a></p>\n</article>\n</noscript>`;
 
     return baseHtml
+        .replace("<head>", `<head>\n${agentBanner(page, galleryCount)}`)
         .replace("<title>exoad - Jiaming Meng</title>", `<title>${esc(page.title)}</title>`)
         .replace("</head>", `${head}\n</head>`)
         .replace('<div id="root"></div>', `<div id="root"></div>\n${noscript}`);
+}
+
+/**
+ * The gallery as one JSON document.
+ *
+ * The point is that a reader needs exactly one request and no traversal: every
+ * frame, every size it is served at, and the settings it was shot at. A model
+ * that can look at images can go straight from here to the pixels without
+ * working out how the page paginates, because this does not paginate.
+ */
+function photosJson(gallery, picks) {
+    return JSON.stringify(
+        {
+            page: `${ORIGIN}/photos`,
+            markdown: `${ORIGIN}/photos.md`,
+            license: "All rights reserved. Jiaming Meng. Ask before reuse.",
+            paginated: false,
+            count: gallery.length,
+            variants: {
+                thumb: { width: 900, note: "900px wide, for scanning the set" },
+                large: { longEdge: 2000, note: "what the viewer displays" },
+                xl: { longEdge: 3200, note: "largest published size" },
+            },
+            photos: gallery.map((p, i) => ({
+                id: p.id,
+                index: i + 1,
+                date: p.date,
+                width: p.width,
+                height: p.height,
+                camera: p.camera,
+                aperture: p.aperture,
+                shutterSeconds: p.shutter,
+                shutter: shutter(p.shutter),
+                iso: p.iso,
+                focalLengthMm: p.focalLength,
+                // Set only on the frames the photographer singled out.
+                note: picks[p.id] ?? null,
+                urls: {
+                    thumb: cdn("thumb", p.id),
+                    large: cdn("large", p.id),
+                    xl: cdn("xl", p.id),
+                },
+            })),
+        },
+        null,
+        2,
+    );
 }
 
 function llmsIndex(pages, { posts, gallery, shared }) {
@@ -419,8 +521,27 @@ function llmsIndex(pages, { posts, gallery, shared }) {
         "## Pages",
         "",
         `- [Home](${ORIGIN}/index.md): projects, links, and background`,
-        `- [Photographs](${ORIGIN}/photos.md): ${gallery.length} frames with capture dates and camera settings`,
+        `- [Photographs](${ORIGIN}/photos.md): all ${gallery.length} frames — image URL, capture date and camera settings, one row each`,
         `- [Writing](${ORIGIN}/blog.md): index of ${posts.length} post${posts.length === 1 ? "" : "s"}`,
+        "",
+        "## Photographs",
+        "",
+        `All ${gallery.length} are listed in full in the two files below. The gallery page`,
+        "paginates on screen; these do not, so one request is the entire set and",
+        "there is no next page to look for.",
+        "",
+        `- [photos.md](${ORIGIN}/photos.md): a table — id, date, camera settings, image URL`,
+        `- [photos.json](${ORIGIN}/photos.json): the same, structured, with all three sizes per frame`,
+        "",
+        "Each frame is published at three sizes:",
+        "",
+        "```",
+        `${cdn("thumb", "<id>")}   900px wide`,
+        `${cdn("large", "<id>")}   2000px long edge`,
+        `${cdn("xl", "<id>")}      3200px long edge`,
+        "```",
+        "",
+        "The images are fetchable directly — nothing about them is behind the app.",
         "",
         "## Posts",
         "",
@@ -486,11 +607,12 @@ export default function agentSurfacePlugin() {
             const pages = buildPages({ shared, posts, gallery, picks });
 
             for (const page of pages) {
-                const html = pageHtml(page, baseHtml);
+                const html = pageHtml(page, baseHtml, gallery.length);
                 write(page.html, html);
                 write(page.md, `${page.markdown}\n`);
             }
 
+            write("photos.json", photosJson(gallery, picks) + "\n");
             write("llms.txt", llmsIndex(pages, { posts, gallery, shared }));
             write(
                 "llms-full.txt",
