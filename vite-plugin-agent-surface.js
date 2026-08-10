@@ -21,6 +21,26 @@ import matter from "gray-matter";
 import { build as esbuild } from "esbuild";
 
 const ORIGIN = "https://exoad.net";
+
+/**
+ * What the site is, for a reader that will never see it rendered.
+ *
+ * Worth stating because the two halves look nothing alike, and a reader landing
+ * on one of them would otherwise have no way to know the other exists or that
+ * the difference is deliberate.
+ */
+const SITE_ABOUT = [
+    "exoad.net is the personal site of Jiaming Meng, who writes software and",
+    "photographs cities. It is a small static site with three parts: a home page,",
+    "a blog, and a photo gallery.",
+    "",
+    "It is built in two deliberately unlike halves. The home page and the blog are",
+    "a plain document — a single narrow column of dark serif text on a cream",
+    "background, blue links, hairline rules, no ornament. The gallery is the",
+    "opposite and is meant to be: pure black, white monospaced type, square",
+    "corners, and none of the site's navigation, so that nothing competes with the",
+    "photographs.",
+].join("\n");
 const BLOG_DIR = resolve("src/content/blog");
 const INDEX_HTML = resolve("dist/index.html");
 
@@ -170,6 +190,14 @@ function buildPages({ shared, posts, gallery, picks }) {
         md: "index.md",
         title: "exoad — Jiaming Meng",
         description: about,
+        about: [
+            "The home page. One narrow column of dark serif text on a cream",
+            "background, read top to bottom, in this order: a tagline with links to",
+            "GitHub, LinkedIn and X; a paragraph of background; a row of the six",
+            "newest photographs linking into the gallery; the two most recent posts;",
+            "every project as a collapsible row showing its languages, year and",
+            "state; and two contact addresses.",
+        ].join("\n"),
         // No dedicated card art exists, and a shared link with no image is a
         // bare text card everywhere. The newest photograph is the site's own
         // work and is at least true to it; swap in something purpose-made if
@@ -233,6 +261,21 @@ function buildPages({ shared, posts, gallery, picks }) {
         md: "photos.md",
         title: "Photographs | exoad",
         description: oneLine(strings.pages.photos.description),
+        about: [
+            "The gallery. Pure black background, white monospaced type, square",
+            "corners, no site navigation — it is meant to read as a separate place",
+            "from the rest of exoad.net.",
+            "",
+            "Photographs sit in a staggered column grid: three columns on a desktop,",
+            "two on a tablet, one on a phone, 24 to a page. Opening one replaces the",
+            "screen with a black viewer holding a single photograph, the camera body",
+            "set against the left edge, the exposure settings against the right, and",
+            "the frame number and controls along the bottom.",
+            "",
+            "A few frames carry a small gold triangle in their top-left corner. That",
+            "marks a photograph the photographer singled out, and the viewer prints",
+            "his reason underneath it. Everything else is unmarked.",
+        ].join("\n"),
         image: gallery[0] ? cdn("large", gallery[0].id) : null,
         markdown: [
             "# Photographs",
@@ -294,6 +337,12 @@ function buildPages({ shared, posts, gallery, picks }) {
         md: "blog.md",
         title: "Writing | exoad",
         description: oneLine(strings.pages.blog.description),
+        about: [
+            "The writing index: every post as a title, date and tags on a cream",
+            "background, in the same plain document style as the home page. The full",
+            "text of each post is a separate page, and is published as markdown at",
+            "the same path with .md appended.",
+        ].join("\n"),
         image: posts[0]?.coverImage ? abs(posts[0].coverImage) : null,
         markdown: [
             "# Writing",
@@ -338,6 +387,11 @@ function buildPages({ shared, posts, gallery, picks }) {
         description: oneLine(post.excerpt),
         image: post.coverImage ? abs(post.coverImage) : `${ORIGIN}/og-${post.slug}.jpg`,
         ogType: "article",
+        about: [
+            "One article, set as a single column of serif text on cream, with",
+            "headings, code blocks and images inline. The whole of it — not an",
+            "excerpt — is published as markdown at this path with .md appended.",
+        ].join("\n"),
         markdown: [
             `# ${post.title}`,
             "",
@@ -384,25 +438,41 @@ function buildPages({ shared, posts, gallery, picks }) {
  * gallery is enumerated in full, so there is no pagination to work out.
  */
 function agentBanner(page, galleryCount) {
+    const indent = (text) =>
+        text.split("\n").map((line) => (line ? `  ${line}` : ""));
+
     return [
         "<!--",
         "  exoad.net — notes for automated readers",
         "",
-        "  This page is client-rendered. The HTML below is a shell; the content",
-        "  is not in it. Plain-text copies of everything are published instead:",
+        "  THE SITE",
+        "",
+        ...indent(SITE_ABOUT),
+        "",
+        "  THIS PAGE",
+        "",
+        ...indent(page.about ?? page.description),
+        "",
+        "  WHERE THE CONTENT IS",
+        "",
+        "  This page is client-rendered. The HTML below is a shell; none of what",
+        "  is described above is in it. Plain-text copies are published instead:",
         "",
         `    ${ORIGIN}/llms.txt        index of every page on the site`,
         `    ${ORIGIN}/llms-full.txt   every page inlined, one request`,
         `    ${ORIGIN}${`/${page.md}`.padEnd(16)} this page, as markdown`,
         "",
-        `  Photographs (${galleryCount}), with capture date and camera settings:`,
+        `  THE PHOTOGRAPHS (${galleryCount})`,
         "",
-        `    ${ORIGIN}/photos.md       the complete table, one row per frame`,
+        "  Listed with the date and camera settings of each frame:",
+        "",
+        `    ${ORIGIN}/photos.md       a table, one row per frame`,
         `    ${ORIGIN}/photos.json     the same, structured, every variant URL`,
         "",
         "  The gallery paginates on screen. Those files do not — each lists all",
-        `  ${galleryCount} frames, so one request is the whole set. Images are served at`,
-        "  three sizes: thumb (900px), large (2000px), xl (3200px).",
+        `  ${galleryCount} frames, so one request is the whole set, and there is no next`,
+        "  page to look for. Every frame is served at three sizes: thumb (900px),",
+        "  large (2000px), xl (3200px). The images are fetchable directly.",
         "-->",
     ].join("\n");
 }
@@ -473,6 +543,18 @@ function pageHtml(page, baseHtml, galleryCount) {
 function photosJson(gallery, picks) {
     return JSON.stringify(
         {
+            about: {
+                site: SITE_ABOUT,
+                page:
+                    "The gallery at " +
+                    ORIGIN +
+                    "/photos: a black page of white monospaced type showing these " +
+                    "photographs in a staggered grid, 24 to a screen, each opening " +
+                    "into a full-screen viewer with its camera settings beside it. " +
+                    "The frames carrying a note are the ones the photographer " +
+                    "singled out; the gallery marks them with a gold corner.",
+                photographer: "Jiaming Meng (exoad)",
+            },
             page: `${ORIGIN}/photos`,
             markdown: `${ORIGIN}/photos.md`,
             license: "All rights reserved. Jiaming Meng. Ask before reuse.",
@@ -509,14 +591,45 @@ function photosJson(gallery, picks) {
     );
 }
 
+/** The page's own description, as a markdown section. */
+function pageAbout(page) {
+    return ["## About this page", "", page.about ?? page.description, ""].join("\n");
+}
+
+/**
+ * A markdown twin, opened with what the reader is looking at.
+ *
+ * The context goes under the heading and above the content, because a table of
+ * exposure settings means very little until you know it came from a black
+ * gallery of street photographs rather than from, say, a shop.
+ */
+function withPageContext(page) {
+    const [heading, ...rest] = page.markdown.split("\n");
+    return [
+        heading,
+        "",
+        "## About this site",
+        "",
+        SITE_ABOUT,
+        "",
+        pageAbout(page),
+        "---",
+        rest.join("\n").replace(/^\n+/, ""),
+    ].join("\n");
+}
+
 function llmsIndex(pages, { posts, gallery, shared }) {
     return [
         "# exoad — Jiaming Meng",
         "",
         `> ${oneLine(shared.strings.pages.home.about.content)}`,
         "",
-        "Personal site of Jiaming Meng (exoad): software projects, writing, and photography.",
-        "Every page below is also available as markdown by appending `.md` to its path.",
+        "## The site",
+        "",
+        SITE_ABOUT,
+        "",
+        "Every page below is also published as markdown at the same path with",
+        "`.md` appended.",
         "",
         "## Pages",
         "",
@@ -609,14 +722,32 @@ export default function agentSurfacePlugin() {
             for (const page of pages) {
                 const html = pageHtml(page, baseHtml, gallery.length);
                 write(page.html, html);
-                write(page.md, `${page.markdown}\n`);
+                write(page.md, `${withPageContext(page)}\n`);
             }
 
             write("photos.json", photosJson(gallery, picks) + "\n");
             write("llms.txt", llmsIndex(pages, { posts, gallery, shared }));
             write(
                 "llms-full.txt",
-                pages.map((p) => p.markdown).join("\n\n---\n\n") + "\n",
+                [
+                    "# exoad.net — every page, inlined",
+                    "",
+                    "## About this site",
+                    "",
+                    SITE_ABOUT,
+                    "",
+                    ...pages.map((p) => {
+                        const [heading, ...rest] = p.markdown.split("\n");
+                        return [
+                            "---",
+                            "",
+                            heading,
+                            "",
+                            pageAbout(p),
+                            rest.join("\n").replace(/^\n+/, ""),
+                        ].join("\n");
+                    }),
+                ].join("\n") + "\n",
             );
             write("sitemap.xml", sitemapXml(pages, gallery));
 
