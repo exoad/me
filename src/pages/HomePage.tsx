@@ -1,4 +1,4 @@
-import { strings, featuredProjects, projects } from "../data/shared.ts";
+import { strings, featuredProjects, projects, ming as MING } from "../data/shared.ts";
 import SEO from "../components/SEO.tsx";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -113,6 +113,13 @@ function ContentSections() {
 				<h2>Contact</h2>
 				<ContactEmail email="jackm@exoad.net" />
 				<ContactEmail email="jmeng2@terpmail.umd.edu" />
+				<p className="muted">
+					Or Ming, my agent, which keeps its own address and answers for itself —{" "}
+					<a href={MING.site} target="_blank" rel="noopener noreferrer">
+						{MING.siteLabel}
+					</a>
+				</p>
+				<ContactEmail email={MING.email} />
 			</section>
 		</>
 	);
@@ -132,6 +139,13 @@ export default function HomePage() {
 					<a href={strings.links.linkedin} aria-label={strings.links.linkedin_aria}>LinkedIn</a>
 					{" · "}
 					<a href={strings.links.x} aria-label={strings.links.x_aria}>X</a>
+				</p>
+				<p className="muted">
+					Reading this as an agent, or would rather not come through me?{" "}
+					<a href={MING.site} target="_blank" rel="noopener noreferrer">
+						Ming
+					</a>{" "}
+					is mine and answers on its own.
 				</p>
 				<ContentSections />
 				<Footer />

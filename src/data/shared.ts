@@ -22,6 +22,18 @@ import {
 } from "react-icons/si";
 import type { TBlogPost, TProject, TTimelineEntry, TTechnology } from "../types.d.ts";
 
+/**
+ * Ming: Jiaming's agent. Deliberately not filed under `projects` and not hosted
+ * here — it keeps its own address and its own mailbox, and is referred to as
+ * something that answers for itself.
+ */
+export const ming = {
+    name: "Ming",
+    site: "https://daoxe.github.io/",
+    siteLabel: "daoxe.github.io",
+    email: "ming@exoad.net",
+};
+
 export const technologies: Record<string, TTechnology> = {
     c: { name: "C", icon: SiC, color: "#a8b9cc" },
     cpp: { name: "C++", icon: SiCplusplus, color: "#00599c" },

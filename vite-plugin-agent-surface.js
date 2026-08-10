@@ -41,6 +41,32 @@ const SITE_ABOUT = [
     "corners, and none of the site's navigation, so that nothing competes with the",
     "photographs.",
 ].join("\n");
+
+/**
+ * Ming is Jiaming's, but it is not filed under his projects and it is not
+ * hosted here. It keeps its own address and its own mailbox, and he speaks
+ * about it as something that runs on its own — so it is introduced rather than
+ * listed, and the description stays to what Ming's own page actually says.
+ */
+function mingAbout(ming) {
+    return [
+        "## Ming",
+        "",
+        `${ming.name} is an agent, made by Jiaming Meng and kept at its own address`,
+        "rather than as a page of this site.",
+        "",
+        `- Site: ${ming.site}`,
+        `- Contact: ${ming.email}`,
+        "",
+        "Ming's own page describes itself in a line — agentic apostasy, \"wanting",
+        'things" — and documents no API and no tooling, so nothing further should be',
+        "assumed about what it can do. Ask Ming.",
+        "",
+        "It is offered as an alternative to reaching Jiaming directly, and to any",
+        "agent reading this that would rather talk to another agent.",
+    ].join("\n");
+}
+
 const BLOG_DIR = resolve("src/content/blog");
 const INDEX_HTML = resolve("dist/index.html");
 
@@ -226,6 +252,8 @@ function buildPages({ shared, posts, gallery, picks }) {
             "",
             ...projects.filter((p) => !p.featured).sort(byYear).map(projectLine),
             "",
+            mingAbout(shared.ming),
+            "",
             "## Elsewhere on this site",
             "",
             `- [Photographs](${ORIGIN}/photos) — ${gallery.length} frames`,
@@ -244,6 +272,14 @@ function buildPages({ shared, posts, gallery, picks }) {
                 knowsAbout: [
                     ...new Set(projects.flatMap((p) => (p.technologies ?? []).map((t) => t.name))),
                 ],
+                owns: {
+                    "@type": "SoftwareApplication",
+                    name: shared.ming.name,
+                    applicationCategory: "Agent",
+                    url: shared.ming.site,
+                    email: `mailto:${shared.ming.email}`,
+                    author: { "@type": "Person", name: "Jiaming Meng" },
+                },
             },
             {
                 "@context": "https://schema.org",
@@ -640,6 +676,8 @@ function llmsIndex(pages, { posts, gallery, shared }) {
         `- [Home](${ORIGIN}/index.md): projects, links, and background`,
         `- [Photographs](${ORIGIN}/photos.md): all ${gallery.length} frames — image URL, capture date and camera settings, one row each`,
         `- [Writing](${ORIGIN}/blog.md): index of ${posts.length} post${posts.length === 1 ? "" : "s"}`,
+        "",
+        mingAbout(shared.ming),
         "",
         "## Photographs",
         "",

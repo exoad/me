@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { useWebMcp } from "./hooks/useWebMcp";
 
 const HomePage = lazy(() => import("./pages/HomePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -27,6 +28,10 @@ function ThemedScrollbar() {
 }
 
 function AppContent() {
+	// Offers the site's own data to an agent running in this browser. No-ops
+	// where WebMCP is not implemented, which is currently most places.
+	useWebMcp();
+
 	return (
 		<>
 		<ThemedScrollbar />
