@@ -493,6 +493,10 @@ function pageHtml(page, baseHtml, galleryCount) {
         `<meta property="og:description" content="${esc(page.description)}" />`,
         `<meta property="og:url" content="${esc(url)}" />`,
         `<meta property="og:site_name" content="exoad" />`,
+        `<meta property="og:locale" content="en_US" />`,
+        `<meta name="twitter:site" content="@exoad_" />`,
+        `<meta name="twitter:creator" content="@exoad_" />`,
+        `<link rel="alternate" type="application/rss+xml" href="${esc(`${ORIGIN}/feed.xml`)}" title="exoad — Writing" />`,
         ...(image ? [`<meta property="og:image" content="${esc(image)}" />`] : []),
         `<meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}" />`,
         `<meta name="twitter:title" content="${esc(page.title)}" />`,
@@ -663,9 +667,59 @@ function llmsIndex(pages, { posts, gallery, shared }) {
         "## Optional",
         "",
         `- [Everything inlined](${ORIGIN}/llms-full.txt): every page above in one file`,
-        `- [Sitemap](${ORIGIN}/sitemap.xml)`,
+        `- [Sitemap](${ORIGIN}/sitemap.xml): every page, plus every photograph as an image entry`,
+        `- [RSS](${ORIGIN}/feed.xml): the writing, as a feed`,
         "",
     ].join("\n");
+}
+
+/**
+ * RSS for the writing. Readers and aggregators expect one at a stable path, and
+ * a blog without a feed is a blog nobody can subscribe to.
+ */
+function feedXml(posts) {
+    const rfc822 = (date) => {
+        const d = new Date(`${date}T12:00:00Z`);
+        return Number.isNaN(d.getTime()) ? "" : d.toUTCString();
+    };
+    return [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+        "  <channel>",
+        "    <title>exoad — Writing</title>",
+        `    <link>${ORIGIN}/blog</link>`,
+        "    <description>Thoughts, writeups, and technical deep dives by Jiaming Meng.</description>",
+        "    <language>en-us</language>",
+        `    <atom:link href="${ORIGIN}/feed.xml" rel="self" type="application/rss+xml" />`,
+        ...posts.flatMap((post) => [
+            "    <item>",
+            `      <title>${esc(post.title)}</title>`,
+            `      <link>${ORIGIN}/blog/${post.slug}</link>`,
+            `      <guid isPermaLink="true">${ORIGIN}/blog/${post.slug}</guid>`,
+            `      <pubDate>${rfc822(post.date)}</pubDate>`,
+            `      <description>${esc(oneLine(post.excerpt))}</description>`,
+            ...post.tags.map((t) => `      <category>${esc(t)}</category>`),
+            "    </item>",
+        ]),
+        "  </channel>",
+        "</rss>",
+        "",
+    ].join("\n");
+}
+
+/**
+ * The page an unmatched URL gets.
+ *
+ * Cloudflare Pages serves this with a real 404 once the catch-all rewrite is
+ * gone — which matters, because answering 200 for every mistyped path invites a
+ * search engine to index an unbounded set of duplicates and leaves an agent
+ * unable to tell a wrong URL from a right one.
+ */
+function notFoundHtml(baseHtml, page, galleryCount) {
+    return pageHtml(page, baseHtml, galleryCount).replace(
+        "</head>",
+        '<meta name="robots" content="noindex, follow" />\n</head>',
+    );
 }
 
 function sitemapXml(pages, gallery) {
@@ -675,17 +729,31 @@ function sitemapXml(pages, gallery) {
         const lastmod =
             page.lastmod ?? (page.route === "/photos" ? newestPhoto : today);
         const priority = page.route === "/" ? "1.0" : page.route.startsWith("/blog/") ? "0.6" : "0.8";
+        // The gallery declares every photograph it holds; a photo site that
+        // does not is invisible to image search.
+        const images =
+            page.route === "/photos"
+                ? gallery.map((p) =>
+                      [
+                          "    <image:image>",
+                          `      <image:loc>${cdn("large", p.id)}</image:loc>`,
+                          "    </image:image>",
+                      ].join("\n"),
+                  )
+                : [];
         return [
             "  <url>",
             `    <loc>${ORIGIN}${page.route}</loc>`,
             `    <lastmod>${lastmod}</lastmod>`,
             `    <priority>${priority}</priority>`,
+            ...images,
             "  </url>",
         ].join("\n");
     };
     return [
         '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+        '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">',
         ...pages.map(entry),
         "</urlset>",
         "",
@@ -726,6 +794,30 @@ export default function agentSurfacePlugin() {
             }
 
             write("photos.json", photosJson(gallery, picks) + "\n");
+            write("feed.xml", feedXml(posts));
+
+            // Not in `pages`: it is the answer to a request for something that
+            // does not exist, so it has no canonical URL and no place in the
+            // sitemap.
+            write(
+                "404.html",
+                notFoundHtml(
+                    baseHtml,
+                    {
+                        route: "/404",
+                        md: "llms.txt",
+                        title: "Not found | exoad",
+                        description: "No page at this address.",
+                        about:
+                            "An address that does not exist on exoad.net. The site has three\n" +
+                            "parts — a home page, a blog, and a photo gallery — all listed in\n" +
+                            "llms.txt.",
+                        jsonLd: [],
+                        markdown: "# Not found\n\nNo page at this address.",
+                    },
+                    gallery.length,
+                ),
+            );
             write("llms.txt", llmsIndex(pages, { posts, gallery, shared }));
             write(
                 "llms-full.txt",
@@ -752,7 +844,8 @@ export default function agentSurfacePlugin() {
             write("sitemap.xml", sitemapXml(pages, gallery));
 
             console.log(
-                `agent-surface: ${pages.length} routes (html + md), llms.txt, llms-full.txt, sitemap.xml`,
+                `agent-surface: ${pages.length} routes (html + md), llms.txt, llms-full.txt, ` +
+                    `photos.json, feed.xml, 404.html, sitemap.xml`,
             );
         },
     };

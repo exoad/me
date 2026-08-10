@@ -31,3 +31,9 @@
 
 /llms-full.txt
   Content-Type: text/markdown; charset=utf-8
+
+/feed.xml
+  Content-Type: application/rss+xml; charset=utf-8
+
+/photos.json
+  Link: <https://exoad.net/photos.md>; rel="alternate"; type="text/markdown"
