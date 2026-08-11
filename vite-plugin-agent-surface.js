@@ -19,6 +19,7 @@ import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "fs";
 import { resolve } from "path";
 import matter from "gray-matter";
 import { build as esbuild } from "esbuild";
+import { createHash } from "crypto";
 
 const ORIGIN = "https://exoad.net";
 
@@ -826,6 +827,210 @@ function notFoundHtml(baseHtml, page, galleryCount) {
     );
 }
 
+
+/**
+ * Everything the MCP server answers from, in one file.
+ *
+ * Generated rather than hand-kept so the server and the pages can never
+ * disagree: both are downstream of the same source.
+ */
+function mcpData({ shared, posts, gallery, picks }) {
+    const { strings, projects, ming } = shared;
+    return JSON.stringify({
+        site: {
+            url: ORIGIN,
+            owner: "Jiaming Meng (exoad)",
+            summary: oneLine(strings.pages.home.about.content),
+            about: SITE_ABOUT,
+            parts: {
+                home: ORIGIN + "/",
+                photographs: ORIGIN + "/photos",
+                writing: ORIGIN + "/blog",
+            },
+            machineReadable: {
+                index: ORIGIN + "/llms.txt",
+                everythingInlined: ORIGIN + "/llms-full.txt",
+                gallery: ORIGIN + "/photos.json",
+                feed: ORIGIN + "/feed.xml",
+                markdown: "Append .md to any page path, or send Accept: text/markdown.",
+            },
+        },
+        ming: {
+            name: ming.name,
+            site: ming.site,
+            contact: ming.email,
+            relationship:
+                "A separate agent by the same person, kept at its own address. It " +
+                "documents no API; ask Ming.",
+        },
+        photos: gallery.map((p, i) => ({
+            id: p.id,
+            index: i + 1,
+            page: `${ORIGIN}/photos/${p.id}`,
+            date: p.date,
+            camera: p.camera,
+            aperture: p.aperture,
+            shutter: shutter(p.shutter),
+            iso: p.iso,
+            focalLengthMm: p.focalLength,
+            width: p.width,
+            height: p.height,
+            note: picks[p.id] ?? null,
+            urls: {
+                thumb: cdn("thumb", p.id),
+                large: cdn("large", p.id),
+                xl: cdn("xl", p.id),
+            },
+        })),
+        projects: [...projects]
+            .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
+            .map((p) => ({
+                title: p.title,
+                year: p.year,
+                state: p.state,
+                featured: p.featured,
+                description: oneLine(p.description),
+                technologies: (p.technologies ?? []).map((t) => t.name),
+                link: p.link,
+            })),
+        posts: posts.map((post) => ({
+            title: post.title,
+            slug: post.slug,
+            date: post.date,
+            tags: post.tags,
+            excerpt: oneLine(post.excerpt),
+            url: `${ORIGIN}/blog/${post.slug}`,
+            markdown: `${ORIGIN}/blog/${post.slug}.md`,
+        })),
+    });
+}
+
+/** Declares the site public, so an agent stops looking for credentials. */
+function authMd() {
+    return [
+        "# auth.md",
+        "",
+        "exoad.net is a static personal site. Every page, every photograph and every",
+        "data file on it is public, and no part of it requires authentication.",
+        "",
+        "## Audience",
+        "",
+        "Anyone, human or automated. Nothing is gated and nothing is metered.",
+        "",
+        "## Registration",
+        "",
+        "None. There is no account to create, no key to request and no endpoint that",
+        "issues credentials, because nothing here checks for any.",
+        "",
+        "## Credential methods",
+        "",
+        "None. Requests are served unauthenticated. There is no OAuth authorization",
+        "server and no protected resource, so /.well-known/oauth-authorization-server",
+        "and /.well-known/oauth-protected-resource are deliberately absent rather than",
+        "missing by oversight.",
+        "",
+        "## What is available",
+        "",
+        `- MCP over Streamable HTTP: ${ORIGIN}/mcp — read-only tools, no auth`,
+        `- The gallery as JSON: ${ORIGIN}/photos.json`,
+        `- An index of every page: ${ORIGIN}/llms.txt`,
+        "",
+        "## Contact",
+        "",
+        "jackm@exoad.net, or Ming, which answers for itself: ming@exoad.net",
+        "",
+    ].join("\n");
+}
+
+function mcpServerCard() {
+    return JSON.stringify(
+        {
+            serverInfo: { name: "exoad.net", version: "1.0.0" },
+            transport: { type: "streamable-http", endpoint: `${ORIGIN}/mcp` },
+            capabilities: { tools: true, resources: false, prompts: false },
+            description:
+                "Read-only access to exoad.net: its photographs and the settings they " +
+                "were shot at, its projects, and its writing.",
+            authentication: { required: false },
+            documentation: `${ORIGIN}/llms.txt`,
+        },
+        null,
+        2,
+    );
+}
+
+/**
+ * A skill is only worth publishing if it says something an agent could not
+ * work out on its own, so this one is about the shape of the data rather than
+ * about the site being nice. The digest is computed over what is actually
+ * written, so the index can never advertise a stale hash.
+ */
+function agentSkill(gallery) {
+    return [
+        "---",
+        "name: read-exoad",
+        "description: Read exoad.net's photographs, projects and writing without scraping the site",
+        "---",
+        "",
+        "# Reading exoad.net",
+        "",
+        "The site is a client-rendered SPA: fetching a page returns a shell with no",
+        "content in it. Do not scrape the HTML. Use these instead.",
+        "",
+        "## The whole site as text",
+        "",
+        `- \`${ORIGIN}/llms.txt\` — an index of every page`,
+        `- \`${ORIGIN}/llms-full.txt\` — every page inlined, one request`,
+        "- Any page path with `.md` appended, or send `Accept: text/markdown` to the",
+        "  page's own URL and the markdown comes back from there.",
+        "",
+        "## The photographs",
+        "",
+        `\`${ORIGIN}/photos.json\` holds all ${gallery.length} in one request. It does not`,
+        "paginate; there is no next page to look for. Each entry carries its capture",
+        "date, camera settings, dimensions, a permalink, and three image URLs:",
+        "",
+        "```",
+        `${cdn("thumb", "<id>")}   900px wide`,
+        `${cdn("large", "<id>")}   2000px long edge`,
+        `${cdn("xl", "<id>")}      3200px long edge`,
+        "```",
+        "",
+        "The images are fetchable directly. A `note` field is set only on the few",
+        "frames the photographer singled out; the gallery marks those with a gold",
+        "corner. One photograph lives at `/photos/<id>`.",
+        "",
+        "## As tools",
+        "",
+        `\`${ORIGIN}/mcp\` speaks MCP over Streamable HTTP: describe_site,`,
+        "list_photographs, get_photograph, list_projects, list_posts. Read-only, and",
+        "no authentication — see `/auth.md`.",
+        "",
+    ].join("\n");
+}
+
+function agentSkillsIndex(skillBody) {
+    const digest = createHash("sha256").update(skillBody).digest("hex");
+    return JSON.stringify(
+        {
+            $schema: "https://agentskills.io/schemas/discovery/v0.2.0.json",
+            skills: [
+                {
+                    name: "read-exoad",
+                    type: "text/markdown",
+                    description:
+                        "Read exoad.net's photographs, projects and writing without scraping " +
+                        "the site.",
+                    url: `${ORIGIN}/.well-known/agent-skills/read-exoad/SKILL.md`,
+                    sha256: digest,
+                },
+            ],
+        },
+        null,
+        2,
+    );
+}
+
 function sitemapXml(pages, gallery) {
     const today = new Date().toISOString().slice(0, 10);
     const newestPhoto = gallery[0]?.date ?? today;
@@ -899,6 +1104,12 @@ export default function agentSurfacePlugin() {
 
             write("photos.json", photosJson(gallery, picks) + "\n");
             write("feed.xml", feedXml(posts));
+            write("mcp-data.json", mcpData({ shared, posts, gallery, picks }) + "\n");
+            write(".well-known/mcp/server-card.json", mcpServerCard() + "\n");
+            write("auth.md", authMd());
+            const skill = agentSkill(gallery);
+            write(".well-known/agent-skills/read-exoad/SKILL.md", skill);
+            write(".well-known/agent-skills/index.json", agentSkillsIndex(skill) + "\n");
 
             // Not in `pages`: it is the answer to a request for something that
             // does not exist, so it has no canonical URL and no place in the
