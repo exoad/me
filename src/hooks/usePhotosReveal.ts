@@ -20,7 +20,9 @@ const MIN_DWELL_MS = 700;
  */
 export function usePhotosReveal() {
     const { pathname } = useLocation();
-    const isActive = pathname.replace(/\/+$/, "") === "/photos";
+    // A single photograph is still the gallery: /photos and /photos/<id> both
+    // land out of black.
+    const isActive = /^\/photos(\/|$)/.test(pathname.replace(/\/+$/, "") || "/");
 
     useEffect(() => {
         // On navigation away, ContentFade keeps the outgoing page mounted for its

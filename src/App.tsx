@@ -42,6 +42,8 @@ function AppContent() {
 			<Routes>
 				<Route path="/" element={<HomePage />} />
 				<Route path="/photos" element={<PhotosPage />} />
+				{/* A single frame is its own address, so it can be linked and reloaded. */}
+				<Route path="/photos/:photoId" element={<PhotosPage />} />
 				<Route path="/blog" element={<BlogListPage />} />
 				<Route path="/blog/:slug" element={<BlogPostPage />} />
 				<Route path="*" element={<NotFound />} />

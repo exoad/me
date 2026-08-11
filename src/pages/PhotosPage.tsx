@@ -9,7 +9,7 @@ import {
     type TouchEvent as ReactTouchEvent,
 } from "react";
 import { createPortal } from "react-dom";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import SEO from "../components/SEO";
 import {
     galleryPhotos,
@@ -609,14 +609,30 @@ function Lightbox({ index, onNavigate, onClose }: {
 export default function PhotosPage() {
     const lenisRef = useLenis(!prefersReducedMotion());
     const [searchParams, setSearchParams] = useSearchParams();
-    const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+    const { photoId } = useParams();
+    const navigate = useNavigate();
     const columns = useColumnCount();
 
     // Fades the page up out of black and holds the canvas black while we're here.
     usePhotosReveal();
 
+    // Which frame is open is the URL's business, not this component's. That is
+    // what makes a single photograph something you can send to someone, link to,
+    // and reload back into.
+    const lightboxIndex = useMemo(() => {
+        if (!photoId) return null;
+        const found = galleryPhotos.findIndex((p) => p.id === photoId);
+        return found === -1 ? null : found;
+    }, [photoId]);
+
     const rawPage = Number.parseInt(searchParams.get("p") ?? "1", 10);
-    const page = Number.isNaN(rawPage) ? 1 : Math.min(Math.max(rawPage, 1), PAGE_COUNT);
+    const requestedPage = Number.isNaN(rawPage) ? 1 : Math.min(Math.max(rawPage, 1), PAGE_COUNT);
+    // Arriving straight at a photograph should leave the grid behind it on the
+    // page that frame actually belongs to, so closing lands somewhere sensible.
+    const page =
+        lightboxIndex !== null && !searchParams.has("p")
+            ? Math.floor(lightboxIndex / PAGE_SIZE) + 1
+            : requestedPage;
 
     // Replay the entrance animation on page changes only — a breakpoint change
     // rebalances columns and remounts frames, which shouldn't re-animate.
@@ -655,17 +671,47 @@ export default function PhotosPage() {
         scrollToTop("auto");
     };
 
+    // The grid's page rides along, so closing the viewer returns to the page you
+    // opened it from rather than to the top of the gallery.
+    const gridPath = page === 1 ? "/photos" : `/photos?p=${page}`;
+
+    // The open frame is the page now, so it should name the tab and supply the
+    // card — otherwise the title stays on "Photos" through every step.
+    const activePhoto = lightboxIndex === null ? null : galleryPhotos[lightboxIndex];
+
     const openPhoto = useCallback(
-        (photo: GalleryPhoto) => setLightboxIndex(galleryPhotos.indexOf(photo)),
-        [],
+        (photo: GalleryPhoto) => navigate(`/photos/${photo.id}`, { state: { from: gridPath } }),
+        [navigate, gridPath],
     );
+
+    // Stepping replaces rather than pushes: Back should return to the grid, not
+    // walk you backwards through every frame you looked at.
+    const stepToPhoto = useCallback(
+        (target: number) =>
+            navigate(`/photos/${galleryPhotos[target].id}`, {
+                replace: true,
+                state: { from: gridPath },
+            }),
+        [navigate, gridPath],
+    );
+
+    const closePhoto = useCallback(() => navigate(gridPath), [navigate, gridPath]);
 
     return (
         <div className="ph">
             <SEO
-                title="Photos"
-                description={strings.pages.photos.description}
-                url="https://exoad.net/photos"
+                title={
+                    activePhoto
+                        ? `${formatDate(activePhoto.date)} — ${frameNo(lightboxIndex!)} of ${galleryPhotos.length}`
+                        : "Photos"
+                }
+                description={activePhoto?.note ?? strings.pages.photos.description}
+                url={
+                    activePhoto
+                        ? `https://exoad.net/photos/${activePhoto.id}`
+                        : "https://exoad.net/photos"
+                }
+                image={activePhoto?.largeSrc}
             />
 
             <div className="ph-meta">
@@ -743,8 +789,8 @@ export default function PhotosPage() {
                 createPortal(
                     <Lightbox
                         index={lightboxIndex}
-                        onNavigate={setLightboxIndex}
-                        onClose={() => setLightboxIndex(null)}
+                        onNavigate={stepToPhoto}
+                        onClose={closePhoto}
                     />,
                     document.body,
                 )}

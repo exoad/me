@@ -64,7 +64,7 @@
   </style>
   <script>
     (function () {
-      if (location.pathname.replace(/\/+$/, "") !== "/photos") return;
+      if (!/^\/photos(\/|$)/.test(location.pathname.replace(/\/+$/, "") || "/")) return;
       var root = document.documentElement;
       root.classList.add("is-photos-landing");
       // Never strand the page behind an opaque veil if the app fails to boot.

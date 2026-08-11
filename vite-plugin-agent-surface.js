@@ -334,13 +334,13 @@ function buildPages({ shared, posts, gallery, picks }) {
             "",
             `The same data as JSON, with every variant URL spelled out: ${ORIGIN}/photos.json`,
             "",
-            "| # | ID | Date | Settings | Note | Image (2000px) |",
-            "| --- | --- | --- | --- | --- | --- |",
+            "| # | ID | Date | Settings | Note | Page | Image (2000px) |",
+            "| --- | --- | --- | --- | --- | --- | --- |",
             ...gallery.map(
                 (p, i) =>
                     `| ${String(i + 1).padStart(3, "0")} | ${p.id} | ${p.date ?? "—"} | ${
                         exposureLine(p) || "—"
-                    } | ${picks[p.id] ?? "—"} | ${cdn("large", p.id)} |`,
+                    } | ${picks[p.id] ?? "—"} | ${ORIGIN}/photos/${p.id} | ${cdn("large", p.id)} |`,
             ),
         ].join("\n"),
         jsonLd: [
@@ -455,7 +455,72 @@ function buildPages({ shared, posts, gallery, picks }) {
         lastmod: post.date,
     }));
 
-    return [home, photos, blogIndex, ...postPages];
+    // One page per photograph. A shared link should unfurl as that photograph
+    // rather than as the gallery, and reload back into it.
+    const photoPages = gallery.map((p, i) => {
+        const settings = exposureLine(p) || "";
+        const note = picks[p.id];
+        const position = `${String(i + 1).padStart(3, "0")} of ${gallery.length}`;
+        return {
+            route: `/photos/${p.id}`,
+            html: `photos/${p.id}.html`,
+            md: `photos/${p.id}.md`,
+            title: `${p.date ?? "Photograph"} — ${position} | exoad`,
+            description: note ?? [`Photograph ${position}`, p.date, settings].filter(Boolean).join(" · "),
+            image: cdn("large", p.id),
+            about: [
+                `One photograph from the gallery, open in the viewer: frame ${position}.`,
+                "Black page, the photograph centred, the camera body set against the",
+                "left edge and the exposure settings against the right.",
+                note ? "" : null,
+                note ? "This is one the photographer singled out; the gallery marks it" : null,
+                note ? "with a gold corner and prints the reason under it." : null,
+            ]
+                .filter((line) => line !== null)
+                .join("\n"),
+            lastmod: p.date,
+            markdown: [
+                `# Photograph ${position}`,
+                "",
+                note ? `> ${note}` : `> A photograph by Jiaming Meng${p.date ? `, ${p.date}` : ""}.`,
+                "",
+                `- Date: ${p.date ?? "unknown"}`,
+                `- Settings: ${settings || "unknown"}`,
+                `- Dimensions: ${p.width}x${p.height}`,
+                `- In the gallery: ${ORIGIN}/photos`,
+                "",
+                "## Image",
+                "",
+                "```",
+                `${cdn("thumb", p.id)}   900px wide`,
+                `${cdn("large", p.id)}   2000px long edge`,
+                `${cdn("xl", p.id)}      3200px long edge`,
+                "```",
+            ].join("\n"),
+            jsonLd: [
+                {
+                    "@context": "https://schema.org",
+                    "@type": "Photograph",
+                    "@id": `${ORIGIN}/photos/${p.id}`,
+                    name: `Photograph ${position}`,
+                    ...(note ? { description: note } : {}),
+                    ...(p.date ? { dateCreated: p.date } : {}),
+                    creator: { "@type": "Person", name: "Jiaming Meng", url: ORIGIN },
+                    image: {
+                        "@type": "ImageObject",
+                        contentUrl: cdn("xl", p.id),
+                        thumbnailUrl: cdn("thumb", p.id),
+                        width: p.width,
+                        height: p.height,
+                        ...(settings ? { exifData: settings } : {}),
+                    },
+                    isPartOf: { "@type": "ImageGallery", "@id": `${ORIGIN}/photos` },
+                },
+            ],
+        };
+    });
+
+    return [home, photos, blogIndex, ...postPages, ...photoPages];
 }
 
 /* ---------- emitting ---------- */
@@ -608,6 +673,7 @@ function photosJson(gallery, picks) {
             photos: gallery.map((p, i) => ({
                 id: p.id,
                 index: i + 1,
+                page: `${ORIGIN}/photos/${p.id}`,
                 date: p.date,
                 width: p.width,
                 height: p.height,
