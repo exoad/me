@@ -12,8 +12,10 @@ export interface TProject {
     link?: string;
     /** A sibling project shown on the same row. */
     pair?: { title: string; link?: string };
-    /** What the page prints, e.g. "2025–26". */
+    /** The full span, e.g. "2025–26", for the machine-readable copies. */
     years: string;
+    /** Which timeline group the page files it under; defaults to the start year. */
+    period?: string;
     featured: boolean;
     technologies: TTechnology[];
     state: TProjectState;

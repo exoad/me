@@ -19,12 +19,24 @@ const { title, description } = Astro.props;
 <meta name="color-scheme" content="dark" />
 <title>{title}</title>
 <meta name="description" content={description} />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="manifest" href="/site.webmanifest" />
+<!-- Scrollbars in the site's own terms: a thin grey thumb on black, no
+     arrows, no track to speak of. Standard properties first, WebKit's for
+     Safari; anything that scrolls (the page, the jackbox popover) gets it. -->
+<style is:inline>
+    * { scrollbar-width: thin; scrollbar-color: #2e2e2e #000; }
+    *:hover { scrollbar-color: #4a4a4a #000; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; background: #000; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #2e2e2e; border: 2px solid #000; border-radius: 0; }
+    ::-webkit-scrollbar-thumb:hover { background: #4a4a4a; }
+    ::-webkit-scrollbar-corner { background: #000; }
+    ::-webkit-scrollbar-button { display: none; }
+</style>
 <slot name="head" />
 </head>
 <body>

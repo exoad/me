@@ -176,10 +176,12 @@ function buildPages({ shared, gallery, picks }) {
         about: [
             "The home page, white type on black, read top to bottom: a full-width",
             "band of the six newest photographs, each opening in the gallery; the",
-            "name, set large; a one-line introduction beside links to GitHub,",
-            "LinkedIn, X and an email address; the projects, one line each with",
-            "their years, in the owner's order (jackbox opens four photographs of",
-            "the server in place); and a quiet line of smaller projects.",
+            "name, set large in Bricolage Grotesque with the handle small beside it;",
+            "a one-line introduction with links to GitHub, LinkedIn, X and an email",
+            "address; the projects, one line each, along a timeline that names each",
+            "period once (now, then by year) with a hairline down its side; jackbox",
+            "opens four photographs of the server in place; and a quiet line of",
+            "smaller projects.",
         ].join("\n"),
         // Drawn by scripts/og.mjs and committed: the newest photographs over
         // the name, at the 1200x630 every unfurler asks for.

@@ -13,13 +13,15 @@ const tech = (name: string): TTechnology => ({ name });
 const gh = (repo: string) => `https://github.com/exoad/${repo}`;
 
 /**
- * In the owner's order: the first three by choice, the rest newest first.
- * `years` is what the page prints; `year` (when it started) is for sorting and
- * for the machine-readable copies.
+ * In the owner's order: the first three are what is on the go now, the rest run
+ * newest first. The page groups them by `period` (an explicit one, or the start
+ * year) along a timeline; `years` is the full span, for the machine-readable
+ * copies.
  */
 export const projects: TProject[] = [
     {
         title: "espmon",
+        period: "now",
         pair: { title: "picomon", link: gh("picomon") },
         description: "esp32 and rp2350 libraries, written in kira.",
         link: gh("espmon"),
@@ -31,6 +33,7 @@ export const projects: TProject[] = [
     },
     {
         title: "kira",
+        period: "now",
         description:
             "simple, pure oop language built for transpilation. targets c, c++17, python, and nekovm. highly opinionated.",
         link: gh("kira"),
@@ -42,8 +45,20 @@ export const projects: TProject[] = [
     },
     {
         title: "ming",
+        period: "now",
         description: "my own personal agent, running on my own server. glm 5.3 on 512gb of vram.",
         link: ming.site,
+        technologies: [],
+        featured: true,
+        state: "active",
+        year: 2026,
+        years: "2026",
+    },
+    {
+        // Not public yet: named, nothing more.
+        title: "bibo",
+        period: "now",
+        description: "being built.",
         technologies: [],
         featured: true,
         state: "active",
@@ -91,6 +106,16 @@ export const projects: TProject[] = [
         years: "2025–26",
     },
     {
+        title: "nukleon",
+        description: "automation game about running a nuclear plant in an orwellian future. custom engine on flutter's canvas.",
+        link: gh("nukleon"),
+        technologies: [tech("Dart"), tech("Flutter")],
+        featured: true,
+        state: "archived",
+        year: 2025,
+        years: "2025",
+    },
+    {
         title: "prosodia-seq",
         description: "seq2seq model that turns english sounds into mandarin pinyin. ok → ou1kei4.",
         link: "https://exoad.github.io/Prosodia-Seq/",
@@ -112,6 +137,16 @@ export const projects: TProject[] = [
         years: "2025",
     },
     {
+        title: "big_double",
+        description: "a number type that goes to 10^10^308. speed over accuracy.",
+        link: "https://pub.dev/packages/big_double",
+        technologies: [tech("Dart")],
+        featured: true,
+        state: "finished",
+        year: 2025,
+        years: "2025",
+    },
+    {
         title: "rundown roulette",
         description: "randomizer for gtfo rundowns and loadouts. i host games with it.",
         link: "https://exoad.github.io/GTFO-RundownRoulette/",
@@ -122,10 +157,40 @@ export const projects: TProject[] = [
         years: "2025",
     },
     {
+        title: "on_the_fly",
+        description: "background file conversion that sorts files as they land. where drosk started.",
+        link: gh("on_the_fly"),
+        technologies: [tech("Dart"), tech("Flutter")],
+        featured: true,
+        state: "archived",
+        year: 2024,
+        years: "2024",
+    },
+    {
+        title: "toasterify",
+        description: "an app that warms your hands by working your phone hard. for winter.",
+        link: gh("toasterify"),
+        technologies: [tech("Dart"), tech("Flutter")],
+        featured: true,
+        state: "archived",
+        year: 2023,
+        years: "2023",
+    },
+    {
         title: "halcyon",
-        description: "the music player i keep rewriting. a c audio engine under a java gui, later flutter. my first big one.",
+        description: "the music player i keep rewriting. a java gui on a 2d opengl engine i wrote for it, audio in c. my first big one.",
         link: gh("Halcyon.c"),
-        technologies: [tech("C"), tech("Java"), tech("Flutter")],
+        technologies: [tech("Java"), tech("OpenGL"), tech("C")],
+        featured: true,
+        state: "archived",
+        year: 2022,
+        years: "2022",
+    },
+    {
+        title: "usaco mashups",
+        description: "discord bot and static api for building usaco problem mashups.",
+        link: gh("usaco_mashups"),
+        technologies: [tech("JavaScript")],
         featured: true,
         state: "archived",
         year: 2022,
@@ -150,6 +215,9 @@ export const alsoProjects: { title: string; link: string }[] = [
     { title: "cursor_vfx", link: gh("cursor_vfx") },
     { title: "terminal_anim", link: gh("terminal_anim") },
     { title: "shellnews-bernard", link: gh("ShellNews-Bernard") },
+    { title: "swing-plus", link: gh("swing-plus") },
+    { title: "kansi", link: gh("kansi") },
+    { title: "better_cpu_reader", link: "https://pub.dev/packages/better_cpu_reader" },
 ];
 
 /**
