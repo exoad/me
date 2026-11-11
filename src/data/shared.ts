@@ -46,8 +46,7 @@ export const projects: TProject[] = [
     {
         title: "ming",
         period: "now",
-        description:
-            "an agent i've been building for a few months. i text it and it helps with whatever comes up: ordering food, coding in the background, sorting email and job posts. runs on glm 5.3 on my own machines.",
+        description: "a little agent i built for myself. it lives in a space heater with ten gpus in it.",
         link: ming.site,
         technologies: [],
         featured: true,
