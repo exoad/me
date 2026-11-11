@@ -27,3 +27,6 @@ dist-ssr
 *.secret
 !.gitignore
 .photo-staging/
+
+# Astro
+.astro/

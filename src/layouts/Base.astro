@@ -1,0 +1,29 @@
+---
+/**
+ * The document every page shares. The agent-surface integration adds the
+ * canonical URL, cards and JSON-LD to the built HTML, so this stays to what a
+ * browser needs to paint.
+ */
+interface Props {
+    title: string;
+    description: string;
+}
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#000000" />
+<meta name="color-scheme" content="dark" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="icon" href="/favicon.ico" />
+<slot name="head" />
+</head>
+<body>
+<slot />
+<script src="../scripts/webmcp.ts"></script>
+</body>
+</html>

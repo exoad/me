@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
 const LANDING_CLASS = "is-photos-landing";
 const LIFTED_CLASS = "is-lifted";
@@ -19,17 +18,7 @@ const MIN_DWELL_MS = 700;
  * showing the site's gruvbox background behind the page.
  */
 export function usePhotosReveal() {
-    const { pathname } = useLocation();
-    // A single photograph is still the gallery: /photos and /photos/<id> both
-    // land out of black.
-    const isActive = /^\/photos(\/|$)/.test(pathname.replace(/\/+$/, "") || "/");
-
     useEffect(() => {
-        // On navigation away, ContentFade keeps the outgoing page mounted for its
-        // exit animation under a new React key, which remounts this component.
-        // That copy must not re-raise the veil over the page we just left for.
-        if (!isActive) return;
-
         const root = document.documentElement;
         const veil = document.getElementById("veil");
 
@@ -67,10 +56,9 @@ export function usePhotosReveal() {
             cancelAnimationFrame(frame);
             clearTimeout(safety);
             root.classList.remove(LANDING_CLASS);
-            // Reset for the next visit. Never cleared on mount: if index.html's
-            // failsafe already revealed a slow-booting page, re-hiding it would
-            // slam the page back to black with no transition.
+            // Never cleared on mount: if the page's failsafe already revealed a
+            // slow-booting gallery, re-hiding it would slam it back to black.
             veil?.classList.remove(LIFTED_CLASS);
         };
-    }, [isActive]);
+    }, []);
 }

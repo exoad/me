@@ -1,0 +1,57 @@
+---
+/**
+ * Everything the gallery routes share: the document, the black landing veil,
+ * and the gallery itself, rendered here at build time and hydrated in the
+ * browser.
+ */
+import Base from "../layouts/Base.astro";
+import Gallery from "./Gallery.tsx";
+
+interface Props {
+    title: string;
+    description: string;
+    path: string;
+}
+const { title, description, path } = Astro.props;
+---
+<Base title={title} description={description}>
+    <Fragment slot="head">
+        <!-- The gallery lands out of black. The veil paints on the first frame,
+             before any stylesheet or script resolves, and the gallery lifts it
+             once its grid has painted. -->
+        <style is:inline>
+            html, body { margin: 0; background: #000; }
+            #veil { display: none; }
+            html.is-photos-landing #veil {
+                display: block; position: fixed; inset: 0; background: #000;
+                z-index: 9999; pointer-events: none; opacity: 1;
+            }
+            html.is-photos-landing #veil.is-lifted {
+                opacity: 0;
+                /* An opacity fade with no movement, so it is kept under reduced motion. */
+                transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1) !important;
+            }
+            /* A single square, turning a quarter-notch at a time while the grid loads. */
+            html.is-photos-landing #veil-mark {
+                position: absolute; top: 50%; left: 50%; width: 13px; height: 13px;
+                margin: -7px 0 0 -7px; border: 1px solid #6a6a6a;
+                animation: veil-turn 1.8s ease-in-out infinite;
+            }
+            @keyframes veil-turn {
+                0% { transform: rotate(0deg); }
+                35%, 60% { transform: rotate(45deg); }
+                95%, 100% { transform: rotate(90deg); }
+            }
+        </style>
+        <script is:inline>
+            document.documentElement.classList.add("is-photos-landing");
+            // Never strand the page behind an opaque veil if the gallery fails to boot.
+            setTimeout(function () {
+                var veil = document.getElementById("veil");
+                if (veil) veil.classList.add("is-lifted");
+            }, 4000);
+        </script>
+    </Fragment>
+    <div id="veil"><span id="veil-mark"></span></div>
+    <Gallery client:load initialPath={path} />
+</Base>

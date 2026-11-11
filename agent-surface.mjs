@@ -1,14 +1,12 @@
-// Builds the machine-readable surface of the site.
+// Builds the machine-readable surface of the site, as an Astro integration.
 //
-// The app is a client-rendered SPA: every route used to answer with the same
-// empty `<div id="root">`, so anything that does not run JavaScript — search
-// crawlers, link unfurlers, and increasingly agents — saw a blank page with a
-// generic title. Nothing here changes what a browser renders. It gives every
-// route a real identity in the HTML, and publishes the same content as plain
+// Astro already writes real HTML for every route. This adds what a reader that
+// is not a browser wants on top of it — a canonical URL, cards, JSON-LD and a
+// note on where the plain-text copies are — and publishes the same content as
 // markdown for readers that would rather not parse markup at all.
 //
-// Emitted per build:
-//   dist/<route>.html         per-route title, description, OG, JSON-LD, noscript
+// Emitted per build, after Astro has written its pages:
+//   dist/<route>.html         canonical, description, OG, JSON-LD (added in place)
 //   dist/<route>.md           the same content as markdown
 //   dist/llms.txt             index of the above, llms.txt convention
 //   dist/llms-full.txt        every page inlined, for a single fetch
@@ -17,7 +15,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve } from "path";
-import { build as esbuild } from "esbuild";
+import { pathToFileURL } from "url";
 import { createHash } from "crypto";
 
 const ORIGIN = "https://exoad.net";
@@ -34,11 +32,11 @@ const SITE_ABOUT = [
     "photographs cities. It is a small static site with two parts: a home page",
     "and a photo gallery.",
     "",
-    "Both are black and white. The home page is a plain document — a single",
-    "narrow column of black text on white, underlined black links, hairline",
-    "rules, no ornament. The gallery inverts it: pure black, white monospaced",
-    "type, square corners, and none of the site's navigation, so that nothing",
-    "competes with the photographs.",
+    "The whole site is white type on black. The home page is a full-width band",
+    "of the newest photographs, grey until you point at one, over a short",
+    "column of text. The gallery is pure black with white monospaced type,",
+    "square corners and none of the site's navigation, so that nothing competes",
+    "with the photographs.",
 ].join("\n");
 
 /**
@@ -66,7 +64,6 @@ function mingAbout(ming) {
     ].join("\n");
 }
 
-const INDEX_HTML = resolve("dist/index.html");
 
 /* ---------- reading the site's own data ---------- */
 
@@ -81,44 +78,16 @@ async function loadPicks() {
 }
 
 /**
- * shared.ts is TypeScript that imports React icon components and image assets,
- * so Node cannot require it directly. Bundling it with those imports swapped
- * for inert stubs leaves the actual content — strings, projects, links —
- * evaluable here, which keeps this generator reading from the same source the
- * pages render from rather than from a copy that would drift.
+ * The same data modules the pages render from, imported directly, so this
+ * generator can never drift from them. They are plain TypeScript with no asset
+ * or component imports, which the build's module loader evaluates as is.
  */
 async function loadShared() {
-    const stub = {
-        name: "stub-assets",
-        setup(b) {
-            b.onResolve(
-                { filter: /^react-icons|\.(webp|png|jpe?g|svg|gif|avif)$/ },
-                () => ({ path: "stub", namespace: "stub" }),
-            );
-            b.onLoad({ filter: /.*/, namespace: "stub" }, () => ({
-                contents: "module.exports = new Proxy(function(){}, { get: () => () => null });",
-                loader: "js",
-            }));
-        },
-    };
-
-    return loadTsModule(resolve("src/data/shared.ts"), stub);
+    return loadTsModule(resolve("src/data/shared.ts"));
 }
 
-/** Bundles a TypeScript module and evaluates it here, with optional stubs. */
-async function loadTsModule(entry, ...plugins) {
-    const result = await esbuild({
-        entryPoints: [entry],
-        bundle: true,
-        write: false,
-        format: "esm",
-        platform: "node",
-        logLevel: "silent",
-        plugins,
-    });
-
-    const source = Buffer.from(result.outputFiles[0].text).toString("base64");
-    return import(`data:text/javascript;base64,${source}`);
+function loadTsModule(entry) {
+    return import(/* @vite-ignore */ pathToFileURL(entry).href);
 }
 
 function loadGallery() {
@@ -144,7 +113,7 @@ const oneLine = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
 const abs = (path) => (path?.startsWith("http") ? path : `${ORIGIN}${path}`);
 
 const cdn = (variant, id) =>
-    `https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/gallery/${variant}/${id}.webp`;
+    `https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/gallery/${variant}/${id}.webp`;
 
 function shutter(seconds) {
     if (seconds == null) return null;
@@ -192,9 +161,9 @@ function buildPages({ shared, gallery, picks }) {
         title: "exoad — Jiaming Meng",
         description: about,
         about: [
-            "The home page. One narrow column of black text on white, read top to",
-            "bottom, in this order: a one-line introduction; a row of the six newest",
-            "photographs linking into the gallery; the projects, one line each; and",
+            "The home page, white type on black, read top to bottom: a full-width",
+            "band of the six newest photographs linking into the gallery; the name,",
+            "set large; a one-line introduction; the projects, one line each; and",
             "links to GitHub, LinkedIn, X and an email address.",
         ].join("\n"),
         // No dedicated card art exists, and a shared link with no image is a
@@ -406,17 +375,9 @@ function buildPages({ shared, gallery, picks }) {
 /* ---------- emitting ---------- */
 
 /**
- * A route's HTML: the same shell the SPA boots from, with an identity added.
- * The noscript block is the page's real content, not a "please enable
- * JavaScript" notice — it is what a reader without a renderer gets.
- */
-/**
- * The banner every page opens with.
- *
- * A reader that fetches this HTML gets a shell with no content in it, and no
- * way to know that from the markup alone. This says so in the first thing it
- * will read, and says where the content actually is — including that the
- * gallery is enumerated in full, so there is no pagination to work out.
+ * The banner every page opens with: what the site is, what this page is, and
+ * where the plain-text copies live — including that the gallery is enumerated
+ * in full there, so there is no pagination to work out.
  */
 function agentBanner(page, galleryCount) {
     const indent = (text) =>
@@ -436,8 +397,8 @@ function agentBanner(page, galleryCount) {
         "",
         "  WHERE THE CONTENT IS",
         "",
-        "  This page is client-rendered. The HTML below is a shell; none of what",
-        "  is described above is in it. Plain-text copies are published instead:",
+        "  The HTML below is the page itself. The same content is also published",
+        "  as plain text:",
         "",
         `    ${ORIGIN}/llms.txt        index of every page on the site`,
         `    ${ORIGIN}/llms-full.txt   every page inlined, one request`,
@@ -458,7 +419,8 @@ function agentBanner(page, galleryCount) {
     ].join("\n");
 }
 
-function pageHtml(page, baseHtml, galleryCount) {
+/** Adds a route's identity to the HTML Astro wrote for it. */
+function pageHtml(page, html, galleryCount) {
     const url = `${ORIGIN}${page.route}`;
     const image = page.image ?? null;
 
@@ -491,29 +453,10 @@ function pageHtml(page, baseHtml, galleryCount) {
         ),
     ].join("\n  ");
 
-    // Markdown is the canonical machine copy; the noscript carries a readable
-    // digest and says where the full text lives.
-    const lines = page.markdown.split("\n");
-    const shown = lines.slice(0, 60);
-    const omitted = lines.length - shown.length;
-    const digest =
-        shown.join("\n") +
-        (omitted > 0
-            ? `\n\n… ${omitted} more lines. This is an excerpt, not the whole page — the complete text is at ${ORIGIN}/${page.md}`
-            : "");
-    const noscript =
-        `<noscript>\n<article>\n<h1>${esc(page.title)}</h1>\n` +
-        `<p>${esc(page.description)}</p>\n` +
-        `<pre>${esc(digest)}</pre>\n` +
-        `<p>Full text as markdown: <a href="${esc(`${ORIGIN}/${page.md}`)}">${esc(
-            `/${page.md}`,
-        )}</a></p>\n</article>\n</noscript>`;
-
-    return baseHtml
-        .replace("<head>", `<head>\n${agentBanner(page, galleryCount)}`)
-        .replace("<title>exoad - Jiaming Meng</title>", `<title>${esc(page.title)}</title>`)
-        .replace("</head>", `${head}\n</head>`)
-        .replace('<div id="root"></div>', `<div id="root"></div>\n${noscript}`);
+    return html
+        .replace(/<head>/i, `<head>\n${agentBanner(page, galleryCount)}`)
+        .replace(/<title>[\s\S]*?<\/title>/i, `<title>${esc(page.title)}</title>`)
+        .replace(/<\/head>/i, `${head}\n</head>`);
 }
 
 /**
@@ -658,8 +601,8 @@ function llmsIndex(pages, { gallery, shared }) {
  * search engine to index an unbounded set of duplicates and leaves an agent
  * unable to tell a wrong URL from a right one.
  */
-function notFoundHtml(baseHtml, page, galleryCount) {
-    return pageHtml(page, baseHtml, galleryCount).replace(
+function notFoundHtml(html, page, galleryCount) {
+    return pageHtml(page, html, galleryCount).replace(
         "</head>",
         '<meta name="robots" content="noindex, follow" />\n</head>',
     );
@@ -902,12 +845,20 @@ function write(relPath, contents) {
     writeFileSync(target, contents);
 }
 
-export default function agentSurfacePlugin() {
+/** Reads a page Astro wrote, or null when the route was not built. */
+function readBuilt(relPath) {
+    try {
+        return readFileSync(resolve("dist", relPath), "utf8");
+    } catch {
+        return null;
+    }
+}
+
+export default function agentSurface() {
     return {
         name: "agent-surface",
-        enforce: "post",
-
-        async closeBundle() {
+        hooks: {
+        "astro:build:done": async () => {
             let shared;
             try {
                 shared = await loadShared();
@@ -919,14 +870,16 @@ export default function agentSurfacePlugin() {
 
             const picks = await loadPicks();
             const gallery = loadGallery();
-            const baseHtml = readFileSync(INDEX_HTML, "utf8");
             const pages = buildPages({ shared, gallery, picks });
 
+            let missing = 0;
             for (const page of pages) {
-                const html = pageHtml(page, baseHtml, gallery.length);
-                write(page.html, html);
+                const built = readBuilt(page.html);
+                if (built) write(page.html, pageHtml(page, built, gallery.length));
+                else missing++;
                 write(page.md, `${withPageContext(page)}\n`);
             }
+            if (missing) console.warn(`agent-surface: ${missing} routes had no built HTML to annotate`);
 
             write("photos.json", photosJson(gallery, picks) + "\n");
             write("mcp-data.json", mcpData({ shared, gallery, picks }) + "\n");
@@ -939,10 +892,11 @@ export default function agentSurfacePlugin() {
             // Not in `pages`: it is the answer to a request for something that
             // does not exist, so it has no canonical URL and no place in the
             // sitemap.
-            write(
+            const notFound = readBuilt("404.html");
+            if (notFound) write(
                 "404.html",
                 notFoundHtml(
-                    baseHtml,
+                    notFound,
                     {
                         route: "/404",
                         md: "llms.txt",
@@ -986,6 +940,7 @@ export default function agentSurfacePlugin() {
                 `agent-surface: ${pages.length} routes (html + md), llms.txt, llms-full.txt, ` +
                     `photos.json, 404.html, sitemap.xml`,
             );
+        },
         },
     };
 }

@@ -3,7 +3,9 @@ import { picks } from "./picks";
 
 // Web variants only — the bucket repo is public, so full-res originals are
 // never uploaded to it; they stay on the local machine.
-const CDN_BASE = "https://cdn.statically.io/gh/meng-jack/me-pictures-bucket@main/gallery";
+// jsDelivr serves the bucket straight off its CDN with a week of browser cache.
+// (statically.io, used before, now answers every request with a 301 to GitHub.)
+export const CDN_BASE = "https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/gallery";
 
 export interface GalleryPhoto {
     id: string;

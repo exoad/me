@@ -1,0 +1,237 @@
+---
+import { getImage } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import { projects, strings } from "../data/shared";
+import { galleryPhotos } from "../data/gallery";
+
+const EMAIL = "jackm@exoad.net";
+const BAND = 6;
+// On a phone only the first few frames show, or each would be a sliver.
+const PHONE = 3;
+
+// Each frame's share of the band is its aspect ratio, so every photograph keeps
+// its own shape instead of being cropped to a common one.
+const recent = galleryPhotos.slice(0, BAND).map((p) => ({ ...p, weight: (p.thumbWidth / p.thumbHeight) * 12 }));
+const total = recent.reduce((sum, p) => sum + p.weight, 0);
+const phoneTotal = recent.slice(0, PHONE).reduce((sum, p) => sum + p.weight, 0);
+
+// Resized here, at build time, and served from this domain: the band never
+// holds a frame more than ~700px wide, and the source thumbnails are 900px
+// originals that weigh up to 80 KB apiece.
+const band = await Promise.all(
+    recent.map(async (p, i) => {
+        const height = (w: number) => Math.round((w * p.thumbHeight) / p.thumbWidth);
+        const widths = [180, 360, 720].filter((w) => w <= p.thumbWidth);
+        const img = await getImage({
+            src: p.thumbSrc,
+            width: widths[1],
+            height: height(widths[1]),
+            widths,
+            format: "webp",
+            quality: 72,
+        });
+        const desk = `calc(100vw * ${p.weight.toFixed(2)} / ${total.toFixed(2)})`;
+        const phone = `calc(100vw * ${p.weight.toFixed(2)} / ${phoneTotal.toFixed(2)})`;
+        return {
+            id: p.id,
+            src: img.src,
+            srcset: img.srcSet.attribute,
+            sizes: i < PHONE ? `(max-width: 34em) ${phone}, ${desk}` : desk,
+            width: widths[1],
+            height: height(widths[1]),
+            weight: p.weight,
+        };
+    }),
+);
+---
+<Base title="exoad — Jiaming Meng" description={strings.pages.home.about.content}>
+<header class="wrap top">
+    <h1 class="r" style="--d:1">{strings.name}</h1>
+    <nav class="r" style="--d:2" aria-label="site"><a href="/photos">photos <i aria-hidden="true">→</i></a></nav>
+</header>
+
+<a class="band" href="/photos" aria-label={`photos: the ${BAND} newest of ${galleryPhotos.length} photographs`}>
+    {band.map((f, i) => (
+        <img
+            src={f.src}
+            srcset={f.srcset}
+            sizes={f.sizes}
+            width={f.width}
+            height={f.height}
+            style={`flex-grow:${f.weight.toFixed(2)}`}
+            alt=""
+            decoding="async"
+            loading={i < PHONE ? "eager" : "lazy"}
+            fetchpriority={i === 0 ? "high" : undefined}
+        />
+    ))}
+</a>
+
+<main class="wrap">
+    <p class="intro r" style="--d:3">{strings.pages.home.about.content}</p>
+
+    <section class="r" style="--d:4" aria-labelledby="projects">
+        <h2 id="projects">projects</h2>
+        <ul class="projects">
+            {projects.map((p) => (
+                <li>
+                    {p.link
+                        ? <a href={p.link} class="name ext">{p.title}</a>
+                        : <span class="name">{p.title}</span>}
+                    <span class="desc">{p.description}</span>
+                </li>
+            ))}
+        </ul>
+    </section>
+
+    <ul class="links r" style="--d:5" aria-label="elsewhere">
+        <li><a href={strings.links.github}>github</a></li>
+        <li><a href={strings.links.linkedin}>linkedin</a></li>
+        <li><a href={strings.links.x}>x</a></li>
+        <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+    </ul>
+</main>
+
+<footer class="wrap r" style="--d:6">
+    <span>{strings.footer.legals}</span>
+    <span>source: <a href={strings.footer.source.url}>{strings.footer.source.url_attr}</a></span>
+</footer>
+</Base>
+
+<style is:global>
+/* One theme: white on black. The photographs are the only colour on the page,
+   and they wait, grey, until you point at one. */
+:root {
+    --fg: #fff;
+    --bg: #000;
+    --dim: #8f8f8f;
+    --line: #3d3d3d;
+    --gutter: clamp(16px, 5vw, 64px);
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+*, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--fg); -webkit-text-size-adjust: 100%; }
+body {
+    font: clamp(14px, 0.8rem + 0.2vw, 16px) / 1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+::selection { background: var(--fg); color: var(--bg); }
+a {
+    color: inherit;
+    text-decoration: underline 1px var(--line);
+    text-underline-offset: 0.22em;
+    transition: text-decoration-color 0.2s;
+}
+a:hover, a:focus-visible { text-decoration-color: var(--fg); }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+ul { list-style: none; }
+
+.wrap {
+    width: 100%;
+    max-width: calc(52rem + 2 * var(--gutter));
+    margin-inline: auto;
+    padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px)) max(var(--gutter), env(safe-area-inset-right, 0px));
+}
+
+/* The band comes first on screen; in the document the name does, so a screen
+   reader meets the person before the photographs. */
+.band {
+    order: -1;
+    display: flex;
+    gap: 2px;
+    height: clamp(96px, min(30dvh, 44vw), 360px);
+    text-decoration: none;
+}
+.band:focus-visible { outline-offset: -2px; }
+.band img {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 0;
+    height: 100%;
+    object-fit: cover;
+    background: #141414;
+    filter: grayscale(1);
+    transition: filter 0.5s ease;
+}
+.band img:hover, .band:focus-visible img { filter: none; }
+
+.top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25em 1.5em;
+    padding-top: clamp(18px, 4dvh, 44px);
+}
+h1 {
+    font-size: clamp(2.6rem, min(8.5vw, 13dvh), 6.75rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.92;
+    text-wrap: balance;
+}
+nav a { color: var(--dim); text-decoration: none; transition: color 0.2s; }
+nav a:hover, nav a:focus-visible { color: var(--fg); }
+a i { display: inline-block; font-style: normal; transition: transform 0.25s var(--ease); }
+a:hover i, a:focus-visible i { transform: translateX(3px); }
+
+main { display: grid; gap: clamp(14px, 3dvh, 28px); padding-top: clamp(8px, 1.6dvh, 16px); }
+.intro { font-size: 1.15em; }
+
+h2 {
+    font-size: 0.75em;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    margin-bottom: 0.4em;
+}
+.projects { display: grid; gap: 0.3em; }
+.projects li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 0 1.25em; }
+.name { font-weight: 600; text-decoration: none; }
+.desc { color: var(--dim); }
+.ext::after {
+    content: "\2197";
+    display: inline-block;
+    margin-left: 0.2em;
+    font-size: 0.8em;
+    font-weight: 400;
+    color: var(--dim);
+    transition: transform 0.25s var(--ease), color 0.2s;
+}
+.ext:hover::after, .ext:focus-visible::after { transform: translate(2px, -2px); color: var(--fg); }
+
+.links { display: flex; flex-wrap: wrap; gap: 0.2em 1.25em; }
+
+footer {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2em 1.25em;
+    font-size: 0.85em;
+    color: var(--dim);
+    padding-top: clamp(24px, 4dvh, 48px);
+    padding-bottom: max(clamp(16px, 3dvh, 32px), env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 34em) {
+    .band img:nth-child(n + 4) { display: none; }
+    .projects { gap: 0.6em; }
+    .projects li { display: block; }
+    .desc { display: block; }
+}
+
+/* One entrance: the band fades up out of the black, then each block rises a
+   few pixels after it. Nothing loops. */
+@media (prefers-reduced-motion: no-preference) {
+    .band { animation: fade 0.7s ease-out both; }
+    .r { animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--d) * 70ms + 120ms); }
+    @keyframes fade { from { opacity: 0; } }
+    @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after { transition: none !important; }
+}
+</style>

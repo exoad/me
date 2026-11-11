@@ -1,0 +1,17 @@
+---
+/** One photograph is its own address, so it can be linked to and reloaded. */
+import PhotosShell from "../../components/PhotosShell.astro";
+import { galleryPhotos } from "../../data/gallery";
+
+export function getStaticPaths() {
+    return galleryPhotos.map((photo, index) => ({ params: { id: photo.id }, props: { photo, index } }));
+}
+
+const { photo, index } = Astro.props;
+const position = `${String(index + 1).padStart(3, "0")} of ${galleryPhotos.length}`;
+---
+<PhotosShell
+    title={`${photo.date ?? "Photograph"} — ${position} | exoad`}
+    description={photo.note ?? `Photograph ${position}`}
+    path={`/photos/${photo.id}`}
+/>

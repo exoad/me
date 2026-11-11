@@ -9,8 +9,7 @@ import {
     type TouchEvent as ReactTouchEvent,
 } from "react";
 import { createPortal } from "react-dom";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import SEO from "../components/SEO";
+import { useLocation, useNavigate } from "../lib/url";
 import {
     galleryPhotos,
     formatAperture,
@@ -72,16 +71,18 @@ const formatDate = (date: string | null) => (date ? date.replaceAll("-", ".") : 
 
 function useColumnCount() {
     const query = useCallback(() => {
-        if (typeof window === "undefined") return 3;
         if (window.matchMedia("(max-width: 640px)").matches) return 1;
         if (window.matchMedia("(max-width: 1024px)").matches) return 2;
         return 3;
     }, []);
 
-    const [columns, setColumns] = useState(query);
+    // Three, as rendered at build time, until the first client effect measures
+    // the screen. The landing veil covers the reflow on a narrower one.
+    const [columns, setColumns] = useState(3);
 
     useEffect(() => {
         const onResize = () => setColumns(query());
+        onResize();
         window.addEventListener("resize", onResize);
         return () => window.removeEventListener("resize", onResize);
     }, [query]);
@@ -604,11 +605,24 @@ function Lightbox({ index, onNavigate, onClose }: {
     );
 }
 
-export default function PhotosPage() {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const { photoId } = useParams();
+const PHOTO_PATH = /^\/photos\/([^/]+)\/?$/;
+
+/**
+ * The gallery. Rendered to HTML at build time for the route it is built into
+ * (`initialPath`), then hydrated; the open photograph and the grid's page live
+ * in the address bar, so either can be linked to and reloaded back into.
+ */
+export default function Gallery({ initialPath = "/photos" }: { initialPath?: string }) {
+    const location = useLocation({ pathname: initialPath, search: "" });
+    const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+    const photoId = PHOTO_PATH.exec(location.pathname)?.[1];
     const navigate = useNavigate();
     const columns = useColumnCount();
+
+    // The viewer measures the window and portals into the body, so it only ever
+    // exists in the browser; the built HTML is always the grid.
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
 
     // Fades the page up out of black and holds the canvas black while we're here.
     usePhotosReveal();
@@ -657,7 +671,7 @@ export default function PhotosPage() {
     };
 
     const goToPage = (target: number) => {
-        setSearchParams(target === 1 ? {} : { p: String(target) }, { preventScrollReset: true });
+        navigate(target === 1 ? "/photos" : `/photos?p=${target}`);
         scrollToTop("auto");
     };
 
@@ -669,41 +683,31 @@ export default function PhotosPage() {
     // card — otherwise the title stays on "Photos" through every step.
     const activePhoto = lightboxIndex === null ? null : galleryPhotos[lightboxIndex];
 
+    // The open frame is the page now, so it names the tab; the built HTML for
+    // each route already carries its own title and card.
+    useEffect(() => {
+        document.title = activePhoto
+            ? `${formatDate(activePhoto.date)} — ${frameNo(lightboxIndex!)} of ${galleryPhotos.length} | exoad`
+            : "Photographs | exoad";
+    }, [activePhoto, lightboxIndex]);
+
     const openPhoto = useCallback(
-        (photo: GalleryPhoto) => navigate(`/photos/${photo.id}`, { state: { from: gridPath } }),
-        [navigate, gridPath],
+        (photo: GalleryPhoto) => navigate(`/photos/${photo.id}`),
+        [navigate],
     );
 
     // Stepping replaces rather than pushes: Back should return to the grid, not
     // walk you backwards through every frame you looked at.
     const stepToPhoto = useCallback(
         (target: number) =>
-            navigate(`/photos/${galleryPhotos[target].id}`, {
-                replace: true,
-                state: { from: gridPath },
-            }),
-        [navigate, gridPath],
+            navigate(`/photos/${galleryPhotos[target].id}`, { replace: true }),
+        [navigate],
     );
 
     const closePhoto = useCallback(() => navigate(gridPath), [navigate, gridPath]);
 
     return (
         <div className="ph">
-            <SEO
-                title={
-                    activePhoto
-                        ? `${formatDate(activePhoto.date)} — ${frameNo(lightboxIndex!)} of ${galleryPhotos.length}`
-                        : "Photos"
-                }
-                description={activePhoto?.note ?? strings.pages.photos.description}
-                url={
-                    activePhoto
-                        ? `https://exoad.net/photos/${activePhoto.id}`
-                        : "https://exoad.net/photos"
-                }
-                image={activePhoto?.largeSrc}
-            />
-
             <div className="ph-meta">
                 <h1 className="ph-title">Photos</h1>
                 <span className="ph-count">
@@ -760,9 +764,9 @@ export default function PhotosPage() {
             <footer className="ph-footer">
                 <span className="ph-label">{strings.footer.legals}</span>
                 <div className="ph-footer-links">
-                    <Link to="/" className="ph-label ph-step ph-step-prev">
+                    <a href="/" className="ph-label ph-step ph-step-prev">
                         ← exoad.net
-                    </Link>
+                    </a>
                     <button
                         type="button"
                         className="ph-label"
@@ -773,9 +777,10 @@ export default function PhotosPage() {
                 </div>
             </footer>
 
-            {lightboxIndex !== null &&
-                // Portaled out of ContentFade's transformed route wrapper, which
-                // would otherwise become the containing block for position:fixed.
+            {mounted &&
+                lightboxIndex !== null &&
+                // Portaled to the body so no transformed ancestor becomes the
+                // containing block for its position:fixed.
                 createPortal(
                     <Lightbox
                         index={lightboxIndex}
