@@ -59,10 +59,6 @@ for (const p of projects) {
     if (last && last.label === label) last.items.push(p);
     else periods.push({ label, items: [p] });
 }
-// Everything from 2023 back was written by hand, before AI tools; the timeline
-// says so once, where that stretch begins.
-const BEFORE_AI = 2023;
-const firstBeforeAi = periods.findIndex((g) => /^\d{4}$/.test(g.label) && Number(g.label) <= BEFORE_AI);
 
 // Jackbox's photographs open in a popover. Small copies for the page; each
 // links to its full original.
@@ -149,8 +145,7 @@ const jackbox = await Promise.all(
         <!-- A timeline: each period is named once where it starts, and a thin
              rule runs down beside everything in it. -->
         <ol class="timeline">
-            {periods.map((g, i) => (<>
-            {i === firstBeforeAi && <li class="era" aria-label="the projects below were written by hand, before ai"><span>written by hand, before ai</span></li>}
+            {periods.map((g) => (
             <li class="period">
                 <span class="when">{g.label}</span>
                 <ul class="projects">
@@ -171,7 +166,7 @@ const jackbox = await Promise.all(
             ))}
                 </ul>
             </li>
-            </>))}
+            ))}
         </ol>
         <p class="also">
             <span>also</span>
@@ -349,23 +344,6 @@ h2 {
     font-variant-numeric: tabular-nums;
     padding-top: 0.35em;
 }
-/* The one note on the timeline: where the hand-written stretch begins. */
-.era {
-    display: grid;
-    grid-template-columns: 3.4em minmax(0, 1fr);
-    gap: 0 1em;
-    margin-top: 0.6em;
-}
-.era span {
-    grid-column: 2;
-    display: flex;
-    align-items: center;
-    gap: 0.8em;
-    color: var(--dim);
-    font-size: 0.75em;
-    letter-spacing: 0.08em;
-}
-.era span::after { content: ""; flex: 1; height: 1px; background: #262626; }
 .projects {
     display: grid;
     gap: 0.35em;
@@ -452,8 +430,7 @@ footer {
 
 @media (max-width: 40em) {
     /* The period sits above its stretch; each description takes the line under its name. */
-    .period, .era { grid-template-columns: 1fr; gap: 0.4em; }
-    .era span { grid-column: 1; }
+    .period { grid-template-columns: 1fr; gap: 0.4em; }
     .when { padding-top: 0; }
     .projects { gap: 0.7em; }
     .projects li { display: block; }
