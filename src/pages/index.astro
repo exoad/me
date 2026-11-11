@@ -1,7 +1,7 @@
 ---
 import { getImage } from "astro:assets";
 import Base from "../layouts/Base.astro";
-import { projects, strings } from "../data/shared";
+import { alsoProjects, jackboxPhotos, projects, strings } from "../data/shared";
 import { galleryPhotos } from "../data/gallery";
 
 const EMAIL = "jackm@exoad.net";
@@ -12,6 +12,7 @@ const PHONE = 3;
 // Each frame's share of the band is its aspect ratio, so every photograph keeps
 // its own shape instead of being cropped to a common one.
 const recent = galleryPhotos.slice(0, BAND).map((p) => ({ ...p, weight: (p.thumbWidth / p.thumbHeight) * 12 }));
+const frameNo = (i: number) => String(i + 1).padStart(3, "0");
 const total = recent.reduce((sum, p) => sum + p.weight, 0);
 const phoneTotal = recent.slice(0, PHONE).reduce((sum, p) => sum + p.weight, 0);
 
@@ -34,6 +35,8 @@ const band = await Promise.all(
         const phone = `calc(100vw * ${p.weight.toFixed(2)} / ${phoneTotal.toFixed(2)})`;
         return {
             id: p.id,
+            label: `photo ${frameNo(i)} of ${galleryPhotos.length}${p.date ? `, ${p.date}` : ""}`,
+            blur: p.blur,
             src: img.src,
             srcset: img.srcSet.attribute,
             sizes: i < PHONE ? `(max-width: 34em) ${phone}, ${desk}` : desk,
@@ -43,56 +46,124 @@ const band = await Promise.all(
         };
     }),
 );
+
+// Jackbox's photographs open in a popover. Small copies for the page; each
+// links to its full original.
+const jackbox = await Promise.all(
+    jackboxPhotos.map(async (p) => {
+        const width = 560;
+        const height = Math.round((width * p.height) / p.width);
+        const img = await getImage({ src: p.src, width, height, format: "webp", quality: 70 });
+        return { ...p, thumb: img.src, thumbWidth: width, thumbHeight: height };
+    }),
+);
 ---
 <Base title="exoad — Jiaming Meng" description={strings.pages.home.about.content}>
+<Fragment slot="head">
+    <!-- The entrance waits until the page has actually painted, and replays when
+         the page comes back from the back/forward cache. Without JavaScript
+         none of this runs and the page simply shows. -->
+    <script is:inline>
+        (function () {
+            var d = document.documentElement;
+            d.classList.add("js");
+            function play() {
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () { d.classList.add("in"); });
+                });
+            }
+            play();
+            addEventListener("pageshow", function (e) {
+                if (!e.persisted) return;
+                d.classList.remove("in");
+                void d.offsetWidth;
+                play();
+            });
+        })();
+    </script>
+</Fragment>
+
 <header class="wrap top">
     <h1 class="r" style="--d:1">{strings.name}</h1>
+    <p class="handle r" style="--d:2">exoad</p>
     <nav class="r" style="--d:2" aria-label="site"><a href="/photos">photos <i aria-hidden="true">→</i></a></nav>
 </header>
 
-<a class="band" href="/photos" aria-label={`photos: the ${BAND} newest of ${galleryPhotos.length} photographs`}>
+<!-- Each frame opens its own photograph. Its few-byte blur paints at once and
+     the photograph fades in over it. -->
+<div class="band" role="group" aria-label={`the ${BAND} newest of ${galleryPhotos.length} photographs`}>
     {band.map((f, i) => (
-        <img
-            src={f.src}
-            srcset={f.srcset}
-            sizes={f.sizes}
-            width={f.width}
-            height={f.height}
-            style={`flex-grow:${f.weight.toFixed(2)}`}
-            alt=""
-            decoding="async"
-            loading={i < PHONE ? "eager" : "lazy"}
-            fetchpriority={i === 0 ? "high" : undefined}
-        />
+        <a href={`/photos/${f.id}`} aria-label={f.label} style={`--w:${f.weight.toFixed(2)};background-image:url(${f.blur})`}>
+            <img
+                src={f.src}
+                srcset={f.srcset}
+                sizes={f.sizes}
+                width={f.width}
+                height={f.height}
+                alt=""
+                decoding="async"
+                loading={i < PHONE ? "eager" : "lazy"}
+                fetchpriority={i === 0 ? "high" : undefined}
+            />
+        </a>
     ))}
-</a>
+</div>
 
 <main class="wrap">
-    <p class="intro r" style="--d:3">{strings.pages.home.about.content}</p>
+    <div class="lede r" style="--d:3">
+        <p class="intro">{strings.pages.home.about.content}</p>
+        <ul class="links" aria-label="elsewhere">
+            <li><a href={strings.links.github}>github</a></li>
+            <li><a href={strings.links.linkedin}>linkedin</a></li>
+            <li><a href={strings.links.x}>x</a></li>
+            <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+        </ul>
+    </div>
 
     <section class="r" style="--d:4" aria-labelledby="projects">
         <h2 id="projects">projects</h2>
         <ul class="projects">
             {projects.map((p) => (
                 <li>
-                    {p.link
-                        ? <a href={p.link} class="name ext">{p.title}</a>
-                        : <span class="name">{p.title}</span>}
+                    <span class="year">{p.years}</span>
+                    <span class="names">
+                        {p.title === "jackbox"
+                            ? <button type="button" class="name pop" popovertarget="jackbox">{p.title}</button>
+                            : p.link
+                                ? <a href={p.link} class="name ext">{p.title}</a>
+                                : <span class="name">{p.title}</span>}
+                        {p.pair && <><span class="slash" aria-hidden="true"> / </span>{p.pair.link
+                            ? <a href={p.pair.link} class="name ext">{p.pair.title}</a>
+                            : <span class="name">{p.pair.title}</span>}</>}
+                    </span>
                     <span class="desc">{p.description}</span>
                 </li>
             ))}
         </ul>
+        <p class="also">
+            <span>also</span>
+            {alsoProjects.map((p) => <a href={p.link}>{p.title}</a>)}
+        </p>
     </section>
-
-    <ul class="links r" style="--d:5" aria-label="elsewhere">
-        <li><a href={strings.links.github}>github</a></li>
-        <li><a href={strings.links.linkedin}>linkedin</a></li>
-        <li><a href={strings.links.x}>x</a></li>
-        <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
-    </ul>
 </main>
 
-<footer class="wrap r" style="--d:6">
+<div id="jackbox" popover class="sheet" aria-label="jackbox, in photographs">
+    <div class="sheet-head">
+        <p>jackbox <span>· the server, in four photographs. each opens full size.</span></p>
+        <button type="button" popovertarget="jackbox" popovertargetaction="hide">close</button>
+    </div>
+    <ul class="sheet-grid">
+        {jackbox.map((p) => (
+            <li>
+                <a href={p.src} aria-label={`${p.alt}, full size`}>
+                    <img src={p.thumb} width={p.thumbWidth} height={p.thumbHeight} alt={p.alt} loading="lazy" decoding="async" />
+                </a>
+            </li>
+        ))}
+    </ul>
+</div>
+
+<footer class="wrap r" style="--d:5">
     <span>{strings.footer.legals}</span>
     <span>source: <a href={strings.footer.source.url}>{strings.footer.source.url_attr}</a></span>
 </footer>
@@ -105,7 +176,7 @@ const band = await Promise.all(
     --fg: #fff;
     --bg: #000;
     --dim: #8f8f8f;
-    --line: #3d3d3d;
+    --line: #5a5a5a;
     --gutter: clamp(16px, 5vw, 64px);
     --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -128,6 +199,7 @@ a {
 a:hover, a:focus-visible { text-decoration-color: var(--fg); }
 :focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 ul { list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 
 .wrap {
     width: 100%;
@@ -137,33 +209,50 @@ ul { list-style: none; }
 }
 
 /* The band comes first on screen; in the document the name does, so a screen
-   reader meets the person before the photographs. */
+   reader meets the person before the photographs. On a tall screen the band
+   takes up the room the text leaves over, up to a cap. */
 .band {
     order: -1;
     display: flex;
     gap: 2px;
+    flex: 1 0 auto;
     height: clamp(96px, min(30dvh, 44vw), 360px);
-    text-decoration: none;
+    max-height: max(96px, min(42dvh, 44vw));
 }
-.band:focus-visible { outline-offset: -2px; }
-.band img {
-    flex: 1 1 0;
+.band a {
+    position: relative;
+    flex: var(--w) 1 0;
     min-width: 0;
-    width: 0;
+    background: #141414 center / cover no-repeat;
+    filter: grayscale(1);
+    transition: filter 0.5s ease, flex-grow 0.5s var(--ease);
+}
+.band a:hover, .band a:focus-visible { filter: none; }
+/* The focus ring is drawn over the photograph, which would cover the link's own. */
+.band a:focus-visible { outline: none; }
+.band a:focus-visible::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    outline: 2px solid var(--fg);
+    outline-offset: -2px;
+}
+.band img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
     height: 100%;
     object-fit: cover;
-    background: #141414;
-    filter: grayscale(1);
-    transition: filter 0.5s ease;
 }
-.band img:hover, .band:focus-visible img { filter: none; }
 
 .top {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    justify-content: space-between;
     gap: 0.25em 1.5em;
+    /* Whatever height the band cannot use is shared above the name and above
+       the footer, so the text sits balanced in the black. */
+    margin-top: auto;
     padding-top: clamp(18px, 4dvh, 44px);
 }
 h1 {
@@ -173,23 +262,51 @@ h1 {
     line-height: 0.92;
     text-wrap: balance;
 }
-nav a { color: var(--dim); text-decoration: none; transition: color 0.2s; }
+.handle { color: var(--dim); letter-spacing: 0.02em; }
+nav { margin-left: auto; }
+nav a {
+    display: inline-block;
+    min-height: 24px;
+    padding-block: 2px;
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.2s;
+}
 nav a:hover, nav a:focus-visible { color: var(--fg); }
 a i { display: inline-block; font-style: normal; transition: transform 0.25s var(--ease); }
 a:hover i, a:focus-visible i { transform: translateX(3px); }
 
-main { display: grid; gap: clamp(14px, 3dvh, 28px); padding-top: clamp(8px, 1.6dvh, 16px); }
+main { display: grid; gap: clamp(16px, 3.4dvh, 32px); padding-top: clamp(8px, 1.6dvh, 16px); }
+.lede { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35em 2em; }
 .intro { font-size: 1.15em; }
+.links { display: flex; flex-wrap: wrap; gap: 0.2em 1.25em; color: var(--dim); }
+.links a { color: var(--fg); }
 
 h2 {
     font-size: 0.75em;
     font-weight: 400;
     letter-spacing: 0.08em;
     color: var(--dim);
-    margin-bottom: 0.4em;
+    margin-bottom: 0.5em;
 }
-.projects { display: grid; gap: 0.3em; }
-.projects li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 0 1.25em; }
+
+/* Year, name, one line of description. The year is the quietest thing on the
+   row; it is there so the order reads as a timeline. */
+.projects { display: grid; gap: 0.35em; }
+.projects li {
+    display: grid;
+    grid-template-columns: 4.6em minmax(0, 11.5em) minmax(0, 1fr);
+    gap: 0 1.1em;
+    align-items: baseline;
+}
+.year {
+    color: var(--dim);
+    font-size: 0.8em;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+}
+.names { overflow-wrap: anywhere; }
+.slash { color: var(--dim); }
 .name { font-weight: 600; text-decoration: none; }
 .desc { color: var(--dim); }
 .ext::after {
@@ -202,8 +319,52 @@ h2 {
     transition: transform 0.25s var(--ease), color 0.2s;
 }
 .ext:hover::after, .ext:focus-visible::after { transform: translate(2px, -2px); color: var(--fg); }
+/* Jackbox opens in place rather than leaving: a small plus, not an arrow. */
+.pop { padding: 0; text-align: left; }
+.pop::after {
+    content: "+";
+    display: inline-block;
+    margin-left: 0.25em;
+    font-weight: 400;
+    color: var(--dim);
+    transition: transform 0.25s var(--ease), color 0.2s;
+}
+.pop:hover::after, .pop:focus-visible::after { transform: rotate(90deg); color: var(--fg); }
 
-.links { display: flex; flex-wrap: wrap; gap: 0.2em 1.25em; }
+.also { margin-top: 0.9em; display: flex; flex-wrap: wrap; gap: 0.2em 1em; color: var(--dim); }
+.also span { font-size: 0.75em; letter-spacing: 0.08em; align-self: center; margin-right: 0.15em; }
+.also a { color: var(--dim); transition: color 0.2s, text-decoration-color 0.2s; }
+.also a:hover, .also a:focus-visible { color: var(--fg); }
+
+/* Jackbox, in photographs: a native popover, so it opens, closes on Esc or a
+   click outside, and keeps focus sensible without any script. */
+.sheet {
+    margin: auto;
+    width: min(92vw, 52rem);
+    max-height: 88dvh;
+    overflow: auto;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid #2a2a2a;
+    padding: clamp(12px, 2.4vw, 20px);
+}
+.sheet::backdrop { background: rgb(0 0 0 / 0.78); }
+.sheet-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1em;
+    margin-bottom: 0.8em;
+}
+.sheet-head p { font-weight: 600; }
+.sheet-head span { color: var(--dim); font-weight: 400; }
+.sheet-head button { color: var(--dim); min-height: 24px; transition: color 0.2s; }
+.sheet-head button:hover, .sheet-head button:focus-visible { color: var(--fg); }
+/* Four across, like the band: a strip of frames, not a wall. */
+.sheet-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; }
+.sheet-grid a { display: block; background: #141414; filter: grayscale(1); transition: filter 0.5s ease; }
+.sheet-grid a:hover, .sheet-grid a:focus-visible { filter: none; }
+.sheet-grid img { display: block; width: 100%; height: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
 
 footer {
     margin-top: auto;
@@ -216,20 +377,47 @@ footer {
     padding-bottom: max(clamp(16px, 3dvh, 32px), env(safe-area-inset-bottom, 0px));
 }
 
+@media (max-width: 40em) {
+    /* The year moves beside the name; the description takes the line below. */
+    .projects { gap: 0.7em; }
+    .projects li { grid-template-columns: auto minmax(0, 1fr); gap: 0 0.7em; }
+    .desc { grid-column: 1 / -1; }
+}
 @media (max-width: 34em) {
-    .band img:nth-child(n + 4) { display: none; }
-    .projects { gap: 0.6em; }
-    .projects li { display: block; }
-    .desc { display: block; }
+    .band a:nth-child(n + 4) { display: none; }
+    /* The name takes its own line; the handle and the way to the photographs share the next. */
+    h1 { flex-basis: 100%; }
+    .sheet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* One entrance: the band fades up out of the black, then each block rises a
-   few pixels after it. Nothing loops. */
+/* One entrance: the band's blurs fade up out of the black and the photographs
+   fade in over them, then each block rises a few pixels. It waits for the
+   first paint (html.in) so a refresh shows it too, and nothing loops. An image
+   that is still loading when its fade ends simply appears. */
 @media (prefers-reduced-motion: no-preference) {
-    .band { animation: fade 0.7s ease-out both; }
-    .r { animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--d) * 70ms + 120ms); }
-    @keyframes fade { from { opacity: 0; } }
-    @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+    .js .band, .js .r { opacity: 0; }
+    .js.in .band { animation: fade 0.5s ease-out both; }
+    .js.in .band img { animation: fade 0.7s ease-out 0.2s both; }
+    .js.in .r { animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--d) * 70ms + 120ms); }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    /* The popover eases in. */
+    .sheet { transition: opacity 0.25s ease, transform 0.25s var(--ease), overlay 0.25s allow-discrete, display 0.25s allow-discrete; }
+    .sheet:not(:popover-open) { opacity: 0; transform: translateY(8px); }
+    @starting-style { .sheet:popover-open { opacity: 0; transform: translateY(8px); } }
+
+    /* Leaving for the gallery, or coming back: a short dissolve through black. */
+    @view-transition { navigation: auto; }
+    ::view-transition { background: #000; }
+    ::view-transition-old(root) { animation: vt-out 0.18s ease-in both; mix-blend-mode: normal; }
+    ::view-transition-new(root) { animation: vt-in 0.3s ease-out 0.16s both; mix-blend-mode: normal; }
+    @keyframes vt-out { to { opacity: 0; } }
+    @keyframes vt-in { from { opacity: 0; } }
+}
+/* The filmstrip: the frame under the pointer widens a little and the rest give way. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .band a:hover, .band a:focus-visible { flex-grow: calc(var(--w) * 1.22); }
 }
 @media (prefers-reduced-motion: reduce) {
     *, ::before, ::after { transition: none !important; }

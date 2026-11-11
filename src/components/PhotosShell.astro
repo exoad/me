@@ -42,6 +42,17 @@ const { title, description, path } = Astro.props;
                 35%, 60% { transform: rotate(45deg); }
                 95%, 100% { transform: rotate(90deg); }
             }
+            /* To and from the home page: a short dissolve through black. The
+               veil is already down in the frame the transition captures, so
+               the page arrives black and the veil lifts as it always does. */
+            @media (prefers-reduced-motion: no-preference) {
+                @view-transition { navigation: auto; }
+                ::view-transition { background: #000; }
+                ::view-transition-old(root) { animation: vt-out 0.18s ease-in both; mix-blend-mode: normal; }
+                ::view-transition-new(root) { animation: vt-in 0.3s ease-out 0.16s both; mix-blend-mode: normal; }
+                @keyframes vt-out { to { opacity: 0; } }
+                @keyframes vt-in { from { opacity: 0; } }
+            }
         </style>
         <script is:inline>
             document.documentElement.classList.add("is-photos-landing");
@@ -50,6 +61,21 @@ const { title, description, path } = Astro.props;
                 var veil = document.getElementById("veil");
                 if (veil) veil.classList.add("is-lifted");
             }, 4000);
+            // Back from another page, the browser restores this one as it was
+            // left, veil already lifted. Drop it and lift it again so returning
+            // to the gallery still lands out of black.
+            addEventListener("pageshow", function (e) {
+                if (!e.persisted) return;
+                var veil = document.getElementById("veil");
+                if (!veil) return;
+                veil.style.transition = "none";
+                veil.classList.remove("is-lifted");
+                void veil.offsetWidth;
+                veil.style.transition = "";
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () { veil.classList.add("is-lifted"); });
+                });
+            });
         </script>
     </Fragment>
     <!-- Without JavaScript nothing lifts the veil or fades the photographs in. -->

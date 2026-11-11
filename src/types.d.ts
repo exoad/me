@@ -10,6 +10,10 @@ export interface TProject {
     description: string;
     /** Absent for work with nowhere public to point at. */
     link?: string;
+    /** A sibling project shown on the same row. */
+    pair?: { title: string; link?: string };
+    /** What the page prints, e.g. "2025–26". */
+    years: string;
     featured: boolean;
     technologies: TTechnology[];
     state: TProjectState;

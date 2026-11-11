@@ -112,6 +112,17 @@ const oneLine = (s) => String(s ?? "").replace(/\s+/g, " ").trim();
 
 const abs = (path) => (path?.startsWith("http") ? path : `${ORIGIN}${path}`);
 
+/**
+ * The link-preview card for the home page and the gallery: public/og.jpg,
+ * drawn by scripts/og.mjs. A photograph's own page uses that photograph.
+ */
+const CARD = {
+    image: `${ORIGIN}/og.jpg`,
+    imageWidth: 1200,
+    imageHeight: 630,
+    imageAlt: "Jiaming Meng — the six newest photographs from exoad.net, in grey, above the name.",
+};
+
 const cdn = (variant, id) =>
     `https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/gallery/${variant}/${id}.webp`;
 
@@ -144,11 +155,13 @@ function buildPages({ shared, gallery, picks }) {
     const byYear = (a, b) => (b.year ?? 0) - (a.year ?? 0);
 
     const projectLine = (p) =>
-        `- **${p.title}**${p.year ? ` (${p.year}, ${p.state})` : ` (${p.state})`} — ${oneLine(
+        `- **${p.title}**${p.pair ? ` / **${p.pair.title}**` : ""} (${p.years ?? p.year}, ${p.state}) — ${oneLine(
             p.description,
         )}` +
         `${p.technologies?.length ? ` _[${p.technologies.map((t) => t.name).join(", ")}]_` : ""}` +
-        `${p.link ? ` — ${p.link}` : ""}`;
+        `${p.link ? ` — ${p.link}` : ""}` +
+        `${p.pair?.link ? ` and ${p.pair.link}` : ""}` +
+        `${p.title === "jackbox" && shared.jackboxPhotos ? ` — photographs: ${shared.jackboxPhotos.map((x) => x.src).join(", ")}` : ""}`;
 
     // html is a sibling file rather than a directory index on purpose: Pages
     // serves /photos straight from photos.html, but 308-redirects /photos to
@@ -162,15 +175,15 @@ function buildPages({ shared, gallery, picks }) {
         description: about,
         about: [
             "The home page, white type on black, read top to bottom: a full-width",
-            "band of the six newest photographs linking into the gallery; the name,",
-            "set large; a one-line introduction; the projects, one line each; and",
-            "links to GitHub, LinkedIn, X and an email address.",
+            "band of the six newest photographs, each opening in the gallery; the",
+            "name, set large; a one-line introduction beside links to GitHub,",
+            "LinkedIn, X and an email address; the projects, one line each with",
+            "their years, in the owner's order (jackbox opens four photographs of",
+            "the server in place); and a quiet line of smaller projects.",
         ].join("\n"),
-        // No dedicated card art exists, and a shared link with no image is a
-        // bare text card everywhere. The newest photograph is the site's own
-        // work and is at least true to it; swap in something purpose-made if
-        // one ever gets drawn.
-        image: gallery[0] ? cdn("large", gallery[0].id) : null,
+        // Drawn by scripts/og.mjs and committed: the newest photographs over
+        // the name, at the 1200x630 every unfurler asks for.
+        ...CARD,
         markdown: [
             "# Jiaming Meng (exoad)",
             "",
@@ -188,8 +201,13 @@ function buildPages({ shared, gallery, picks }) {
             "",
             "## Projects",
             "",
-            ...[...projects].sort(byYear).map(projectLine),
+            "In the owner's order: the first three by choice, the rest newest first.",
             "",
+            ...projects.map(projectLine),
+            "",
+            ...(shared.alsoProjects?.length
+                ? [`Also: ${shared.alsoProjects.map((p) => `${p.title} (${p.link})`).join(", ")}`, ""]
+                : []),
             mingAbout(shared.ming),
             "",
             "## Elsewhere on this site",
@@ -249,7 +267,7 @@ function buildPages({ shared, gallery, picks }) {
             "marks a photograph the photographer singled out, and the viewer prints",
             "his reason underneath it. Everything else is unmarked.",
         ].join("\n"),
-        image: gallery[0] ? cdn("large", gallery[0].id) : null,
+        ...CARD,
         markdown: [
             "# Photographs",
             "",
@@ -317,6 +335,10 @@ function buildPages({ shared, gallery, picks }) {
             title: `${p.date ?? "Photograph"} — ${position} | exoad`,
             description: note ?? [`Photograph ${position}`, p.date, settings].filter(Boolean).join(" · "),
             image: cdn("large", p.id),
+            // The large variant's long edge is 2000px, the size recorded here.
+            imageWidth: p.width,
+            imageHeight: p.height,
+            imageAlt: note ?? `A photograph by Jiaming Meng${p.date ? `, ${p.date}` : ""}.`,
             about: [
                 `One photograph from the gallery, open in the viewer: frame ${position}.`,
                 "Black page, the photograph centred, the camera body set against the",
@@ -439,11 +461,25 @@ function pageHtml(page, html, galleryCount) {
         `<meta property="og:locale" content="en_US" />`,
         `<meta name="twitter:site" content="@exoad_" />`,
         `<meta name="twitter:creator" content="@exoad_" />`,
-        ...(image ? [`<meta property="og:image" content="${esc(image)}" />`] : []),
+        ...(image
+            ? [
+                  `<meta property="og:image" content="${esc(image)}" />`,
+                  ...(page.imageWidth && page.imageHeight
+                      ? [
+                            `<meta property="og:image:width" content="${page.imageWidth}" />`,
+                            `<meta property="og:image:height" content="${page.imageHeight}" />`,
+                        ]
+                      : []),
+                  ...(page.imageAlt ? [`<meta property="og:image:alt" content="${esc(page.imageAlt)}" />`] : []),
+              ]
+            : []),
         `<meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}" />`,
         `<meta name="twitter:title" content="${esc(page.title)}" />`,
         `<meta name="twitter:description" content="${esc(page.description)}" />`,
         ...(image ? [`<meta name="twitter:image" content="${esc(image)}" />`] : []),
+        ...(image && page.imageAlt
+            ? [`<meta name="twitter:image:alt" content="${esc(page.imageAlt)}" />`]
+            : []),
         ...page.jsonLd.map(
             (block) =>
                 `<script type="application/ld+json">${JSON.stringify(block).replace(
@@ -663,17 +699,20 @@ function mcpData({ shared, gallery, picks }) {
                 xl: cdn("xl", p.id),
             },
         })),
-        projects: [...projects]
-            .sort((a, b) => (b.year ?? 0) - (a.year ?? 0))
-            .map((p) => ({
-                title: p.title,
-                year: p.year,
-                state: p.state,
-                featured: p.featured,
-                description: oneLine(p.description),
-                technologies: (p.technologies ?? []).map((t) => t.name),
-                link: p.link,
-            })),
+        // In the order the home page lists them.
+        projects: projects.map((p) => ({
+            title: p.title,
+            ...(p.pair ? { pair: p.pair } : {}),
+            year: p.year,
+            years: p.years,
+            state: p.state,
+            featured: p.featured,
+            description: oneLine(p.description),
+            technologies: (p.technologies ?? []).map((t) => t.name),
+            link: p.link ?? null,
+            ...(p.title === "jackbox" ? { photographs: (shared.jackboxPhotos ?? []).map((x) => x.src) } : {}),
+        })),
+        alsoProjects: shared.alsoProjects ?? [],
     });
 }
 
