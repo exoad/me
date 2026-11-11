@@ -157,7 +157,7 @@ export const alsoProjects: { title: string; link: string }[] = [
  * the photo bucket: the page shows small copies resized at build time, and each
  * links to the full original.
  */
-const JACKBOX_BASE = "https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/blog/server-build";
+const JACKBOX_BASE = "https://photos.exoad.net/blog/server-build";
 export const jackboxPhotos = [
     { src: `${JACKBOX_BASE}/img3.jpeg`, width: 1843, height: 2457, alt: "jackbox from the front" },
     { src: `${JACKBOX_BASE}/img1.jpg`, width: 3072, height: 4096, alt: "both gpus laid out before assembly" },

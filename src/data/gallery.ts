@@ -1,11 +1,10 @@
 import manifest from "./gallery.json";
 import { picks } from "./picks";
 
-// Web variants only — the bucket repo is public, so full-res originals are
-// never uploaded to it; they stay on the local machine.
-// jsDelivr serves the bucket straight off its CDN with a week of browser cache.
-// (statically.io, used before, now answers every request with a 301 to GitHub.)
-export const CDN_BASE = "https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/gallery";
+// Web variants only; full-res originals stay on the local machine. Served from
+// the exoad-photos R2 bucket on photos.exoad.net, cached at the edge and in the
+// browser for a year (a photo's id never changes what it points at).
+export const CDN_BASE = "https://photos.exoad.net/gallery";
 
 export interface GalleryPhoto {
     id: string;

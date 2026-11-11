@@ -15,7 +15,7 @@ export default defineConfig({
     integrations: [preact({ compat: true }), agentSurface()],
     image: {
         // The home page's photo band is resized from these at build time.
-        domains: ["cdn.jsdelivr.net"],
+        domains: ["photos.exoad.net"],
     },
     devToolbar: { enabled: false },
     // The gallery's interactions are its own; the home page is plain links.

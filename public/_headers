@@ -29,9 +29,13 @@
   Link: <https://exoad.net/photos.md>; rel="alternate"; type="text/markdown"; title="Markdown", <https://exoad.net/photos.json>; rel="alternate"; type="application/json"; title="Gallery data"
 
 # Markdown twins are served as text/markdown rather than as a download, so a
-# reader gets the content inline and a browser shows it as text.
+# reader gets the content inline and a browser shows it as text. A zone URL
+# rewrite rule also serves them from the page's own address when a request
+# asks for text/markdown (no Function runs for it); noindex keeps that copy
+# from competing with the HTML in search.
 /*.md
   Content-Type: text/markdown; charset=utf-8
+  X-Robots-Tag: noindex
 
 /llms.txt
   Content-Type: text/markdown; charset=utf-8

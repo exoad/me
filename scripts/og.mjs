@@ -7,14 +7,15 @@
 // large underneath. Re-run it after adding photographs so the card keeps
 // showing the newest ones.
 //
-// The type is rendered through SVG, so it comes out in whatever system font
-// the machine running this has (Segoe UI on Windows, Helvetica Neue on a Mac).
-// That is why the card is generated here and committed as a static file rather
-// than drawn during the Cloudflare build, whose fonts are unknown.
+// The name is set in the site's own face from scripts/fonts; the small
+// "exoad.net" goes through SVG in whatever system font this machine has. The
+// card is generated here and committed as a static file rather than drawn
+// during the Cloudflare build.
 
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 import sharp from "sharp";
+import opentype from "opentype.js";
 
 const W = 1200;
 const H = 630;
@@ -22,7 +23,8 @@ const BAND = 6;
 const BAND_H = 300;
 const GAP = 2;
 const GUTTER = 64;
-const CDN = "https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/gallery/thumb";
+// OG_CDN overrides where the thumbnails come from (e.g. a mirror while testing).
+const CDN = process.env.OG_CDN ?? "https://photos.exoad.net/gallery/thumb";
 const FONT = "'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const gallery = JSON.parse(readFileSync(resolve("src/data/gallery.json"), "utf8"));
@@ -59,10 +61,19 @@ const tiles = await Promise.all(
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const NAME_SIZE = 128;
 const BASELINE = 512;
+
+// The name in the site's own face, Bricolage Grotesque 800, from the same
+// letters-only subset the home page uses. It is turned into outlines here, so
+// the card comes out the same on any machine whatever fonts it has installed.
+// Tracking -30/1000 em matches the page's -0.03em.
+const nameFont = opentype.loadSync(resolve("scripts/fonts/bricolage-name-800.ttf"));
+const namePath = nameFont
+    .getPath("Jiaming Meng", GUTTER - 4, BASELINE, NAME_SIZE, { kerning: true, tracking: -30 })
+    .toPathData(2);
+
 const type = Buffer.from(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">` +
-        `<text x="${GUTTER - 6}" y="${BASELINE}" font-family="${FONT}" font-weight="700" ` +
-        `font-size="${NAME_SIZE}" letter-spacing="${-0.05 * NAME_SIZE}" fill="#fff">${esc("Jiaming Meng")}</text>` +
+        `<path d="${namePath}" fill="#fff"/>` +
         `<text x="${W - GUTTER}" y="${BASELINE}" text-anchor="end" font-family="${FONT}" ` +
         `font-size="30" letter-spacing="0.6" fill="#8f8f8f">${esc("exoad.net")}</text>` +
         `</svg>`,

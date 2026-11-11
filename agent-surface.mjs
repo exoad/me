@@ -124,7 +124,7 @@ const CARD = {
 };
 
 const cdn = (variant, id) =>
-    `https://cdn.jsdelivr.net/gh/meng-jack/me-pictures-bucket@main/gallery/${variant}/${id}.webp`;
+    `https://photos.exoad.net/gallery/${variant}/${id}.webp`;
 
 function shutter(seconds) {
     if (seconds == null) return null;

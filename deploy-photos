@@ -1,24 +1,38 @@
 #!/usr/bin/env bash
 # Deploy photo updates end-to-end:
 #   1. Process ~/Pictures/Gallery Picks into web variants + manifest
-#   2. Push the variants to meng-jack/me-pictures-bucket (the public CDN repo)
+#   2. Upload any variants the exoad-photos R2 bucket does not have yet
+#      (served at https://photos.exoad.net)
 #   3. Commit the updated manifest here and push, which triggers the
 #      Cloudflare Pages deploy
 #
 # Full-res originals never leave this machine — only the webp variants are
 # uploaded. Run with --dry-run to process and see what would change without
-# pushing anything.
+# uploading or pushing anything. Pass --force to re-upload every variant (only
+# needed if a photo was re-processed under the same id).
+#
+# Cost: uploads are R2 Class A operations (1M free a month); this sends only
+# what is missing, so a normal run is three writes per new photo plus one
+# listing call per 1000 objects.
+#
+# Requires the Cloudflare CLI (`cf`), logged in to the account that owns the
+# bucket.
 
 set -euo pipefail
 cd "$(dirname "$0")"
 
 PICKS_DIR="$HOME/Pictures/Gallery Picks"
 STAGING_DIR=".photo-staging"
-BUCKET_DIR="$STAGING_DIR/bucket"
-BUCKET_REMOTE="https://github.com/meng-jack/me-pictures-bucket.git"
+BUCKET="exoad-photos"
 
 DRY_RUN=0
-[[ "${1:-}" == "--dry-run" ]] && DRY_RUN=1
+FORCE=0
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) DRY_RUN=1 ;;
+    --force) FORCE=1 ;;
+  esac
+done
 
 if [[ ! -d "$PICKS_DIR" ]] || ! ls "$PICKS_DIR"/*.[jJ][pP]*[gG] >/dev/null 2>&1; then
   echo "error: no JPEGs found in $PICKS_DIR" >&2
@@ -28,34 +42,43 @@ fi
 echo "==> Processing $(ls "$PICKS_DIR"/*.[jJ][pP]*[gG] | wc -l | tr -d ' ') photos from Gallery Picks"
 node scripts/process-photos.mjs "$PICKS_DIR" "$STAGING_DIR"
 
-echo "==> Syncing bucket repo clone"
-if [[ -d "$BUCKET_DIR/.git" ]]; then
-  git -C "$BUCKET_DIR" fetch --depth 1 origin main
-  git -C "$BUCKET_DIR" reset --hard origin/main
-else
-  git clone --depth 1 "$BUCKET_REMOTE" "$BUCKET_DIR"
+echo "==> Listing what $BUCKET already holds"
+existing="$(mktemp)"
+trap 'rm -f "$existing"' EXIT
+if [[ $FORCE -eq 0 ]]; then
+  cursor=""
+  while :; do
+    args=(r2 objects list --bucket-name "$BUCKET" --prefix gallery/ --per-page 1000)
+    [[ -n "$cursor" ]] && args+=(--cursor "$cursor")
+    page="$(cf "${args[@]}" 2>&1)"
+    printf '%s' "$page" | node -e '
+      let t = require("fs").readFileSync(0, "utf8");
+      const i = t.indexOf("[");
+      if (i >= 0) for (const o of JSON.parse(t.slice(i))) console.log(o.key);
+    ' >> "$existing"
+    cursor="$(printf '%s' "$page" | node -e '
+      const t = require("fs").readFileSync(0, "utf8");
+      const m = t.match(/result_info: (\{.*\})/);
+      const info = m ? JSON.parse(m[1]) : {};
+      process.stdout.write(info.is_truncated && info.cursor ? info.cursor : "");
+    ')"
+    [[ -z "$cursor" ]] && break
+  done
 fi
 
-mkdir -p "$BUCKET_DIR/gallery"
-rsync -a --delete \
-  "$STAGING_DIR/gallery/thumb" \
-  "$STAGING_DIR/gallery/large" \
-  "$STAGING_DIR/gallery/xl" \
-  "$BUCKET_DIR/gallery/"
-
-if git -C "$BUCKET_DIR" status --porcelain | grep -q .; then
-  git -C "$BUCKET_DIR" add gallery
-  git -C "$BUCKET_DIR" commit -m "Update gallery variants ($(date +%Y-%m-%d))"
+uploads=0
+while IFS= read -r file; do
+  key="gallery/${file#"$STAGING_DIR/gallery/"}"
+  if grep -qxF "$key" "$existing"; then continue; fi
+  uploads=$((uploads + 1))
   if [[ $DRY_RUN -eq 1 ]]; then
-    echo "==> [dry-run] Would push to me-pictures-bucket:"
-    git -C "$BUCKET_DIR" show --stat --oneline HEAD | head -20
+    echo "    [dry-run] would upload $key"
   else
-    echo "==> Pushing variants to me-pictures-bucket"
-    git -C "$BUCKET_DIR" push origin HEAD:main
+    cf r2 objects put "$key" --bucket-name "$BUCKET" --file "$file" --content-type image/webp >/dev/null
+    echo "    uploaded $key"
   fi
-else
-  echo "==> Bucket already up to date"
-fi
+done < <(find "$STAGING_DIR/gallery/thumb" "$STAGING_DIR/gallery/large" "$STAGING_DIR/gallery/xl" -type f -name '*.webp' | sort)
+echo "==> $uploads variant(s) $([[ $DRY_RUN -eq 1 ]] && echo 'to upload' || echo 'uploaded')"
 
 if git status --porcelain src/data/gallery.json | grep -q .; then
   if [[ $DRY_RUN -eq 1 ]]; then
@@ -71,4 +94,4 @@ else
   echo "==> Manifest unchanged; nothing to deploy"
 fi
 
-echo "==> Done"
+echo "==> Done (re-run 'npm run og' if the newest photos changed, to refresh the link card)"

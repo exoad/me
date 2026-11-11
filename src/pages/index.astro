@@ -3,6 +3,9 @@ import { getImage } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import { alsoProjects, jackboxPhotos, projects, strings } from "../data/shared";
 import { galleryPhotos } from "../data/gallery";
+// Bricolage Grotesque 800, cut down to the letters of the name (about 1.8 KB).
+// Regenerate if the name changes: fonts.googleapis.com/css2?family=...&text=<name>
+import nameFont from "../assets/fonts/bricolage-name-800.woff2?url";
 
 const EMAIL = "jackm@exoad.net";
 const BAND = 6;
@@ -60,6 +63,9 @@ const jackbox = await Promise.all(
 ---
 <Base title="exoad — Jiaming Meng" description={strings.pages.home.about.content}>
 <Fragment slot="head">
+    <!-- Small enough that the build inlines it: the name's face arrives with
+         the page, no extra request and no flash of the fallback. -->
+    <style set:html={`@font-face{font-family:"Name";src:url(${nameFont}) format("woff2");font-weight:800;font-display:block;unicode-range:U+20,U+4A,U+4D,U+61,U+65,U+67,U+69,U+6D,U+6E;}`}></style>
     <!-- The entrance waits until the page has actually painted, and replays when
          the page comes back from the back/forward cache. Without JavaScript
          none of this runs and the page simply shows. -->
@@ -255,10 +261,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     margin-top: auto;
     padding-top: clamp(18px, 4dvh, 44px);
 }
+/* The one place with its own typeface: Bricolage Grotesque, heavy, at its
+   display optical size, set tight but not so tight its ink traps touch. */
 h1 {
+    font-family: "Name", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     font-size: clamp(2.6rem, min(8.5vw, 13dvh), 6.75rem);
-    font-weight: 700;
-    letter-spacing: -0.05em;
+    font-weight: 800;
+    letter-spacing: -0.03em;
     line-height: 0.92;
     text-wrap: balance;
 }
