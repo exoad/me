@@ -49,18 +49,14 @@ function mingAbout(ming) {
     return [
         "## Ming",
         "",
-        `${ming.name} is an agent, made by Jiaming Meng and kept at its own address`,
-        "rather than as a page of this site.",
+        `${ming.name} is a small agent Jiaming Meng built for himself. It is listed`,
+        "with his projects, and keeps its own address:",
         "",
         `- Site: ${ming.site}`,
         `- Contact: ${ming.email}`,
         "",
-        "Ming's own page describes itself in a line — agentic apostasy, \"wanting",
-        'things" — and documents no API and no tooling, so nothing further should be',
-        "assumed about what it can do. Ask Ming.",
-        "",
-        "It is offered as an alternative to reaching Jiaming directly, and to any",
-        "agent reading this that would rather talk to another agent.",
+        "It documents no API and no tooling, so nothing further should be assumed",
+        "about what it can do, and it may be slow to answer.",
     ].join("\n");
 }
 
@@ -149,7 +145,7 @@ function exposureLine(photo) {
 
 function buildPages({ shared, gallery, picks }) {
     const { strings, projects } = shared;
-    const about = oneLine(strings.pages.home.about.content);
+    const about = oneLine(strings.seo?.home ?? strings.pages.home.about.content);
     const newest = gallery[0]?.date ?? null;
 
     const byYear = (a, b) => (b.year ?? 0) - (a.year ?? 0);
@@ -171,7 +167,7 @@ function buildPages({ shared, gallery, picks }) {
         route: "/",
         html: "index.html",
         md: "index.md",
-        title: "exoad — Jiaming Meng",
+        title: "Jiaming Meng (exoad)",
         description: about,
         about: [
             "The home page, white type on black, read top to bottom: a full-width",
@@ -221,7 +217,7 @@ function buildPages({ shared, gallery, picks }) {
                 "@context": "https://schema.org",
                 "@type": "Person",
                 name: "Jiaming Meng",
-                alternateName: "exoad",
+                alternateName: strings.alternateNames ?? ["exoad"],
                 url: ORIGIN,
                 email: "mailto:jackm@exoad.net",
                 description: about,
@@ -252,7 +248,7 @@ function buildPages({ shared, gallery, picks }) {
         route: "/photos",
         html: "photos.html",
         md: "photos.md",
-        title: "Photographs | exoad",
+        title: "Photographs by Jiaming Meng | exoad",
         description: oneLine(strings.pages.photos.description),
         about: [
             "The gallery. Pure black background, white monospaced type, square",
@@ -334,8 +330,10 @@ function buildPages({ shared, gallery, picks }) {
             route: `/photos/${p.id}`,
             html: `photos/${p.id}.html`,
             md: `photos/${p.id}.md`,
-            title: `${p.date ?? "Photograph"} — ${position} | exoad`,
-            description: note ?? [`Photograph ${position}`, p.date, settings].filter(Boolean).join(" · "),
+            title: `Photograph ${String(i + 1).padStart(3, "0")}${p.date ? `, ${p.date}` : ""} | Jiaming Meng`,
+            description:
+                note ??
+                `A photograph by Jiaming Meng${p.date ? `, ${p.date}` : ""}.${settings ? ` ${settings}.` : ""} Frame ${position} in the gallery.`,
             image: cdn("large", p.id),
             // The large variant's long edge is 2000px, the size recorded here.
             imageWidth: p.width,
@@ -494,6 +492,8 @@ function pageHtml(page, html, galleryCount) {
     // Replacer functions, not strings: a string replacement reads "$&" or "$'"
     // in a title or description as a pattern.
     return html
+        // One description per page: drop whatever the layout wrote before adding ours.
+        .replace(/<meta name="description"[^>]*>\s*/gi, "")
         .replace(/<head>/i, () => `<head>\n${agentBanner(page, galleryCount)}`)
         .replace(/<title>[\s\S]*?<\/title>/i, () => `<title>${esc(page.title)}</title>`)
         .replace(/<\/head>/i, () => `${head}\n</head>`);
@@ -590,7 +590,7 @@ function llmsIndex(pages, { gallery, shared }) {
     return [
         "# exoad — Jiaming Meng",
         "",
-        `> ${oneLine(shared.strings.pages.home.about.content)}`,
+        `> ${oneLine(shared.strings.seo?.home ?? shared.strings.pages.home.about.content)}`,
         "",
         "## The site",
         "",
@@ -661,7 +661,7 @@ function mcpData({ shared, gallery, picks }) {
         site: {
             url: ORIGIN,
             owner: "Jiaming Meng (exoad)",
-            summary: oneLine(strings.pages.home.about.content),
+            summary: oneLine(strings.seo?.home ?? strings.pages.home.about.content),
             about: SITE_ABOUT,
             parts: {
                 home: ORIGIN + "/",

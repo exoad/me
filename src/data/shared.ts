@@ -13,19 +13,29 @@ const tech = (name: string): TTechnology => ({ name });
 const gh = (repo: string) => `https://github.com/exoad/${repo}`;
 
 /**
- * In the owner's order: the first three are what is on the go now, the rest run
+ * In the owner's order: what is on the go now (bibo, ming, kira), then the rest
  * newest first. The page groups them by `period` (an explicit one, or the start
  * year) along a timeline; `years` is the full span, for the machine-readable
  * copies.
  */
 export const projects: TProject[] = [
     {
-        title: "espmon",
+        // Not public yet: named, nothing more.
+        title: "bibo",
         period: "now",
-        pair: { title: "picomon", link: gh("picomon") },
-        description: "esp32 and rp2350 libraries, written in kira.",
-        link: gh("espmon"),
-        technologies: [tech("Kira")],
+        description: "being built.",
+        technologies: [],
+        featured: true,
+        state: "active",
+        year: 2026,
+        years: "2026",
+    },
+    {
+        title: "ming",
+        period: "now",
+        description: "a little agent i built for myself. powered by a 10-gpu space heater in my room.",
+        link: ming.site,
+        technologies: [],
         featured: true,
         state: "active",
         year: 2026,
@@ -44,24 +54,13 @@ export const projects: TProject[] = [
         years: "2025–26",
     },
     {
-        title: "ming",
-        period: "now",
-        description: "a little agent i built for myself. powered by a 10-gpu space heater in my room.",
-        link: ming.site,
-        technologies: [],
+        title: "espmon",
+        pair: { title: "picomon", link: gh("picomon") },
+        description: "esp32 and rp2350 libraries, written in kira.",
+        link: gh("espmon"),
+        technologies: [tech("Kira")],
         featured: true,
-        state: "active",
-        year: 2026,
-        years: "2026",
-    },
-    {
-        // Not public yet: named, nothing more.
-        title: "bibo",
-        period: "now",
-        description: "being built.",
-        technologies: [],
-        featured: true,
-        state: "active",
+        state: "finished",
         year: 2026,
         years: "2026",
     },
@@ -235,6 +234,13 @@ export const jackboxPhotos = [
 
 export const strings = {
     name: "Jiaming Meng",
+    // Also known as, for search: the handle, and the name most people use.
+    alternateNames: ["exoad", "Jack Meng"],
+    // What search results and link cards say about the home page. Not shown on
+    // the page itself, so it can say a little more, in the same voice.
+    seo: {
+        home: "jiaming meng (exoad). i build for fun: programming languages, renderers, small agents and hardware. i also photograph cities.",
+    },
     links: {
         github: "https://github.com/exoad",
         github_aria: "My GitHub Profile",
@@ -267,7 +273,7 @@ export const strings = {
         },
         photos: {
             description:
-                "A collection of photos that I have captured as a hobbyist photographer and deemed worthy of sharing :).",
+                "photographs by jiaming meng (exoad). mostly cities and buildings, all on an olympus e-m10 mark ii.",
         },
     },
 };
