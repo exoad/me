@@ -30,3 +30,6 @@ dist-ssr
 
 # Astro
 .astro/
+
+# Local agent planning notes; not part of the site.
+.agents/

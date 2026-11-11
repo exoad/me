@@ -105,7 +105,7 @@ if (modelContext?.provideContext) {
             execute: async ({ page }) => {
                 const path = page === "photos" ? "/photos" : "/";
                 window.location.assign(path);
-                return text({ navigatedTo: `https://exoad.net${path}` });
+                return text({ navigatedTo: new URL(path, location.origin).href });
             },
         },
     ];

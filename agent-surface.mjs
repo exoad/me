@@ -453,10 +453,12 @@ function pageHtml(page, html, galleryCount) {
         ),
     ].join("\n  ");
 
+    // Replacer functions, not strings: a string replacement reads "$&" or "$'"
+    // in a title or description as a pattern.
     return html
-        .replace(/<head>/i, `<head>\n${agentBanner(page, galleryCount)}`)
-        .replace(/<title>[\s\S]*?<\/title>/i, `<title>${esc(page.title)}</title>`)
-        .replace(/<\/head>/i, `${head}\n</head>`);
+        .replace(/<head>/i, () => `<head>\n${agentBanner(page, galleryCount)}`)
+        .replace(/<title>[\s\S]*?<\/title>/i, () => `<title>${esc(page.title)}</title>`)
+        .replace(/<\/head>/i, () => `${head}\n</head>`);
 }
 
 /**
@@ -744,8 +746,8 @@ function agentSkill(gallery) {
         "",
         "# Reading exoad.net",
         "",
-        "The site is a client-rendered SPA: fetching a page returns a shell with no",
-        "content in it. Do not scrape the HTML. Use these instead.",
+        "Every page is plain prerendered HTML, but the same content is published as",
+        "text and data, which is easier to read than markup. Use these.",
         "",
         "## The whole site as text",
         "",

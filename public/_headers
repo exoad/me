@@ -2,18 +2,31 @@
 # be able to find the markdown copy of a page and the site's llms.txt index,
 # without parsing any HTML first.
 
+#
+# The security headers are the ones a static site with no logins and no forms
+# can carry without breaking anything: no framing, no plugins, no foreign base
+# URL, HTTPS remembered for a year. There is deliberately no script-src yet:
+# Astro's island loader and Cloudflare's analytics beacon are inline, and a
+# hash list that goes stale on the next build would take the gallery down.
+# HSTS leaves out includeSubDomains until every subdomain serves HTTPS.
+
 /*
   Link: <https://exoad.net/llms.txt>; rel="llms-txt"; type="text/markdown"
   X-Content-Type-Options: nosniff
-
-/photos
-  Link: <https://exoad.net/photos.json>; rel="alternate"; type="application/json"; title="Gallery data"
+  Strict-Transport-Security: max-age=31536000
+  Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+  Cross-Origin-Opener-Policy: same-origin
 
 /
   Link: <https://exoad.net/index.md>; rel="alternate"; type="text/markdown"; title="Markdown"
 
+# One block per path: a second /photos block replaces the first rather than
+# adding to it.
 /photos
-  Link: <https://exoad.net/photos.md>; rel="alternate"; type="text/markdown"; title="Markdown"
+  Link: <https://exoad.net/photos.md>; rel="alternate"; type="text/markdown"; title="Markdown", <https://exoad.net/photos.json>; rel="alternate"; type="application/json"; title="Gallery data"
 
 # Markdown twins are served as text/markdown rather than as a download, so a
 # reader gets the content inline and a browser shows it as text.

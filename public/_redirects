@@ -7,4 +7,10 @@
 # unable to tell a wrong URL from a right one.
 #
 # Unmatched requests fall through to 404.html, which Cloudflare Pages serves
-# with a real 404. React still boots there and renders the NotFound page.
+# with a real 404.
+
+# The blog was retired. Its old addresses send readers home rather than to a
+# dead end; feed.xml is left to 404 so feed readers report it plainly.
+/blog       /   301
+/blog.md    /   301
+/blog/*     /   301

@@ -52,6 +52,8 @@ const { title, description, path } = Astro.props;
             }, 4000);
         </script>
     </Fragment>
+    <!-- Without JavaScript nothing lifts the veil or fades the photographs in. -->
+    <noscript><style is:inline>html.is-photos-landing #veil { display: none; } .ph-photo { opacity: 1 !important; } .ph-blur { display: none; }</style></noscript>
     <div id="veil"><span id="veil-mark"></span></div>
     <Gallery client:load initialPath={path} />
 </Base>
