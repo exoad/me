@@ -1,7 +1,7 @@
 # Deliberately no catch-all rewrite.
 #
-# Every route is built as its own file (index.html, photos.html, blog.html,
-# blog/<slug>.html), so nothing needs rewriting to boot the app — and sending
+# Every route is built as its own file (index.html, photos.html,
+# photos/<id>.html), so nothing needs rewriting to boot the app — and sending
 # `/* /index.html 200` would answer 200 for every mistyped path, which invites a
 # search engine to index an unbounded set of duplicate pages and leaves an agent
 # unable to tell a wrong URL from a right one.

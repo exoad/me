@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { galleryPhotos, formatShutter } from "../data/gallery";
 import { projects, strings } from "../data/shared";
-import { loadAllBlogPosts } from "../utils/markdown";
 
 /**
  * Exposes the site's own data to an agent running in the browser, via WebMCP.
@@ -72,13 +71,11 @@ export function useWebMcp() {
                         parts: {
                             home: "https://exoad.net/",
                             photographs: "https://exoad.net/photos",
-                            writing: "https://exoad.net/blog",
                         },
                         machineReadable: {
                             index: "https://exoad.net/llms.txt",
                             everythingInlined: "https://exoad.net/llms-full.txt",
                             gallery: "https://exoad.net/photos.json",
-                            feed: "https://exoad.net/feed.xml",
                             markdown:
                                 "Append .md to any page path, or send Accept: text/markdown.",
                         },
@@ -170,28 +167,6 @@ export function useWebMcp() {
                 },
             },
             {
-                name: "list_posts",
-                description:
-                    "The writing on exoad.net. Each entry links to the full text, which is " +
-                    "also published as markdown at the same path with .md appended.",
-                inputSchema: { type: "object", properties: {} },
-                execute: async () => {
-                    const posts = await loadAllBlogPosts().catch(() => []);
-                    return textResult({
-                        count: posts.length,
-                        posts: posts.map((post) => ({
-                            title: post.title,
-                            slug: post.slug,
-                            date: post.date,
-                            tags: post.tags,
-                            excerpt: post.excerpt,
-                            url: `https://exoad.net/blog/${post.slug}`,
-                            markdown: `https://exoad.net/blog/${post.slug}.md`,
-                        })),
-                    });
-                },
-            },
-            {
                 name: "open_page",
                 description:
                     "Move the browser to a page of exoad.net. The only tool here that acts; " +
@@ -201,23 +176,12 @@ export function useWebMcp() {
                     properties: {
                         page: {
                             type: "string",
-                            enum: ["home", "photos", "blog"],
-                        },
-                        postSlug: {
-                            type: "string",
-                            description: "Open one post instead, by slug.",
+                            enum: ["home", "photos"],
                         },
                     },
                 },
-                execute: async ({ page, postSlug }) => {
-                    const path =
-                        typeof postSlug === "string" && postSlug
-                            ? `/blog/${postSlug}`
-                            : page === "photos"
-                              ? "/photos"
-                              : page === "blog"
-                                ? "/blog"
-                                : "/";
+                execute: async ({ page }) => {
+                    const path = page === "photos" ? "/photos" : "/";
                     navigate(path);
                     return textResult({ navigatedTo: `https://exoad.net${path}` });
                 },

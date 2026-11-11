@@ -15,9 +15,8 @@
 //   dist/photos.json          every frame: all variant URLs, EXIF, notes
 //   dist/sitemap.xml          real lastmod dates, every route and post
 
-import { readFileSync, readdirSync, writeFileSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve } from "path";
-import matter from "gray-matter";
 import { build as esbuild } from "esbuild";
 import { createHash } from "crypto";
 
@@ -32,15 +31,14 @@ const ORIGIN = "https://exoad.net";
  */
 const SITE_ABOUT = [
     "exoad.net is the personal site of Jiaming Meng, who writes software and",
-    "photographs cities. It is a small static site with three parts: a home page,",
-    "a blog, and a photo gallery.",
+    "photographs cities. It is a small static site with two parts: a home page",
+    "and a photo gallery.",
     "",
-    "It is built in two deliberately unlike halves. The home page and the blog are",
-    "a plain document — a single narrow column of dark serif text on a cream",
-    "background, blue links, hairline rules, no ornament. The gallery is the",
-    "opposite and is meant to be: pure black, white monospaced type, square",
-    "corners, and none of the site's navigation, so that nothing competes with the",
-    "photographs.",
+    "Both are black and white. The home page is a plain document — a single",
+    "narrow column of black text on white, underlined black links, hairline",
+    "rules, no ornament. The gallery inverts it: pure black, white monospaced",
+    "type, square corners, and none of the site's navigation, so that nothing",
+    "competes with the photographs.",
 ].join("\n");
 
 /**
@@ -68,7 +66,6 @@ function mingAbout(ming) {
     ].join("\n");
 }
 
-const BLOG_DIR = resolve("src/content/blog");
 const INDEX_HTML = resolve("dist/index.html");
 
 /* ---------- reading the site's own data ---------- */
@@ -124,29 +121,6 @@ async function loadTsModule(entry, ...plugins) {
     return import(`data:text/javascript;base64,${source}`);
 }
 
-function loadBlogPosts() {
-    try {
-        return readdirSync(BLOG_DIR)
-            .filter((f) => f.endsWith(".md"))
-            .map((f) => {
-                const raw = readFileSync(resolve(BLOG_DIR, f), "utf8");
-                const { data, content } = matter(raw);
-                return {
-                    slug: f.replace(/\.md$/, ""),
-                    title: data.title || f,
-                    excerpt: data.excerpt || "",
-                    date: data.date || "",
-                    tags: data.tags || [],
-                    coverImage: data.cover_image || null,
-                    body: content.trim(),
-                };
-            })
-            .sort((a, b) => String(b.date).localeCompare(String(a.date)));
-    } catch {
-        return [];
-    }
-}
-
 function loadGallery() {
     try {
         return JSON.parse(readFileSync(resolve("src/data/gallery.json"), "utf8"));
@@ -193,8 +167,8 @@ function exposureLine(photo) {
 
 /* ---------- page definitions ---------- */
 
-function buildPages({ shared, posts, gallery, picks }) {
-    const { strings, projects, featuredProjects } = shared;
+function buildPages({ shared, gallery, picks }) {
+    const { strings, projects } = shared;
     const about = oneLine(strings.pages.home.about.content);
     const newest = gallery[0]?.date ?? null;
 
@@ -218,12 +192,10 @@ function buildPages({ shared, posts, gallery, picks }) {
         title: "exoad — Jiaming Meng",
         description: about,
         about: [
-            "The home page. One narrow column of dark serif text on a cream",
-            "background, read top to bottom, in this order: a tagline with links to",
-            "GitHub, LinkedIn and X; a paragraph of background; a row of the six",
-            "newest photographs linking into the gallery; the two most recent posts;",
-            "every project as a collapsible row showing its languages, year and",
-            "state; and two contact addresses.",
+            "The home page. One narrow column of black text on white, read top to",
+            "bottom, in this order: a one-line introduction; a row of the six newest",
+            "photographs linking into the gallery; the projects, one line each; and",
+            "links to GitHub, LinkedIn, X and an email address.",
         ].join("\n"),
         // No dedicated card art exists, and a shared link with no image is a
         // bare text card everywhere. The newest photograph is the site's own
@@ -245,20 +217,15 @@ function buildPages({ shared, posts, gallery, picks }) {
             `- Email: jackm@exoad.net`,
             `- Source of this site: ${strings.footer.source.url}`,
             "",
-            "## Featured projects",
+            "## Projects",
             "",
-            ...[...featuredProjects].sort(byYear).map(projectLine),
-            "",
-            "## All projects",
-            "",
-            ...projects.filter((p) => !p.featured).sort(byYear).map(projectLine),
+            ...[...projects].sort(byYear).map(projectLine),
             "",
             mingAbout(shared.ming),
             "",
             "## Elsewhere on this site",
             "",
             `- [Photographs](${ORIGIN}/photos) — ${gallery.length} frames`,
-            `- [Writing](${ORIGIN}/blog) — ${posts.length} post${posts.length === 1 ? "" : "s"}`,
         ].join("\n"),
         jsonLd: [
             {
@@ -309,7 +276,7 @@ function buildPages({ shared, posts, gallery, picks }) {
             "set against the left edge, the exposure settings against the right, and",
             "the frame number and controls along the bottom.",
             "",
-            "A few frames carry a small gold triangle in their top-left corner. That",
+            "A few frames carry a small white triangle in their top-left corner. That",
             "marks a photograph the photographer singled out, and the viewer prints",
             "his reason underneath it. Everything else is unmarked.",
         ].join("\n"),
@@ -368,94 +335,6 @@ function buildPages({ shared, posts, gallery, picks }) {
         ],
     };
 
-    const blogIndex = {
-        route: "/blog",
-        html: "blog.html",
-        md: "blog.md",
-        title: "Writing | exoad",
-        description: oneLine(strings.pages.blog.description),
-        about: [
-            "The writing index: every post as a title, date and tags on a cream",
-            "background, in the same plain document style as the home page. The full",
-            "text of each post is a separate page, and is published as markdown at",
-            "the same path with .md appended.",
-        ].join("\n"),
-        image: posts[0]?.coverImage ? abs(posts[0].coverImage) : null,
-        markdown: [
-            "# Writing",
-            "",
-            `> ${oneLine(strings.pages.blog.description)}`,
-            "",
-            ...posts.flatMap((p) => [
-                `## [${p.title}](${ORIGIN}/blog/${p.slug})`,
-                "",
-                `${p.date}${p.tags?.length ? ` · ${p.tags.join(", ")}` : ""}`,
-                "",
-                oneLine(p.excerpt),
-                "",
-                `Full text: ${ORIGIN}/blog/${p.slug}.md`,
-                "",
-            ]),
-        ].join("\n"),
-        jsonLd: [
-            {
-                "@context": "https://schema.org",
-                "@type": "Blog",
-                name: "exoad — Writing",
-                url: `${ORIGIN}/blog`,
-                author: { "@type": "Person", name: "Jiaming Meng", url: ORIGIN },
-                blogPost: posts.map((p) => ({
-                    "@type": "BlogPosting",
-                    headline: p.title,
-                    url: `${ORIGIN}/blog/${p.slug}`,
-                    datePublished: p.date,
-                    keywords: p.tags,
-                    abstract: oneLine(p.excerpt),
-                })),
-            },
-        ],
-    };
-
-    const postPages = posts.map((post) => ({
-        route: `/blog/${post.slug}`,
-        html: `blog/${post.slug}.html`,
-        md: `blog/${post.slug}.md`,
-        title: `${post.title} | exoad`,
-        description: oneLine(post.excerpt),
-        image: post.coverImage ? abs(post.coverImage) : `${ORIGIN}/og-${post.slug}.jpg`,
-        ogType: "article",
-        about: [
-            "One article, set as a single column of serif text on cream, with",
-            "headings, code blocks and images inline. The whole of it — not an",
-            "excerpt — is published as markdown at this path with .md appended.",
-        ].join("\n"),
-        markdown: [
-            `# ${post.title}`,
-            "",
-            `> ${oneLine(post.excerpt)}`,
-            "",
-            `Published ${post.date}${post.tags?.length ? ` · ${post.tags.join(", ")}` : ""}`,
-            "",
-            post.body,
-        ].join("\n"),
-        jsonLd: [
-            {
-                "@context": "https://schema.org",
-                "@type": "BlogPosting",
-                headline: post.title,
-                url: `${ORIGIN}/blog/${post.slug}`,
-                datePublished: post.date,
-                dateModified: post.date,
-                keywords: post.tags,
-                abstract: oneLine(post.excerpt),
-                author: { "@type": "Person", name: "Jiaming Meng", url: ORIGIN },
-                publisher: { "@type": "Person", name: "Jiaming Meng", url: ORIGIN },
-                ...(post.coverImage ? { image: abs(post.coverImage) } : {}),
-            },
-        ],
-        lastmod: post.date,
-    }));
-
     // One page per photograph. A shared link should unfurl as that photograph
     // rather than as the gallery, and reload back into it.
     const photoPages = gallery.map((p, i) => {
@@ -475,7 +354,7 @@ function buildPages({ shared, posts, gallery, picks }) {
                 "left edge and the exposure settings against the right.",
                 note ? "" : null,
                 note ? "This is one the photographer singled out; the gallery marks it" : null,
-                note ? "with a gold corner and prints the reason under it." : null,
+                note ? "with a white corner and prints the reason under it." : null,
             ]
                 .filter((line) => line !== null)
                 .join("\n"),
@@ -521,7 +400,7 @@ function buildPages({ shared, posts, gallery, picks }) {
         };
     });
 
-    return [home, photos, blogIndex, ...postPages, ...photoPages];
+    return [home, photos, ...photoPages];
 }
 
 /* ---------- emitting ---------- */
@@ -598,7 +477,6 @@ function pageHtml(page, baseHtml, galleryCount) {
         `<meta property="og:locale" content="en_US" />`,
         `<meta name="twitter:site" content="@exoad_" />`,
         `<meta name="twitter:creator" content="@exoad_" />`,
-        `<link rel="alternate" type="application/rss+xml" href="${esc(`${ORIGIN}/feed.xml`)}" title="exoad — Writing" />`,
         ...(image ? [`<meta property="og:image" content="${esc(image)}" />`] : []),
         `<meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}" />`,
         `<meta name="twitter:title" content="${esc(page.title)}" />`,
@@ -658,7 +536,7 @@ function photosJson(gallery, picks) {
                     "photographs in a staggered grid, 24 to a screen, each opening " +
                     "into a full-screen viewer with its camera settings beside it. " +
                     "The frames carrying a note are the ones the photographer " +
-                    "singled out; the gallery marks them with a gold corner.",
+                    "singled out; the gallery marks them with a white corner.",
                 photographer: "Jiaming Meng (exoad)",
             },
             page: `${ORIGIN}/photos`,
@@ -725,7 +603,7 @@ function withPageContext(page) {
     ].join("\n");
 }
 
-function llmsIndex(pages, { posts, gallery, shared }) {
+function llmsIndex(pages, { gallery, shared }) {
     return [
         "# exoad — Jiaming Meng",
         "",
@@ -742,7 +620,6 @@ function llmsIndex(pages, { posts, gallery, shared }) {
         "",
         `- [Home](${ORIGIN}/index.md): projects, links, and background`,
         `- [Photographs](${ORIGIN}/photos.md): all ${gallery.length} frames — image URL, capture date and camera settings, one row each`,
-        `- [Writing](${ORIGIN}/blog.md): index of ${posts.length} post${posts.length === 1 ? "" : "s"}`,
         "",
         mingAbout(shared.ming),
         "",
@@ -765,49 +642,10 @@ function llmsIndex(pages, { posts, gallery, shared }) {
         "",
         "The images are fetchable directly — nothing about them is behind the app.",
         "",
-        "## Posts",
-        "",
-        ...posts.map((p) => `- [${p.title}](${ORIGIN}/blog/${p.slug}.md): ${oneLine(p.excerpt)}`),
-        "",
         "## Optional",
         "",
         `- [Everything inlined](${ORIGIN}/llms-full.txt): every page above in one file`,
         `- [Sitemap](${ORIGIN}/sitemap.xml): every page, plus every photograph as an image entry`,
-        `- [RSS](${ORIGIN}/feed.xml): the writing, as a feed`,
-        "",
-    ].join("\n");
-}
-
-/**
- * RSS for the writing. Readers and aggregators expect one at a stable path, and
- * a blog without a feed is a blog nobody can subscribe to.
- */
-function feedXml(posts) {
-    const rfc822 = (date) => {
-        const d = new Date(`${date}T12:00:00Z`);
-        return Number.isNaN(d.getTime()) ? "" : d.toUTCString();
-    };
-    return [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
-        "  <channel>",
-        "    <title>exoad — Writing</title>",
-        `    <link>${ORIGIN}/blog</link>`,
-        "    <description>Thoughts, writeups, and technical deep dives by Jiaming Meng.</description>",
-        "    <language>en-us</language>",
-        `    <atom:link href="${ORIGIN}/feed.xml" rel="self" type="application/rss+xml" />`,
-        ...posts.flatMap((post) => [
-            "    <item>",
-            `      <title>${esc(post.title)}</title>`,
-            `      <link>${ORIGIN}/blog/${post.slug}</link>`,
-            `      <guid isPermaLink="true">${ORIGIN}/blog/${post.slug}</guid>`,
-            `      <pubDate>${rfc822(post.date)}</pubDate>`,
-            `      <description>${esc(oneLine(post.excerpt))}</description>`,
-            ...post.tags.map((t) => `      <category>${esc(t)}</category>`),
-            "    </item>",
-        ]),
-        "  </channel>",
-        "</rss>",
         "",
     ].join("\n");
 }
@@ -834,7 +672,7 @@ function notFoundHtml(baseHtml, page, galleryCount) {
  * Generated rather than hand-kept so the server and the pages can never
  * disagree: both are downstream of the same source.
  */
-function mcpData({ shared, posts, gallery, picks }) {
+function mcpData({ shared, gallery, picks }) {
     const { strings, projects, ming } = shared;
     return JSON.stringify({
         site: {
@@ -845,13 +683,11 @@ function mcpData({ shared, posts, gallery, picks }) {
             parts: {
                 home: ORIGIN + "/",
                 photographs: ORIGIN + "/photos",
-                writing: ORIGIN + "/blog",
             },
             machineReadable: {
                 index: ORIGIN + "/llms.txt",
                 everythingInlined: ORIGIN + "/llms-full.txt",
                 gallery: ORIGIN + "/photos.json",
-                feed: ORIGIN + "/feed.xml",
                 markdown: "Append .md to any page path, or send Accept: text/markdown.",
             },
         },
@@ -893,15 +729,6 @@ function mcpData({ shared, posts, gallery, picks }) {
                 technologies: (p.technologies ?? []).map((t) => t.name),
                 link: p.link,
             })),
-        posts: posts.map((post) => ({
-            title: post.title,
-            slug: post.slug,
-            date: post.date,
-            tags: post.tags,
-            excerpt: oneLine(post.excerpt),
-            url: `${ORIGIN}/blog/${post.slug}`,
-            markdown: `${ORIGIN}/blog/${post.slug}.md`,
-        })),
     });
 }
 
@@ -950,7 +777,7 @@ function mcpServerCard() {
             capabilities: { tools: true, resources: false, prompts: false },
             description:
                 "Read-only access to exoad.net: its photographs and the settings they " +
-                "were shot at, its projects, and its writing.",
+                "were shot at, and its projects.",
             authentication: { required: false },
             documentation: `${ORIGIN}/llms.txt`,
         },
@@ -969,7 +796,7 @@ function agentSkill(gallery) {
     return [
         "---",
         "name: read-exoad",
-        "description: Read exoad.net's photographs, projects and writing without scraping the site",
+        "description: Read exoad.net's photographs and projects without scraping the site",
         "---",
         "",
         "# Reading exoad.net",
@@ -997,13 +824,13 @@ function agentSkill(gallery) {
         "```",
         "",
         "The images are fetchable directly. A `note` field is set only on the few",
-        "frames the photographer singled out; the gallery marks those with a gold",
+        "frames the photographer singled out; the gallery marks those with a white",
         "corner. One photograph lives at `/photos/<id>`.",
         "",
         "## As tools",
         "",
         `\`${ORIGIN}/mcp\` speaks MCP over Streamable HTTP: describe_site,`,
-        "list_photographs, get_photograph, list_projects, list_posts. Read-only, and",
+        "list_photographs, get_photograph, list_projects. Read-only, and",
         "no authentication — see `/auth.md`.",
         "",
     ].join("\n");
@@ -1019,7 +846,7 @@ function agentSkillsIndex(skillBody) {
                     name: "read-exoad",
                     type: "text/markdown",
                     description:
-                        "Read exoad.net's photographs, projects and writing without scraping " +
+                        "Read exoad.net's photographs and projects without scraping " +
                         "the site.",
                     url: `${ORIGIN}/.well-known/agent-skills/read-exoad/SKILL.md`,
                     sha256: digest,
@@ -1037,7 +864,7 @@ function sitemapXml(pages, gallery) {
     const entry = (page) => {
         const lastmod =
             page.lastmod ?? (page.route === "/photos" ? newestPhoto : today);
-        const priority = page.route === "/" ? "1.0" : page.route.startsWith("/blog/") ? "0.6" : "0.8";
+        const priority = page.route === "/" ? "1.0" : page.route.startsWith("/photos/") ? "0.6" : "0.8";
         // The gallery declares every photograph it holds; a photo site that
         // does not is invisible to image search.
         const images =
@@ -1090,11 +917,10 @@ export default function agentSurfacePlugin() {
                 return;
             }
 
-            const posts = loadBlogPosts();
             const picks = await loadPicks();
             const gallery = loadGallery();
             const baseHtml = readFileSync(INDEX_HTML, "utf8");
-            const pages = buildPages({ shared, posts, gallery, picks });
+            const pages = buildPages({ shared, gallery, picks });
 
             for (const page of pages) {
                 const html = pageHtml(page, baseHtml, gallery.length);
@@ -1103,8 +929,7 @@ export default function agentSurfacePlugin() {
             }
 
             write("photos.json", photosJson(gallery, picks) + "\n");
-            write("feed.xml", feedXml(posts));
-            write("mcp-data.json", mcpData({ shared, posts, gallery, picks }) + "\n");
+            write("mcp-data.json", mcpData({ shared, gallery, picks }) + "\n");
             write(".well-known/mcp/server-card.json", mcpServerCard() + "\n");
             write("auth.md", authMd());
             const skill = agentSkill(gallery);
@@ -1124,16 +949,15 @@ export default function agentSurfacePlugin() {
                         title: "Not found | exoad",
                         description: "No page at this address.",
                         about:
-                            "An address that does not exist on exoad.net. The site has three\n" +
-                            "parts — a home page, a blog, and a photo gallery — all listed in\n" +
-                            "llms.txt.",
+                            "An address that does not exist on exoad.net. The site has two\n" +
+                            "parts — a home page and a photo gallery — both listed in llms.txt.",
                         jsonLd: [],
                         markdown: "# Not found\n\nNo page at this address.",
                     },
                     gallery.length,
                 ),
             );
-            write("llms.txt", llmsIndex(pages, { posts, gallery, shared }));
+            write("llms.txt", llmsIndex(pages, { gallery, shared }));
             write(
                 "llms-full.txt",
                 [
@@ -1160,7 +984,7 @@ export default function agentSurfacePlugin() {
 
             console.log(
                 `agent-surface: ${pages.length} routes (html + md), llms.txt, llms-full.txt, ` +
-                    `photos.json, feed.xml, 404.html, sitemap.xml`,
+                    `photos.json, 404.html, sitemap.xml`,
             );
         },
     };

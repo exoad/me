@@ -70,14 +70,6 @@ const TOOLS = [
             return { count: list.length, projects: list };
         },
     },
-    {
-        name: "list_posts",
-        description:
-            "The writing. Each entry links to the full text, also published as markdown " +
-            "at the same path with .md appended.",
-        inputSchema: { type: "object", properties: {} },
-        run: (d) => ({ count: d.posts.length, posts: d.posts }),
-    },
 ];
 
 const json = (payload, status = 200) =>
@@ -108,7 +100,7 @@ async function handle(message, data) {
                 serverInfo: SERVER,
                 instructions:
                     "Read-only access to exoad.net: its photographs and their camera " +
-                    "settings, its projects, and its writing. Nothing here requires " +
+                    "settings, and its projects. Nothing here requires " +
                     "authentication and nothing can be modified.",
             });
 

@@ -5,8 +5,6 @@ import { useWebMcp } from "./hooks/useWebMcp";
 const HomePage = lazy(() => import("./pages/HomePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PhotosPage = lazy(() => import("./pages/PhotosPage"));
-const BlogListPage = lazy(() => import("./pages/BlogListPage"));
-const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 
 function PageLoading() {
 	return (
@@ -35,7 +33,7 @@ function AppContent() {
 	return (
 		<>
 		<ThemedScrollbar />
-		<a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:text-black focus:outline focus:outline-2 focus:outline-black">
+		<a href="#main" className="skip-link">
 			Skip to main content
 		</a>
 		<Suspense fallback={<PageLoading />}>
@@ -44,8 +42,6 @@ function AppContent() {
 				<Route path="/photos" element={<PhotosPage />} />
 				{/* A single frame is its own address, so it can be linked and reloaded. */}
 				<Route path="/photos/:photoId" element={<PhotosPage />} />
-				<Route path="/blog" element={<BlogListPage />} />
-				<Route path="/blog/:slug" element={<BlogPostPage />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</Suspense>

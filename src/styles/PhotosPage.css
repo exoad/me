@@ -11,7 +11,7 @@
        stopping on. It reads because nothing else here is coloured at all.
        Flat mustard, and it stays flat — no gradient, no gloss, nothing that
        would make it look like a sticker laid on top of the photograph. */
-    --ph-gold: #d8a62b;
+    --ph-gold: #ffffff;
     --ph-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
     background: var(--ph-bg);

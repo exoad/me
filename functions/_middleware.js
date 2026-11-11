@@ -21,7 +21,7 @@ function isNegotiable(request, url) {
     return (request.headers.get("Accept") ?? "").includes("text/markdown");
 }
 
-/** "/" -> "/index.md", "/photos" -> "/photos.md", "/blog/x/" -> "/blog/x.md" */
+/** "/" -> "/index.md", "/photos/x/" -> "/photos/x.md" */
 function markdownPath(pathname) {
     const trimmed = pathname.replace(/\/+$/, "");
     return trimmed === "" ? "/index.md" : `${trimmed}.md`;

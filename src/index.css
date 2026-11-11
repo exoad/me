@@ -1,5 +1,56 @@
-@import "tailwindcss";
-@import "katex/dist/katex.min.css";
+/* A small reset in place of a framework's: margins off, lists bare, headings
+   sized by the page rather than by the browser. */
+*, ::before, ::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+h1, h2, h3, h4 {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+img, svg, video {
+    display: block;
+    max-width: 100%;
+}
+
+button, input {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+}
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+}
+
+.skip-link:focus {
+    left: 1rem;
+    top: 1rem;
+    z-index: 100;
+    background: #fff;
+    color: #000;
+    padding: 0.5rem 0.75rem;
+    outline: 1px solid #000;
+}
+
+/* Black and white, nothing else. The photographs are the only colour the
+   site has, and on the home page even they wait to be asked. */
+:root {
+    --fg: #000;
+    --bg: #fff;
+    --dim: #6b6b6b;
+    --line: #e6e6e6;
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
 
 html, body, #root {
     margin: 0;
@@ -8,48 +59,45 @@ html, body, #root {
 
 body {
     font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-    background: #faf6ec;
-    color: #111;
+    background: var(--bg);
+    color: var(--fg);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-    color: #06c;
+::selection {
+    background: var(--fg);
+    color: var(--bg);
 }
 
-/* ============================================
-   THEMED SCROLLBAR
-   Applied everywhere except /photos (toggled via
-   ThemedScrollbar in App.tsx, which leaves that
-   page's default browser scrollbar untouched).
-   ============================================ */
+a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: rgb(0 0 0 / 0.22);
+    transition: text-decoration-color 0.25s ease, color 0.25s ease;
+}
 
+a:hover,
+a:focus-visible {
+    text-decoration-color: currentColor;
+}
+
+:focus-visible {
+    outline: 1px solid var(--fg);
+    outline-offset: 3px;
+}
+
+/* Applied everywhere except /photos (toggled in App.tsx). */
 html.themed-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #ccc #fff;
-}
-
-html.themed-scrollbar::-webkit-scrollbar {
-    width: 12px;
-}
-
-html.themed-scrollbar::-webkit-scrollbar-track {
-    background: #fff;
-}
-
-html.themed-scrollbar::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border: 3px solid #fff;
-}
-
-html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #999;
+    scrollbar-color: #bbb var(--bg);
 }
 
 .muted {
-    color: #555;
+    color: var(--dim);
 }
 
 .btn-link {
@@ -58,19 +106,65 @@ html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
     padding: 0;
     margin: 0;
     font: inherit;
-    color: #06c;
+    color: inherit;
     text-decoration: underline;
+    text-underline-offset: 3px;
     cursor: pointer;
 }
 
 /* ============================================
-   PAGE LAYOUT
+   MOTION
+   One entrance, played once per page: each block rises a few pixels out of
+   the white, a beat after the one above it. Set --i on an element to place
+   it in the sequence.
+   ============================================ */
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.reveal {
+    animation: rise 0.7s var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        animation: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0s !important;
+    }
+}
+
+/* ============================================
+   PAGE
    ============================================ */
 
 .page {
-    max-width: 700px;
+    max-width: 560px;
     margin: 0 auto;
-    padding: 2rem 1.25rem;
+    padding: 3.5rem 1.25rem 2.5rem;
+}
+
+.page h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.page p + p {
+    margin-top: 0.75rem;
 }
 
 .site-header {
@@ -78,74 +172,94 @@ html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
     flex-wrap: wrap;
     align-items: baseline;
     justify-content: space-between;
-    gap: 0.75rem 1.5rem;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 1rem;
-    margin-bottom: 2rem;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 3rem;
 }
 
 .site-name {
     font-weight: 700;
     text-decoration: none;
-    color: #111;
 }
 
 .site-nav {
     display: flex;
-    flex-wrap: wrap;
     gap: 1rem;
 }
 
 .site-nav a {
+    color: var(--dim);
     text-decoration: none;
 }
 
-.site-nav a:hover {
-    text-decoration: underline;
-}
-
+.site-nav a:hover,
 .site-nav a[aria-current="page"] {
-    color: #111;
+    color: var(--fg);
+}
+
+.intro {
+    font-size: 1.25rem;
+}
+
+.home section {
+    margin-top: 2.75rem;
+}
+
+.home h2 {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    margin-bottom: 0.75rem;
+}
+
+/* ============================================
+   PROJECTS: one line each
+   ============================================ */
+
+.plain-list li {
+    padding: 0.4rem 0;
+}
+
+.plain-list li + li {
+    border-top: 1px solid var(--line);
+}
+
+.project-name {
     font-weight: 700;
+    text-decoration: none;
+    margin-right: 0.5rem;
 }
 
-/* No panel behind these: a filled box in a second colour reads as a control,
-   and this is a list. Separated the way the rest of the page separates things,
-   with the same hairline the header, footer and post list use. */
-.project-row {
-    padding: 0.6rem 0;
-    border-bottom: 1px solid #ddd;
-}
-
-.project-row summary {
-    cursor: pointer;
-    list-style: none;
-}
-
-.project-row summary::-webkit-details-marker {
-    display: none;
-}
-
-.project-row summary::before {
-    content: "▸";
+.project-name .arrow {
     display: inline-block;
-    width: 1em;
-    margin-right: 0.25rem;
-    color: #999;
-    font-size: 0.7em;
-    vertical-align: middle;
+    font-weight: 400;
+    font-size: 0.75em;
+    margin-left: 0.15em;
+    color: var(--dim);
+    transition: transform 0.3s var(--ease), color 0.3s ease;
 }
 
-.project-row[open] summary::before {
-    content: "▾";
+.project-name:hover .arrow,
+.project-name:focus-visible .arrow {
+    transform: translate(2px, -2px);
+    color: var(--fg);
 }
 
-/* Contact strip of recent photographs. Uniform height, hairline gaps, square
-   corners — a row of frames, not a carousel. */
+.links {
+    margin-top: 2.75rem;
+    color: var(--dim);
+}
+
+/* ============================================
+   PHOTO STRIP
+   Grey until hovered, then the colour comes up. Hairline gaps, square
+   corners: a row of frames, not a carousel.
+   ============================================ */
+
 .photo-strip {
     display: flex;
     gap: 2px;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
+    text-decoration: none;
 }
 
 .photo-strip-frame {
@@ -154,14 +268,18 @@ html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
        their own aspect ratios. */
     flex: 1 1 0;
     min-width: 0;
-    height: 92px;
+    height: 84px;
     overflow: hidden;
-    background: #e8e0cd;
-    transition: opacity 0.2s ease;
+    background: #eee;
+    filter: grayscale(1);
+    transition: filter 0.6s ease;
 }
 
-/* Both layers occupy the frame exactly, so the photograph lands on the same
-   rectangle its placeholder was holding. */
+.photo-strip-frame:hover,
+.photo-strip:focus-visible .photo-strip-frame {
+    filter: grayscale(0);
+}
+
 .photo-strip-frame img {
     position: absolute;
     inset: 0;
@@ -180,23 +298,20 @@ html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
 
 .photo-strip-photo {
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.6s ease, transform 0.8s var(--ease);
 }
 
 .photo-strip-photo.is-loaded {
     opacity: 1;
 }
 
-/* Dims the frame rather than the image: the photograph's own opacity is what
-   fades it in, and a hover rule on it would fight that. */
-.photo-strip:hover .photo-strip-frame,
-.photo-strip:focus-visible .photo-strip-frame {
-    opacity: 0.82;
+.photo-strip-frame:hover .photo-strip-photo {
+    transform: scale(1.05);
 }
 
 @media (max-width: 480px) {
     .photo-strip-frame {
-        height: 74px;
+        height: 68px;
     }
 
     /* Six across a phone is six slivers. */
@@ -205,150 +320,18 @@ html.themed-scrollbar::-webkit-scrollbar-thumb:hover {
     }
 }
 
-.blog-post-card {
-    display: block;
-    width: 100%;
-    text-align: left;
-    background: none;
-    border: none;
-    border-bottom: 1px solid #ddd;
-    padding: 1rem 0;
-    font: inherit;
-    color: inherit;
-    cursor: pointer;
-}
+/* ============================================
+   FOOTER
+   ============================================ */
 
 .site-footer {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.5rem 1.5rem;
-    border-top: 1px solid #ddd;
-    margin-top: 3rem;
+    border-top: 1px solid var(--line);
+    margin-top: 4rem;
     padding-top: 1rem;
-    color: #555;
-    font-size: 0.85rem;
-}
-
-/* ============================================
-   BLOG CONTENT (rendered markdown)
-   ============================================ */
-
-.blog-content {
-    color: #111;
-    font-size: 1.05rem;
-    line-height: 1.8;
-}
-
-.blog-content h1 {
-    color: #111;
-    font-size: 2rem;
-    font-weight: 700;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-.blog-content h2 {
-    color: #111;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-}
-
-.blog-content h3 {
-    color: #111;
-    font-size: 1.15rem;
-    font-weight: 600;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.blog-content h4 {
-    color: #111;
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.blog-content p {
-    margin-bottom: 0.75rem;
-    line-height: 1.8;
-}
-
-.blog-content ul, .blog-content ol {
-    margin-bottom: 1.25rem;
-    padding-left: 1.5rem;
-}
-
-.blog-content li {
-    margin-bottom: 0.4rem;
-    line-height: 1.7;
-}
-
-.blog-content a {
-    color: #06c;
-    text-decoration: underline;
-}
-
-.blog-content blockquote {
-    border-left: 1px solid #ccc;
-    padding: 0.5rem 1rem;
-    margin: 1.5rem 0;
-    color: #333;
-}
-
-.blog-content strong {
-    color: #111;
-    font-weight: 700;
-}
-
-.blog-content em {
-    color: #333;
-}
-
-.blog-content code {
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    padding: 0.15rem 0.4rem;
-    font-size: 0.9rem;
-}
-
-.blog-content pre {
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    padding: 1rem;
-    overflow-x: auto;
-    margin-bottom: 1.25rem;
-}
-
-.blog-content pre code {
-    background: none;
-    border: none;
-    padding: 0;
-    font-size: 0.85rem;
-}
-
-.blog-content hr {
-    border: none;
-    border-top: 1px solid #ddd;
-    margin: 1.5rem 0;
-}
-
-.blog-content img {
-    max-width: 85%;
-    height: auto;
-    margin: 1.5rem auto;
-    display: block;
-}
-
-.blog-content .katex {
-    font-size: 1.1em;
-}
-
-.blog-content .katex-display {
-    margin: 1.25rem 0;
-    overflow-x: auto;
-    overflow-y: hidden;
+    color: var(--dim);
+    font-size: 0.8rem;
 }

@@ -1,154 +1,69 @@
-import { strings, featuredProjects, projects, ming as MING } from "../data/shared.ts";
+import type { CSSProperties } from "react";
+import { strings, projects } from "../data/shared.ts";
 import SEO from "../components/SEO.tsx";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PhotoStrip from "../components/PhotoStrip";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { BlogPostData, loadAllBlogPosts } from "../utils/markdown";
 
-function ContactEmail({ email }: { email: string }) {
-	const [copied, setCopied] = useState(false);
+const EMAIL = "jackm@exoad.net";
 
-	const copyEmail = async () => {
-		try {
-			await navigator.clipboard.writeText(email);
-			setCopied(true);
-			window.setTimeout(() => setCopied(false), 1400);
-		} catch {
-			window.location.href = `mailto:${email}`;
-		}
-	};
-
-	return (
-		<p>
-			<a href={`mailto:${email}`}>{email}</a>{" "}
-			<button type="button" className="btn-link" onClick={copyEmail} aria-label={`Copy ${email}`}>
-				{copied ? "copied" : "[copy]"}
-			</button>
-		</p>
-	);
-}
-
-function ProjectRow({ proj }: { proj: (typeof projects)[0] }) {
-	return (
-		<details className="project-row">
-			<summary>
-				<strong>{proj.title}</strong>{" "}
-				<span className="muted">{proj.technologies.map((t) => t.name).join(" · ")}</span>{" "}
-				<span className="muted">{proj.year}</span>{" "}
-				<span className="muted">[{proj.state}]</span>
-			</summary>
-			<p className="muted">{proj.description}</p>
-			<p>
-				<a href={proj.link} target="_blank" rel="noopener noreferrer">
-					visit
-				</a>
-			</p>
-		</details>
-	);
-}
-
-function ContentSections() {
-	// A list that shows years should be ordered by them, or the numbers just
-	// jump around. Featured still lead; each group runs newest first.
-	const byYear = (a: { year: number }, b: { year: number }) => b.year - a.year;
-	const featured = [...featuredProjects].sort(byYear);
-	const allOtherProjects = projects.filter((p) => !p.featured).sort(byYear);
-	const [latestPosts, setLatestPosts] = useState<BlogPostData[]>([]);
-
-	useEffect(() => {
-		loadAllBlogPosts().then(posts => setLatestPosts(posts)).catch(() => {});
-	}, []);
-
-	return (
-		<>
-			<section>
-				<p>
-					{strings.pages.home.about.content.split("photography")[0]}
-					<Link to="/photos">photography</Link>
-					{strings.pages.home.about.content.split("photography")[1]}
-				</p>
-			</section>
-
-			{/* Straight after the paragraph that mentions it, so the word and the
-			    frames arrive together. */}
-			<PhotoStrip />
-
-
-			<section>
-				<h2>Writing</h2>
-				{latestPosts.length > 0 && (
-					<ul>
-						{latestPosts.slice(0, 2).map((post) => (
-							<li key={post.slug}>
-								<Link to={"/blog/" + post.slug}>{post.title}</Link>{" "}
-								<span className="muted">
-									{post.date} &middot; {post.tags.map((t: string) => "#" + t).join(" ")}
-								</span>
-							</li>
-						))}
-					</ul>
-				)}
-				<p>
-					<Link to="/blog">view all posts</Link>
-				</p>
-			</section>
-
-			<section>
-				<h2>Projects</h2>
-				<div>
-					{[...featured, ...allOtherProjects].map((proj) => (
-						<ProjectRow key={proj.title} proj={proj} />
-					))}
-				</div>
-				<p>
-					<a href={strings.links.github} target="_blank" rel="noopener noreferrer">
-						all projects
-					</a>
-				</p>
-			</section>
-
-			<section>
-				<h2>Contact</h2>
-				<ContactEmail email="jackm@exoad.net" />
-				<ContactEmail email="jmeng2@terpmail.umd.edu" />
-				<p className="muted">
-					Or Ming, my agent, which keeps its own address and answers for itself —{" "}
-					<a href={MING.site} target="_blank" rel="noopener noreferrer">
-						{MING.siteLabel}
-					</a>
-				</p>
-				<ContactEmail email={MING.email} />
-			</section>
-		</>
-	);
-}
+/** Places an element in the page's entrance sequence. */
+const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
 export default function HomePage() {
 	return (
 		<>
 			<SEO title="Home" description={strings.pages.home.about.content} />
-			<main id="main" className="page">
-				<Header />
-				<p className="muted">
-					{strings.pages.home.tagline}
-					{" — "}
-					<a href={strings.links.github} aria-label={strings.links.github_aria}>GitHub</a>
-					{" · "}
-					<a href={strings.links.linkedin} aria-label={strings.links.linkedin_aria}>LinkedIn</a>
-					{" · "}
-					<a href={strings.links.x} aria-label={strings.links.x_aria}>X</a>
+			<main id="main" className="page home">
+				<div className="reveal" style={step(0)}>
+					<Header />
+				</div>
+
+				<p className="intro reveal" style={step(1)}>
+					{strings.pages.home.about.content}
 				</p>
-				<p className="muted">
-					Reading this as an agent, or would rather not come through me?{" "}
-					<a href={MING.site} target="_blank" rel="noopener noreferrer">
-						Ming
-					</a>{" "}
-					is mine and answers on its own.
+
+				<div className="reveal" style={step(2)}>
+					<PhotoStrip />
+				</div>
+
+				<section>
+					<h2 className="reveal" style={step(3)}>projects</h2>
+					<ul className="plain-list">
+						{projects.map((p, i) => (
+							<li key={p.title} className="reveal" style={step(4 + i)}>
+								{p.link ? (
+									<a
+										className="project-name"
+										href={p.link}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										{p.title}
+										<span className="arrow" aria-hidden="true">↗</span>
+									</a>
+								) : (
+									<span className="project-name">{p.title}</span>
+								)}
+								<span className="muted">{p.description}</span>
+							</li>
+						))}
+					</ul>
+				</section>
+
+				<p className="links reveal" style={step(5 + projects.length)}>
+					<a href={strings.links.github} aria-label={strings.links.github_aria}>github</a>
+					{" · "}
+					<a href={strings.links.linkedin} aria-label={strings.links.linkedin_aria}>linkedin</a>
+					{" · "}
+					<a href={strings.links.x} aria-label={strings.links.x_aria}>x</a>
+					{" · "}
+					<a href={`mailto:${EMAIL}`}>{EMAIL}</a>
 				</p>
-				<ContentSections />
-				<Footer />
+
+				<div className="reveal" style={step(6 + projects.length)}>
+					<Footer />
+				</div>
 			</main>
 		</>
 	);

@@ -1,10 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import { strings } from '../data/shared.ts';
 
+// The name already links home, so the nav only needs the one other place.
 const navItems = [
-    { path: '/', label: 'Home' },
-    { path: '/blog', label: 'Blog' },
-    { path: '/photos', label: 'Photos' },
+    { path: '/photos', label: 'photos' },
 ];
 
 export default function Header() {

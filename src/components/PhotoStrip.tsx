@@ -55,7 +55,7 @@ export default function PhotoStrip() {
 
     return (
         <section>
-            <h2>Photos</h2>
+            <h2>photos</h2>
             <Link
                 to="/photos"
                 className="photo-strip"

@@ -20,9 +20,8 @@ import {
     type GalleryPhoto,
 } from "../data/gallery";
 import { strings } from "../data/shared.ts";
-import { useLenis } from "../hooks/useLenis";
 import { usePhotosReveal } from "../hooks/usePhotosReveal";
-import { motionSafeScrollBehavior, prefersReducedMotion } from "../utils/motion";
+import { motionSafeScrollBehavior } from "../utils/motion";
 import "../styles/PhotosPage.css";
 
 const PAGE_SIZE = 24;
@@ -442,7 +441,6 @@ function Lightbox({ index, onNavigate, onClose }: {
             aria-label={`Photo ${frameNo(index)} of ${pad(galleryPhotos.length)}`}
             ref={dialogRef}
             tabIndex={-1}
-            data-lenis-prevent
             style={{ "--ph-vh": `${viewportHeight}px` } as CSSProperties}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
@@ -607,7 +605,6 @@ function Lightbox({ index, onNavigate, onClose }: {
 }
 
 export default function PhotosPage() {
-    const lenisRef = useLenis(!prefersReducedMotion());
     const [searchParams, setSearchParams] = useSearchParams();
     const { photoId } = useParams();
     const navigate = useNavigate();
@@ -656,14 +653,7 @@ export default function PhotosPage() {
     const balanced = useMemo(() => balanceColumns(pagePhotos, columns), [pagePhotos, columns]);
 
     const scrollToTop = (behavior: ScrollBehavior) => {
-        // While a Lenis smooth scroll is animating it ignores window.scrollTo,
-        // so go through the instance when there is one.
-        const lenis = lenisRef.current;
-        if (lenis) {
-            lenis.scrollTo(0, behavior === "auto" ? { immediate: true } : undefined);
-        } else {
-            window.scrollTo({ top: 0, behavior });
-        }
+        window.scrollTo({ top: 0, behavior });
     };
 
     const goToPage = (target: number) => {
