@@ -47,7 +47,7 @@ export const projects: TProject[] = [
         title: "ming",
         period: "now",
         description:
-            "my own autonomous agent, not just a coder. it runs on its own server (glm 5.3 on 512gb of vram) and works through a fleet of my machines: a phone, a macbook, a home server and three old laptops.",
+            'my own agent with one instruction: "just help me." i text it on its own phone. it orders food, codes in the background, triages jobs and ideas, and handles my email and linkedin. glm 5.3 on its own server, plus a fleet of my old machines.',
         link: ming.site,
         technologies: [],
         featured: true,
