@@ -46,7 +46,8 @@ export const projects: TProject[] = [
     {
         title: "ming",
         period: "now",
-        description: "my own personal agent, running on my own server. glm 5.3 on 512gb of vram.",
+        description:
+            "my own autonomous agent, not just a coder. it runs on its own server (glm 5.3 on 512gb of vram) and works through a fleet of my machines: a phone, a macbook, a home server and three old laptops.",
         link: ming.site,
         technologies: [],
         featured: true,
@@ -177,6 +178,16 @@ export const projects: TProject[] = [
         years: "2023",
     },
     {
+        title: "prismix",
+        description: "color picker and palette generator for people who find color theory hard. tints, shades, tones, contrast, lua scripting.",
+        link: gh("prismix"),
+        technologies: [tech("Java"), tech("Kotlin"), tech("Lua")],
+        featured: true,
+        state: "archived",
+        year: 2023,
+        years: "2023",
+    },
+    {
         title: "halcyon",
         description: "the music player i keep rewriting. a java gui on a 2d opengl engine i wrote for it, audio in c. my first big one.",
         link: gh("Halcyon.c"),
@@ -195,16 +206,6 @@ export const projects: TProject[] = [
         state: "archived",
         year: 2022,
         years: "2022",
-    },
-    {
-        title: "yttrius",
-        description: "my first language, from high school. promised a jit and a wasm bridge. kira is the one that works.",
-        link: gh("yttriuslang.c"),
-        technologies: [tech("C")],
-        featured: true,
-        state: "archived",
-        year: 2021,
-        years: "2021",
     },
 ];
 
